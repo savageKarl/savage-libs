@@ -25,7 +25,6 @@
 		"prepush": "npm run build",
 		"push": "npm publish --access public",
 		"lint": "eslint .",
-		"prepare": "husky install",
 		"commit": "git-cz"
 	},
 	"config": {
