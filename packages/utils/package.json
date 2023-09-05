@@ -20,7 +20,7 @@
 	},
 	"scripts": {
 		"dev": "cross-env mode=dev nodemon rollup.config.js",
-		"build": "cross-env mode=pro rollup -c rollup.config.js",
+		"build": "cross-env mode=pro rollup -c ../../build/rollup.config.ts --configPlugin rollup-plugin-typescript2",
 		"prepush": "npm run build",
 		"push": "npm publish --access public",
 		"lint": "eslint .",
@@ -32,6 +32,7 @@
 		}
 	},
 	"license": "GPL-3.0",
-	"devDependencies": {},
-	"dependencies": {}
+	"dependencies": {
+		"savage-data-types": "workspace:*"
+	}
 }
