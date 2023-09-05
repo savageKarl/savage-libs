@@ -20,11 +20,6 @@
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/savage181855",
 	"scripts": {
-		"dev": "cross-env mode=dev nodemon rollup.config.js",
-		"build": "cross-env mode=pro rollup -c rollup.config.js",
-		"prepush": "npm run build",
-		"push": "npm publish --access public",
-		"lint": "eslint .",
 		"commit": "git-cz",
 		"prepare": "husky install"
 	},
@@ -55,8 +50,10 @@
 		"eslint-plugin-promise": "^4.2.1",
 		"husky": "^8.0.3",
 		"javascript-obfuscator": "^0.18.8",
+		"lerna": "^7.2.0",
 		"lint-staged": "^14.0.1",
 		"nodemon": "^3.0.1",
+		"nx": "^16.7.4",
 		"prettier": "^3.0.3",
 		"prettier-eslint": "^15.0.1",
 		"rollup": "^3.2.3",
