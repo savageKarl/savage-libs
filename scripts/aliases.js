@@ -7,16 +7,14 @@ import { fileURLToPath } from 'node:url'
 const resolveEntryForPkg = p =>
 	path.resolve(
 		fileURLToPath(import.meta.url),
-		`../../packages/${p}/src/index.ts`
+		`../../packages/${p.replace(/savage-/, '')}/src/index.ts`
 	)
 
-const dirs = readdirSync(new URL('../packages', import.meta.url))
-
 const entries = {
-	// vue: resolveEntryForPkg('vue')
-	// 'vue/compiler-sfc': resolveEntryForPkg('compiler-sfc'),
-	// 'vue/server-renderer': resolveEntryForPkg('server-renderer'),
-	// '@vue/compat': resolveEntryForPkg('vue-compat')
+	'savage-data-types': resolveEntryForPkg('savage-data-types'),
+	'savage-rollup-command': resolveEntryForPkg('savage-rollup-command'),
+	'savage-electron-ipc': resolveEntryForPkg('savage-electron-ipc'),
+	'savage-utils': resolveEntryForPkg('savage-utils')
 }
 
 export { entries }
