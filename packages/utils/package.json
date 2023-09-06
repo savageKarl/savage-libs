@@ -3,20 +3,20 @@
 	"version": "1.0.50",
 	"description": "js工具库",
 	"miniprogram": "dist",
-  "main": "index.js",
-  "module": "dist/shared.esm-bundler.js",
-  "types": "dist/shared.d.ts",
-  "files": [
-    "index.js",
-    "dist"
-  ],
+	"main": "index.js",
+	"module": "dist/shared.esm-bundler.js",
+	"types": "dist/shared.d.ts",
+	"files": [
+		"index.js",
+		"dist"
+	],
 	"buildOptions": {
-    "name": "savage-utils",
-    "formats": [
-      "esm-bundler",
-      "cjs"
-    ]
-  },
+		"name": "savageUtils",
+		"formats": [
+			"esm-bundler",
+			"cjs"
+		]
+	},
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"

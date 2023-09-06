@@ -20,13 +20,10 @@ import fs from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import minimist from 'minimist'
-import { gzipSync, brotliCompressSync } from 'node:zlib'
-import chalk from 'chalk'
 import execa from 'execa'
 import { cpus } from 'node:os'
 import { createRequire } from 'node:module'
 import { targets as allTargets, fuzzyMatchTarget } from './utils.js'
-import prettyBytes from 'pretty-bytes'
 
 const require = createRequire(import.meta.url)
 const args = minimist(process.argv.slice(2))
@@ -41,8 +38,6 @@ const buildAllMatching = args.all || args.a
 const writeSize = args.size
 const commit = execa.sync('git', ['rev-parse', 'HEAD']).stdout.slice(0, 7)
 
-const sizeDir = path.resolve('temp/size')
-
 run()
 
 async function run() {
@@ -50,11 +45,8 @@ async function run() {
 		const resolvedTargets = targets.length
 			? fuzzyMatchTarget(targets, buildAllMatching)
 			: allTargets
-		// TODO remove this
-		console.log(resolvedTargets)
 
 		await buildAll(resolvedTargets)
-		// await checkAllSizes(resolvedTargets)
 		if (buildTypes) {
 			await execa(
 				'pnpm',
@@ -119,67 +111,8 @@ async function build(target) {
 		[
 			'-c',
 			'--environment',
-			[
-				// `COMMIT:${commit}`,
-				`NODE_ENV:${env}`,
-				`TARGET:${target}`
-				// formats ? `FORMATS:${formats}` : ``,
-				// prodOnly ? `PROD_ONLY:true` : ``,
-				// sourceMap ? `SOURCE_MAP:true` : ``
-			]
-				.filter(Boolean)
-				.join(',')
+			[`NODE_ENV:${env}`, `TARGET:${target}`].filter(Boolean).join(',')
 		],
 		{ stdio: 'inherit' }
 	)
 }
-
-// async function checkAllSizes(targets) {
-// 	if (devOnly || (formats && !formats.includes('global'))) {
-// 		return
-// 	}
-// 	console.log()
-// 	for (const target of targets) {
-// 		await checkSize(target)
-// 	}
-// 	console.log()
-// }
-
-// async function checkSize(target) {
-// 	const pkgDir = path.resolve(`packages/${target}`)
-// 	await checkFileSize(`${pkgDir}/dist/${target}.global.prod.js`)
-// 	if (!formats || formats.includes('global-runtime')) {
-// 		await checkFileSize(`${pkgDir}/dist/${target}.runtime.global.prod.js`)
-// 	}
-// }
-
-// async function checkFileSize(filePath) {
-// 	if (!existsSync(filePath)) {
-// 		return
-// 	}
-// 	const file = await fs.readFile(filePath)
-// 	const fileName = path.basename(filePath)
-
-// 	const gzipped = gzipSync(file)
-// 	const brotli = brotliCompressSync(file)
-
-// 	console.log(
-// 		`${chalk.gray(chalk.bold(fileName))} min:${prettyBytes(
-// 			file.length
-// 		)} / gzip:${prettyBytes(gzipped.length)} / brotli:${prettyBytes(
-// 			brotli.length
-// 		)}`
-// 	)
-
-// 	if (writeSize)
-// 		await fs.writeFile(
-// 			path.resolve(sizeDir, `${fileName}.json`),
-// 			JSON.stringify({
-// 				file: fileName,
-// 				size: file.length,
-// 				gzip: gzipped.length,
-// 				brotli: brotli.length
-// 			}),
-// 			'utf-8'
-// 		)
-// }
