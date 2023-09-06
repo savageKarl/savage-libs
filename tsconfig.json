@@ -12,7 +12,7 @@
 		"isolatedModules": true,
 		"skipLibCheck": true,
 		"jsx": "preserve",
-		"types": ["vitest/globals", "puppeteer", "node"],
+		"types": ["node"],
 		"rootDir": ".",
 		"sourceMap": true, // 是否生成sourceMap
 		"target": "es6", // 编译目标
@@ -28,7 +28,7 @@
 	},
 	"paths": {
 		// "savage-*": ["packages/savage-*/src"],
-		"savage-data-types": ["packages/data-types/src"]
-	},
-	"include": ["./src/**/*.ts", "./build/rollup.config.ts"]
+		"savage-data-types": ["packages/data-types/src/index.ts"]
+	}
+	// "include": ["packages/*/src"]
 }

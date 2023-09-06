@@ -10,7 +10,7 @@ import resolve from '@rollup/plugin-node-resolve'
 // import terser from '@rollup/plugin-terser';
 // used to obfuscate your code
 // https://www.npmjs.com/package/rollup-obfuscator
-import { obfuscator, RollupObfuscatorOptions } from 'rollup-obfuscator'
+import { obfuscator } from 'rollup-obfuscator'
 // https://www.npmjs.com/package/@rollup/plugin-json
 // Convert JSON files to ES Modules.
 import json from '@rollup/plugin-json'
@@ -19,12 +19,14 @@ import autoExternal from 'rollup-plugin-auto-external'
 // https://www.npmjs.com/package/rollup-plugin-dts
 // import { dts } from 'rollup-plugin-dts'
 // https://www.npmjs.com/package/rollup-plugin-typescript2
-import rpt2 from 'rollup-plugin-typescript2'
+// import rpt2 from 'rollup-plugin-typescript2'
+
+import ts from '@rollup/plugin-typescript'
 
 // import { rollupCommand } from 'savage-rollup-command'
 
-import { obfusctorConfig } from './obfusctorConfig'
-// import { tsconfigDefaults } from './tsconfigDefaults.js'
+import { obfusctorConfig } from './obfusctorConfig.js'
+// import { tsconfigDefaults } from './tsconfigDefaults'
 
 const isPro = process.env.mode === 'pro'
 export default [
@@ -51,12 +53,14 @@ export default [
 			// 		ctx.run('cd tests && yarn test && npx link ..')
 			// 	}
 			// }),
-			rpt2({
-				// tsconfigDefaults
-				tsconfig: '../tsconfig.json'
+			// rpt2({
+			// 	tsconfig: '../tsconfig.json'
+			// }),
+			ts({
+				tsconfig: '../../tsconfig.json'
 			}),
 			autoExternal(),
-			...(isPro ? [obfuscator(obfusctorConfig as RollupObfuscatorOptions)] : [])
+			...(isPro ? [obfuscator(obfusctorConfig)] : [])
 		]
 	}
 	// {

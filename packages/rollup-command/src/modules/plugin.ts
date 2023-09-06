@@ -4,7 +4,7 @@ import del from 'del'
 
 import { runCommand, RunCommand } from './run'
 
-export { RunCommand, CommandCaller } from './run'
+export type { RunCommand, CommandCaller } from './run'
 
 /** provide some powerful api */
 export interface IContext {

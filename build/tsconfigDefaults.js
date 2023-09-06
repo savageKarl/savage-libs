@@ -1,14 +1,22 @@
 export const tsconfigDefaults = {
 	compilerOptions: {
 		baseUrl: '.',
+		outDir: 'temp',
+		newLine: 'LF',
+		useDefineForClassFields: false,
+		moduleResolution: 'bundler',
+		allowJs: false,
+		strict: true,
+		noUnusedLocals: true,
+		experimentalDecorators: true,
+		isolatedModules: true,
+		skipLibCheck: true,
+		jsx: 'preserve',
+		types: ['node'],
+		rootDir: '.',
 		sourceMap: true, // 是否生成sourceMap
 		target: 'es6', // 编译目标
 		module: 'esnext', // 模块类型
-		moduleResolution: 'node',
-		allowJs: true, // 是否编辑js文件
-		strict: false, // 严格模式
-		noUnusedLocals: false, // 未使用变量报错
-		experimentalDecorators: true, // 启动装饰器
 		resolveJsonModule: true, // 加载json
 		esModuleInterop: true,
 		removeComments: false, // 删除注释
@@ -16,10 +24,11 @@ export const tsconfigDefaults = {
 		declaration: true, // 生成定义文件
 		declarationDir: './dist',
 		declarationMap: false,
-		outDir: 'dist',
 		lib: ['esnext', 'dom'] // 导入库类型定义
 	},
-	include: [
-		'./src/**/*.ts' // 导入目录
-	]
+	paths: {
+		// "savage-*": ["packages/savage-*/src"],
+		'savage-data-types': ['packages/data-types/src/index.ts']
+	},
+	include: ['packages/*/src', './build/rollup.config.ts']
 }

@@ -13,12 +13,6 @@
 		"dist/index.mjs.map"
 	],
 	"types": "./dist/main.d.ts",
-	"exports": {
-		".": {
-			"import": "./src/index.ts",
-			"require": "./src/index.ts"
-		}
-	},
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
