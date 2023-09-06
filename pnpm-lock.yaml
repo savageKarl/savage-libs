@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@babel/parser':
+        specifier: ^7.22.15
+        version: 7.22.15
       '@commitlint/cli':
         specifier: ^17.7.1
         version: 17.7.1
@@ -80,6 +83,9 @@ importers:
       eslint-plugin-promise:
         specifier: ^6.1.1
         version: 6.1.1(eslint@8.48.0)
+      estree-walker:
+        specifier: ^3.0.3
+        version: 3.0.3
       execa:
         specifier: ^4.0.2
         version: 4.1.0
@@ -95,6 +101,9 @@ importers:
       lint-staged:
         specifier: ^14.0.1
         version: 14.0.1
+      magic-string:
+        specifier: ^0.30.3
+        version: 0.30.3
       minimist:
         specifier: ^1.2.8
         version: 1.2.8
@@ -4174,6 +4183,12 @@ packages:
 
   /estree-walker@2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
+    dev: true
+
+  /estree-walker@3.0.3:
+    resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
+    dependencies:
+      '@types/estree': 1.0.1
     dev: true
 
   /esutils@2.0.3:

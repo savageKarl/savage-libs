@@ -22,6 +22,7 @@
 	"scripts": {
 		"dev": "node scripts/dev.js",
 		"build": "node scripts/build.js",
+		"build-dts": "tsc -p tsconfig.build.json && rollup -c rollup.dts.config.js",
 		"commit": "git-cz",
 		"prepare": "husky install"
 	},
@@ -31,6 +32,7 @@
 		}
 	},
 	"devDependencies": {
+		"@babel/parser": "^7.22.15",
 		"@commitlint/cli": "^17.7.1",
 		"@commitlint/config-conventional": "^17.7.0",
 		"@rollup/plugin-alias": "^4.0.3",
@@ -55,11 +57,13 @@
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-prettier": "^5.0.0",
 		"eslint-plugin-promise": "^6.1.1",
+		"estree-walker": "^3.0.3",
 		"execa": "^4.0.2",
 		"husky": "^8.0.3",
 		"javascript-obfuscator": "^4.0.0",
 		"lerna": "^7.2.0",
 		"lint-staged": "^14.0.1",
+		"magic-string": "^0.30.3",
 		"minimist": "^1.2.8",
 		"nodemon": "^3.0.1",
 		"nx": "^16.7.4",

@@ -12,7 +12,8 @@ module.exports = {
 		commonjs: true
 	},
 	rules: {
-		'prettier/prettier': 'error' // 对于不符合prettier报eslint错误
+		'prettier/prettier': 'error',
+		'@typescript-eslint/ban-ts-comment': 0
 	},
 	parserOptions: { ecmaVersion: 6, sourceType: 'module' }
 }

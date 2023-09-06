@@ -2,18 +2,14 @@
 	"name": "savage-utils",
 	"version": "1.0.50",
 	"description": "js工具库",
-	"main": "dist/index.cjs",
-	"module": "./dist/index.mjs",
 	"miniprogram": "dist",
-	"files": [
-		"dist/index.cjs",
-		"dist/index.mjs",
-		"dist/main.d.ts",
-		"dist/index.cjs.map",
-		"dist/index.mjs.map"
-	],
-	"types": "./dist/main.d.ts",
-	"type": "module",
+  "main": "index.js",
+  "module": "dist/shared.esm-bundler.js",
+  "types": "dist/shared.d.ts",
+  "files": [
+    "index.js",
+    "dist"
+  ],
 	"buildOptions": {
     "name": "savage-utils",
     "formats": [

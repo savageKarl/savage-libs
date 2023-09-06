@@ -65,7 +65,6 @@ function createConfig(format, output, plugins = []) {
 		process.exit(1)
 	}
 
-	const isServerRenderer = name === 'server-renderer'
 	const isNodeBuild = format === 'cjs'
 
 	const entryFile = `src/index.ts`
@@ -100,8 +99,6 @@ function createConfig(format, output, plugins = []) {
 
 	return {
 		input: resolve(entryFile),
-		// Global and Browser ESM builds inlines everything so that they can be
-		// used alone.
 		external: resolveExternal(),
 		plugins: [
 			json({
@@ -110,14 +107,11 @@ function createConfig(format, output, plugins = []) {
 			alias({
 				entries
 			}),
-			// enumPlugin,
-			// ...resolveReplace(),
 			esbuild({
 				tsconfig: path.resolve(__dirname, 'tsconfig.json'),
 				sourceMap: output.sourcemap,
 				// minify: isPro,
-				target: isServerRenderer || isNodeBuild ? 'es2019' : 'es2015'
-				// define: resolveDefine()
+				target: isNodeBuild ? 'es2019' : 'es2015'
 			}),
 			...resolveNodePlugins(),
 			...plugins
