@@ -6,14 +6,20 @@ module.exports = {
 		'plugin:prettier/recommended'
 	],
 	parser: '@typescript-eslint/parser',
-	plugins: ['promise', 'prettier'],
+	plugins: ['@typescript-eslint/eslint-plugin', 'promise', 'tsdoc', 'prettier'],
 	root: true,
 	env: {
 		commonjs: true
 	},
 	rules: {
 		'prettier/prettier': 'error',
-		'@typescript-eslint/ban-ts-comment': 0
+		'@typescript-eslint/ban-ts-comment': 0,
+		'tsdoc/syntax': 'warn'
 	},
-	parserOptions: { ecmaVersion: 6, sourceType: 'module' }
+	parserOptions: {
+		project: './tsconfig.json',
+		tsconfigRootDir: __dirname,
+		ecmaVersion: 2018,
+		sourceType: 'module'
+	}
 }

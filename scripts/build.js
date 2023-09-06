@@ -30,13 +30,13 @@ const args = minimist(process.argv.slice(2))
 const targets = args._
 const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
-const prodOnly = !devOnly && (args.prodOnly || args.p)
+// const prodOnly = !devOnly && (args.prodOnly || args.p)
 const buildTypes = args.withTypes || args.t
-const sourceMap = args.sourcemap || args.s
+// const sourceMap = args.sourcemap || args.s
 const isRelease = args.release
 const buildAllMatching = args.all || args.a
-const writeSize = args.size
-const commit = execa.sync('git', ['rev-parse', 'HEAD']).stdout.slice(0, 7)
+// const writeSize = args.size
+// const commit = execa.sync('git', ['rev-parse', 'HEAD']).stdout.slice(0, 7)
 
 run()
 

@@ -8,7 +8,7 @@ import commonJS from '@rollup/plugin-commonjs'
 import polyfillNode from 'rollup-plugin-polyfill-node'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
-import alias from '@rollup/plugin-alias'
+// import alias from '@rollup/plugin-alias'
 import { entries } from './scripts/aliases.js'
 
 if (!process.env.TARGET) {
@@ -102,9 +102,9 @@ function createConfig(format, output, plugins = []) {
 			json({
 				namedExports: false
 			}),
-			alias({
-				entries
-			}),
+			// alias({
+			// 	entries
+			// }),
 			esbuild({
 				tsconfig: path.resolve(__dirname, 'tsconfig.json'),
 				sourceMap: output.sourcemap,
