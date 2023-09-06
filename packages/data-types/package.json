@@ -2,17 +2,14 @@
 	"name": "savage-data-types",
 	"version": "1.0.10",
 	"description": "一个用于判断js变量类型的库",
-	"main": "dist/index.cjs",
-	"module": "./dist/index.mjs",
 	"miniprogram": "dist",
+	"main": "index.js",
+	"module": "dist/data-types.esm-bundler.js",
+	"types": "dist/data-types.d.ts",
 	"files": [
-		"dist/index.cjs",
-		"dist/index.mjs",
-		"dist/main.d.ts",
-		"dist/index.cjs.map",
-		"dist/index.mjs.map"
+		"index.js",
+		"dist"
 	],
-	"types": "./dist/main.d.ts",
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"

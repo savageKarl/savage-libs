@@ -2,15 +2,13 @@
 	"name": "savage-electron-ipc",
 	"version": "0.0.12",
 	"description": "一个用于electron的通信库",
-	"main": "dist/index.cjs",
-	"module": "./dist/index.mjs",
 	"miniprogram": "dist",
+	"main": "index.js",
+	"module": "dist/electron-ipc.esm-bundler.js",
+	"types": "dist/electron-ipc.d.ts",
 	"files": [
-		"dist/index.cjs",
-		"dist/index.mjs",
-		"dist/main.d.ts",
-		"dist/index.cjs.map",
-		"dist/index.mjs.map"
+		"index.js",
+		"dist"
 	],
 	"keywords": [
 		"electron-ipc",
@@ -22,7 +20,6 @@
 		"electron ipc",
 		"ipc electron"
 	],
-	"types": "./dist/main.d.ts",
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"

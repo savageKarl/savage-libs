@@ -2,23 +2,14 @@
 	"name": "savage-rollup-command",
 	"version": "0.0.10",
 	"description": "一个rollup插件，用于在rollup构建过程中执行自定义命令。",
-	"main": "dist/index.cjs",
-	"module": "./dist/index.mjs",
+	"miniprogram": "dist",
+	"main": "index.js",
+	"module": "dist/rollup-command.esm-bundler.js",
+	"types": "dist/rollup-command.d.ts",
 	"files": [
-		"dist/index.cjs",
-		"dist/index.mjs",
-		"dist/main.d.ts",
-		"dist/index.cjs.map",
-		"dist/index.mjs.map"
+		"index.js",
+		"dist"
 	],
-	"types": "./dist/main.d.ts",
-	"exports": {
-		".": {
-			"import": "./src/index.ts",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"type": "module",
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
