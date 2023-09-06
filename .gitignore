@@ -10,3 +10,7 @@ TODOs.md
 .eslintcache
 dts-build/packages
 *.tsbuildinfo
+docs/.vitepress/cache
+docs/.vitepress/dist
+docs/dist
+docs/dist

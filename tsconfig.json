@@ -7,10 +7,10 @@
 		"newLine": "LF",
 		"useDefineForClassFields": false,
 		"module": "esnext",
-		"moduleResolution": "bundler",
+		"moduleResolution": "node",
 		"allowJs": false,
 		"strict": true,
-		"noUnusedLocals": true,
+		"noUnusedLocals": false,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
@@ -31,6 +31,7 @@
 	"include": [
 		"packages/global.d.ts",
 		"packages/*/src",
+		"docs",
 		"packages/*/__tests__",
 		"packages/electron-ipc/__test__"
 	]
