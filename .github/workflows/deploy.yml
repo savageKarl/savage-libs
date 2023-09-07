@@ -50,9 +50,8 @@ jobs:
           pnpm install --no-frozen-lockfile
       - name: Build with VitePress
         run: |
-          cd docs
-          pnpm docs:build 
-          touch .vitepress/dist/.nojekyll
+          pnpm docs:build
+          touch docs/.vitepress/dist/.nojekyll
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
