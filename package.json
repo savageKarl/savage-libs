@@ -34,8 +34,8 @@
 		"docs:dev": "cd docs && pnpm dev",
 		"docs:build": "cd docs && pnpm build",
 		"docs:serve": "cd docs && pnpm serve",
-		"versions": "lerna version --no-private --no-commit-hooks --conventional-commits",
-		"release": "lerna publish from-git",
+		"versions": "lerna version --no-private --yes --no-commit-hooks --conventional-commits ",
+		"release": "lerna publish --yes from-git",
 		"commit": "git-cz",
 		"prepare": "husky install"
 	},
