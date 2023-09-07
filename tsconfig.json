@@ -22,7 +22,7 @@
 		"types": ["node"],
 		"rootDir": ".",
 		"paths": {
-			"savage-*": ["packages/*/src"]
+			"savage-*": ["packages/savage-*/src"]
 		}
 	},
 	"include": [

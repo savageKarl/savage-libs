@@ -18,5 +18,5 @@ docs/*
 !docs/index.md
 !docs/package.json
 !docs/sidebar.json
-!docs/typedoc.ts
+!docs/generateDoc.ts
 !docs/public

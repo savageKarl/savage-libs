@@ -3,15 +3,29 @@ import fs from 'node:fs'
 import chalk from 'chalk'
 import { createRequire } from 'node:module'
 import { cpus } from 'node:os'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const require = createRequire(import.meta.url)
+const packages = resolve(fileURLToPath(import.meta.url), '../../packages')
+
+export function getFolder(path: string) {
+	const folders: string[] = []
+	fs.readdirSync(path).forEach(f => {
+		if (fs.statSync(`${path}/${f}`).isDirectory()) {
+			folders.push(f)
+		}
+	})
+
+	return folders
+}
 
 /** sub package name of packages path */
-export const targets = fs.readdirSync('packages').filter(f => {
-	if (!fs.statSync(`packages/${f}`).isDirectory()) {
+export const targets = fs.readdirSync(packages).filter(f => {
+	if (!fs.statSync(`${packages}/${f}`).isDirectory()) {
 		return false
 	}
-	const pkg = require(`../packages/${f}/package.json`)
+	const pkg = require(`${packages}/${f}/package.json`)
 	if (pkg.private && !pkg.buildOptions) {
 		return false
 	}

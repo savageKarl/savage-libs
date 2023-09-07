@@ -14,7 +14,7 @@ import {
 	debounce,
 	throttle
 	// installEventCenter
-} from 'savage-utils'
+} from '../src'
 
 describe('functions', () => {
 	test('get', () => {

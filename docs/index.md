@@ -6,8 +6,12 @@ title: home
 hero:
   name: Savage-Libs
   text: Documention
-  actions:
-    - theme: brand
-      text: view
-      link: /dist/modules1
+  tagline: Simple, powerful, and fast. Meet the modern SSG framework you've always wanted.
+  image:
+    src: /b.webp
+    alt: VitePress
 ---
+
+<style>
+
+</style>

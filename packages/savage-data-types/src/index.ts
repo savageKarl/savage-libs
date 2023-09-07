@@ -1,9 +1,9 @@
 /**
  * @packageDocumentation
  * 
- * 一个用于判断`javascript`变量类型的库，简单，便捷，开箱即用，提供了很多方法用于使用。
+ * A library for determining the type of JavaScript variables. It is simple, convenient, and can be used out of the box. It provides many methods for use.
  * 
- * ## 安装
+ * ## installtion
 
 ::: code-group
 
@@ -21,7 +21,7 @@ yarn add savage-data-types
 :::
 
 
-# 使用说明
+## how to use
 
 ```typescript
 import { dataTypes } from "@savage181855/data-types";
@@ -45,7 +45,7 @@ console.log(dataTypes.isObject({}));
 console.log(dataTypes.isMap(new Map()));
 ```
 
-## 所有 api
+## all of api for `dataTypes`
 - isString
 - isNumber
 - isBoolean
