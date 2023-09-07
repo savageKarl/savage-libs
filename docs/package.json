@@ -5,8 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"dev": "ts-node --esm generateDoc.ts && vitepress dev .",
-		"build": "node typedoc.js &&  vitepress build .",
-		"serve": "node typedoc.js &&  vitepress serve ."
+		"build": "ts-node --esm generateDoc.ts &&  vitepress build .",
+		"serve": "ts-node --esm generateDoc.ts &&  vitepress serve ."
 	},
 	"type": "module",
 	"keywords": [],
