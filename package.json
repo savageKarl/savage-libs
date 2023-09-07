@@ -1,7 +1,8 @@
 {
 	"name": "savage-libs",
-	"version": "0.0.14",
-	"description": "rollup的打包配置，便于统一修改和更新",
+	"version": "0.0.0",
+	"description": "monorepo",
+	"private": "true",
 	"main": "dist/index.cjs",
 	"module": "./dist/index.mjs",
 	"files": [
@@ -43,6 +44,7 @@
 	},
 	"devDependencies": {
 		"@babel/parser": "^7.22.15",
+		"@changesets/cli": "2.26.2",
 		"@commitlint/cli": "^17.7.1",
 		"@commitlint/config-conventional": "^17.7.0",
 		"@rollup/plugin-alias": "^4.0.3",
