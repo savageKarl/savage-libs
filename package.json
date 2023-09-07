@@ -2,7 +2,7 @@
 	"name": "savage-libs",
 	"version": "0.0.0",
 	"description": "monorepo",
-	"private": "true",
+	"private": true,
 	"main": "dist/index.cjs",
 	"module": "./dist/index.mjs",
 	"files": [
