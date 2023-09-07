@@ -24,7 +24,6 @@
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
 	},
-	"type": "module",
 	"scripts": {
 		"dev": "cross-env mode=dev nodemon rollup.config.js",
 		"build": "cross-env mode=pro rollup -c rollup.config.js",

@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "temp",
-		"sourceMap": false,
+		"sourceMap": true,
 		"target": "es2016",
 		"newLine": "LF",
 		"useDefineForClassFields": false,
@@ -22,17 +22,14 @@
 		"types": ["node"],
 		"rootDir": ".",
 		"paths": {
-			"savage-data-types": ["packages/data-types/src"]
-			// "savage-rollup-command": ["packages/rollup-command/src"],
-			// "savage-electron-ipc": ["packages/electron-ipc/src"],
-			// "savage-utils": ["packages/utils/src"]
+			"savage-*": ["packages/*/src"]
 		}
 	},
 	"include": [
 		"packages/global.d.ts",
 		"packages/*/src",
 		"docs",
-		"packages/*/__tests__",
-		"packages/electron-ipc/__test__"
+		"scripts",
+		"packages/*/__tests__"
 	]
 }

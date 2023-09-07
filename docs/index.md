@@ -1,13 +1,13 @@
 ---
 layout: home
 
-title: 首页
+title: home
 
 hero:
-  name: savage-data-types
-  text: 说明文档
+  name: Savage-Libs
+  text: Documention
   actions:
     - theme: brand
-      text: 查看
-      link: /dist/modules
+      text: view
+      link: /dist/modules1
 ---

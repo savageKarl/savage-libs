@@ -5,6 +5,7 @@ import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
+/** sub package name of packages path */
 export const targets = fs.readdirSync('packages').filter(f => {
 	if (!fs.statSync(`packages/${f}`).isDirectory()) {
 		return false
@@ -16,8 +17,11 @@ export const targets = fs.readdirSync('packages').filter(f => {
 	return true
 })
 
-export function fuzzyMatchTarget(partialTargets, includeAllMatching) {
-	const matched = []
+export function fuzzyMatchTarget(
+	partialTargets: string[],
+	includeAllMatching: boolean
+) {
+	const matched: string[] = []
 	partialTargets.forEach(partialTarget => {
 		for (const target of targets) {
 			if (target.match(partialTarget)) {

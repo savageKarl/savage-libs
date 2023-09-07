@@ -1,0 +1,26 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "ts-node Debugger",
+			"type": "node",
+			"request": "launch",
+			"args": [
+				"${workspaceRoot}/docs/typedoc.ts" // 入口文件
+			],
+			"runtimeArgs": [
+				"--nolazy",
+				"-r",
+				"ts-node/register",
+				"--loader",
+				"ts-node/esm"
+			],
+			"sourceMaps": true,
+			"cwd": "${workspaceRoot}",
+			"protocol": "inspector",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"runtimeExecutable": "C:/Users/Administrator/AppData/Roaming/nvm/v18.17.1/node.exe"
+		}
+	]
+}

@@ -67,19 +67,25 @@ async function run() {
 	}
 }
 
-async function buildAll(targets) {
+async function buildAll(targets: string[]) {
 	await runParallel(cpus().length, targets, build)
 }
 
-async function runParallel(maxConcurrency, source, iteratorFn) {
-	const ret = []
-	const executing = []
+async function runParallel(
+	maxConcurrency: number,
+	source: any,
+	iteratorFn: (...args: any) => void
+) {
+	const ret: Promise<any>[] = []
+	const executing: Promise<any>[] = []
 	for (const item of source) {
 		const p = Promise.resolve().then(() => iteratorFn(item, source))
 		ret.push(p)
 
 		if (maxConcurrency <= source.length) {
-			const e = p.then(() => executing.splice(executing.indexOf(e), 1))
+			const e: Promise<any> = p.then(() =>
+				executing.splice(executing.indexOf(e), 1)
+			)
 			executing.push(e)
 			if (executing.length >= maxConcurrency) {
 				await Promise.race(executing)
@@ -89,7 +95,7 @@ async function runParallel(maxConcurrency, source, iteratorFn) {
 	return Promise.all(ret)
 }
 
-async function build(target) {
+async function build(target: string) {
 	const pkgDir = path.resolve(`packages/${target}`)
 	const pkg = require(`${pkgDir}/package.json`)
 

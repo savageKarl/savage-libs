@@ -27,9 +27,7 @@ ${chalk.bgRed.white(' ERROR ')} ${chalk.red(
 			'The target package name must be passed!'
 		)}
 
-${chalk.bgGreen.white(' Correct example ')} ${chalk.bgGrey(
-			' pnpm run dev utils '
-		)}
+${chalk.bgGreen.white(' Correct example ')} ${chalk.bgGrey(' pnpm dev utils ')}
 		`
 	)
 }
@@ -47,7 +45,7 @@ const outfile = resolve(
 const relativeOutfile = relative(process.cwd(), outfile)
 
 // resolve externals
-let external = []
+let external: string[] = []
 if (!inlineDeps) {
 	// cjs & esm-bundler: external all deps
 	if (format === 'cjs' || format.includes('esm-bundler')) {
@@ -62,7 +60,7 @@ if (!inlineDeps) {
 const plugins = [
 	{
 		name: 'log-rebuild',
-		setup(build) {
+		setup(build: any) {
 			build.onEnd(() => {
 				console.log(`built: ${relativeOutfile}`)
 			})
