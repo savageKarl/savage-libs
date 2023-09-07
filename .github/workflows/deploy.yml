@@ -7,7 +7,8 @@ on:
   # using the `master` branch as the default branch.
   push:
     branches: [main]
-
+  pull_request:
+    branches: [main]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -52,11 +53,6 @@ jobs:
           cd docs
           pnpm docs:build 
           touch .vitepress/dist/.nojekyll
-          cd .vitepress
-          pwd
-          cd dist
-          pwd
-          ls
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
