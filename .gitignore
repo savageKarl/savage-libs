@@ -10,10 +10,10 @@ TODOs.md
 .eslintcache
 dts-build/packages
 *.tsbuildinfo
-docs/.vitepress/*
-!docs/.vitepress/config.ts
-docs/*
+docs/.vitepress/cache
+docs/.vitepress/dist
 
+docs/*
 
 !docs/index.md
 !docs/package.json
