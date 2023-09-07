@@ -1,6 +1,6 @@
 {
 	"name": "savage-rollup-command",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"description": "一个rollup插件，用于在rollup构建过程中执行自定义命令。",
 	"miniprogram": "dist",
 	"main": "index.js",
@@ -24,7 +24,6 @@
 		"lint": "eslint .",
 		"commit": "git-cz"
 	},
-	"devDependencies": {},
 	"dependencies": {
 		"cross-spawn": "7.0.3",
 		"del": "^5.1.0"
