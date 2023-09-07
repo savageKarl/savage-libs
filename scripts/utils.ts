@@ -2,6 +2,7 @@
 import fs from 'node:fs'
 import chalk from 'chalk'
 import { createRequire } from 'node:module'
+import { cpus } from 'node:os'
 
 const require = createRequire(import.meta.url)
 
@@ -44,4 +45,29 @@ export function fuzzyMatchTarget(
 
 		process.exit(1)
 	}
+}
+
+export async function runParallel(
+	source: any,
+	iteratorFn: (...args: any) => void
+) {
+	const maxConcurrency = cpus().length
+	const ret: Promise<any>[] = []
+	const executing: Promise<any>[] = []
+	for (const item of source) {
+		const p = Promise.resolve().then(() => iteratorFn(item, source))
+		ret.push(p)
+
+		if (maxConcurrency <= source.length) {
+			const e: Promise<any> = p.then(() => {
+				const e2 = executing.splice(executing.indexOf(e), 1)
+				return e2
+			})
+			executing.push(e)
+			if (executing.length >= maxConcurrency) {
+				await Promise.race(executing)
+			}
+		}
+	}
+	return Promise.all(ret)
 }

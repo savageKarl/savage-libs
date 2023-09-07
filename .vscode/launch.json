@@ -6,7 +6,7 @@
 			"type": "node",
 			"request": "launch",
 			"args": [
-				"${workspaceRoot}/docs/typedoc.ts" // 入口文件
+				"${workspaceRoot}/scripts/build.ts" // 入口文件
 			],
 			"runtimeArgs": [
 				"--nolazy",

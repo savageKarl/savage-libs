@@ -21,9 +21,14 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import minimist from 'minimist'
 import execa from 'execa'
-import { cpus } from 'node:os'
 import { createRequire } from 'node:module'
-import { targets as allTargets, fuzzyMatchTarget } from './utils.js'
+
+// why add .js, as this is a nodejs requirements in ESM
+import {
+	targets as allTargets,
+	fuzzyMatchTarget,
+	runParallel
+} from './utils.js'
 
 const require = createRequire(import.meta.url)
 const args = minimist(process.argv.slice(2))
@@ -68,31 +73,7 @@ async function run() {
 }
 
 async function buildAll(targets: string[]) {
-	await runParallel(cpus().length, targets, build)
-}
-
-async function runParallel(
-	maxConcurrency: number,
-	source: any,
-	iteratorFn: (...args: any) => void
-) {
-	const ret: Promise<any>[] = []
-	const executing: Promise<any>[] = []
-	for (const item of source) {
-		const p = Promise.resolve().then(() => iteratorFn(item, source))
-		ret.push(p)
-
-		if (maxConcurrency <= source.length) {
-			const e: Promise<any> = p.then(() =>
-				executing.splice(executing.indexOf(e), 1)
-			)
-			executing.push(e)
-			if (executing.length >= maxConcurrency) {
-				await Promise.race(executing)
-			}
-		}
-	}
-	return Promise.all(ret)
+	await runParallel(targets, build)
 }
 
 async function build(target: string) {

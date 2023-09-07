@@ -26,6 +26,7 @@
 	},
 	"devDependencies": {},
 	"dependencies": {
+		"cross-spawn": "7.0.3",
 		"del": "^5.1.0"
 	}
 }

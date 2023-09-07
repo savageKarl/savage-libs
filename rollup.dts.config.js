@@ -59,10 +59,6 @@ function patchTypes(pkg) {
 				sourceType: 'module'
 			})
 
-			/**
-			 * @param {import('@babel/types').VariableDeclarator | import('@babel/types').TSTypeAliasDeclaration | import('@babel/types').TSInterfaceDeclaration | import('@babel/types').TSDeclareFunction | import('@babel/types').TSInterfaceDeclaration | import('@babel/types').TSEnumDeclaration | import('@babel/types').ClassDeclaration} node
-			 * @param {import('@babel/types').VariableDeclaration} [parentDecl]
-			 */
 			function processDeclaration(node, parentDecl) {
 				if (!node.id) {
 					return
@@ -97,7 +93,7 @@ function patchTypes(pkg) {
 			}
 
 			/**
-			 * @param {import('@babel/types').Node} node
+
 			 * @returns {boolean}
 			 */
 			function removeInternal(node) {
