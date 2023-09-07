@@ -1,6 +1,6 @@
 {
 	"name": "savage-electron-ipc",
-	"version": "0.0.13",
+	"version": "0.0.14",
 	"description": "一个用于electron的通信库",
 	"miniprogram": "dist",
 	"main": "index.js",
