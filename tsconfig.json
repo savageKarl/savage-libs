@@ -19,7 +19,7 @@
 		"removeComments": false,
 		"jsx": "preserve",
 		"lib": ["esnext", "dom"],
-		"types": ["node"],
+		"types": ["vitest/globals", "node"],
 		"rootDir": ".",
 		"paths": {
 			"savage-*": ["packages/savage-*/src"]
@@ -30,6 +30,7 @@
 		"packages/*/src",
 		"docs",
 		"scripts",
-		"packages/*/__tests__"
+		"packages/*/__tests__",
+		".eslintrc.cjs"
 	]
 }

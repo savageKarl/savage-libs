@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	extends: [
 		'eslint-config-standard',
 		'plugin:@typescript-eslint/recommended',
@@ -6,9 +6,17 @@ export default {
 		'plugin:prettier/recommended'
 	],
 	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint/eslint-plugin', 'promise', 'tsdoc', 'prettier'],
+	plugins: [
+		'@typescript-eslint/eslint-plugin',
+		'promise',
+		'tsdoc',
+		'jest',
+		'prettier'
+	],
 	root: true,
 	env: {
+		node: true,
+		es6: true,
 		commonjs: true
 	},
 	rules: {
@@ -21,5 +29,16 @@ export default {
 		tsconfigRootDir: __dirname,
 		ecmaVersion: 2018,
 		sourceType: 'module'
-	}
+	},
+	overrides: [
+		{
+			files: ['**/__tests__/**', 'packages/dts-test/**'],
+			rules: {
+				'no-restricted-globals': 'off',
+				'no-restricted-syntax': 'off',
+				'jest/no-disabled-tests': 'error',
+				'jest/no-focused-tests': 'error'
+			}
+		}
+	]
 }

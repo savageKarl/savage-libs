@@ -1,5 +1,3 @@
-import { test, expect } from 'vitest'
-
 import { dataTypes } from '../src'
 
 test('hello', () => {
