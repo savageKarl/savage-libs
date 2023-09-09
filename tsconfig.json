@@ -19,7 +19,7 @@
 		"removeComments": false,
 		"jsx": "preserve",
 		"lib": ["esnext", "dom"],
-		"types": ["vitest/globals", "node"],
+		"types": ["vitest/globals", "node", "@testing-library/jest-dom"],
 		"rootDir": ".",
 		"paths": {
 			"savage-*": ["packages/savage-*/src"]
@@ -31,6 +31,6 @@
 		"docs",
 		"scripts",
 		"packages/*/__tests__",
-		".eslintrc.cjs"
+		"vitest.config.ts"
 	]
 }

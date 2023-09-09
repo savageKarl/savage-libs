@@ -1,5 +1,3 @@
-// @ts-check
-
 // Using esbuild for faster dev builds.
 // We are still using Rollup for production builds because it generates
 // smaller files w/ better tree-shaking.

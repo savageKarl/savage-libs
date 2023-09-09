@@ -1,5 +1,3 @@
-// @ts-check
-
 /*
 Produces production builds and stitches together d.ts files.
 

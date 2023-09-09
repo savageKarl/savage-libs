@@ -7,12 +7,11 @@ export default defineConfig({
 	},
 	test: {
 		globals: true,
+		environment: 'jsdom',
 		// disable threads on GH actions to speed it up
 		threads: !process.env.GITHUB_ACTIONS,
-		// setupFiles: 'scripts/setupVitest.ts',
-		// environmentMatchGlobs: [
-		// 	['packages/{vue,vue-compat,runtime-dom}/**', 'jsdom']
-		// ],
+		setupFiles: 'scripts/setupVitest.ts',
+
 		// sequence: {
 		// 	hooks: 'list'
 		// },

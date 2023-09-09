@@ -63,6 +63,14 @@ module.exports = {
 				'jest/no-disabled-tests': 'error',
 				'jest/no-focused-tests': 'error'
 			}
+		},
+		// Node scripts
+		{
+			files: ['scripts/**', '*.{js,ts}', 'packages/**/index.js'],
+			rules: {
+				'no-restricted-globals': 'off',
+				'no-restricted-syntax': 'off'
+			}
 		}
 	]
 }
