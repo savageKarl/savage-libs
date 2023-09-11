@@ -15,12 +15,12 @@ import { IUsOptions } from './types/UserScript'
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-const pkg: IPackageJson = (() => {
-	let pkg
+const pkg = (() => {
+	let pkg: IPackageJson
 	try {
 		pkg = JSON.parse(
 			readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
-		)
+		) as IPackageJson
 	} catch {
 		pkg = {}
 	}
@@ -34,12 +34,13 @@ function takeFieldFromTarget(field: string, target: TargetType) {
 	return target
 }
 
-export async function optionsResolve(opts: IUsOptions) {
+export async function mergeOptions(opts: IUsOptions) {
 	const defaultOpts: IUsOptions = {
 		entry: '',
 		server: {
 			port: await getPort({ port: 5858 }),
-			open: true
+			open: true,
+			host: 'localhost'
 		},
 		headMetaData: {
 			name: pkg.name,
@@ -51,5 +52,5 @@ export async function optionsResolve(opts: IUsOptions) {
 	}
 
 	const mergedOpts = merge(defaultOpts, opts)
-	return mergedOpts
+	return mergedOpts as Required<IUsOptions>
 }

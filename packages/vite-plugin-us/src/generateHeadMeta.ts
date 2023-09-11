@@ -1,11 +1,11 @@
-import { IHeadMetaData } from './types/UserScript'
+import { HeadMetaData } from './types/UserScript'
 
 const padLen = 20
 
 /**
  * generate userscript head meta with object config
  */
-export default function generateHeadMeta(script: IHeadMetaData) {
+export function generateHeadMeta(script: HeadMetaData) {
 	let result = '// ==UserScript==\n'
 	if (script.name) {
 		result += '// @name'.padEnd(padLen, ' ') + script.name + '\n'
@@ -66,7 +66,7 @@ export default function generateHeadMeta(script: IHeadMetaData) {
 		})
 	}
 	if (script.connect) {
-		result += '// @connect'.padEnd(padLen, ' ') + script.connect + '\n'
+		result += '// @connect'.padEnd(padLen, ' ') + String(script.connect) + '\n'
 	}
 	if (script.runAt) {
 		result += '// @run-at'.padEnd(padLen, ' ') + script.runAt + '\n'
@@ -77,7 +77,7 @@ export default function generateHeadMeta(script: IHeadMetaData) {
 		} else {
 			const arr = script.grants
 			arr.forEach(item => {
-				result += '// @grant'.padEnd(padLen, ' ') + item + '\n'
+				result += '// @grant'.padEnd(padLen, ' ') + String(item) + '\n'
 			})
 		}
 	}

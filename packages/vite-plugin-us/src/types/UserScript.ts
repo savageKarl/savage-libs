@@ -2,25 +2,25 @@ export enum RunAt {
 	/**
 	 * 脚本将尽快注入。
 	 */
-	document_start = "document-start",
+	document_start = 'document-start',
 	/**
 	 * 如果正文元素存在，将注入脚本。
 	 */
-	document_body = "document-body",
+	document_body = 'document-body',
 	/**
 	 * 在调度 DOM内容加载事件时或之后，将注入脚本。
 	 */
-	document_end = "document-end",
+	document_end = 'document-end',
 	/**
 	 * 在调度 DOM内容加载事件后，将注入脚本。
 	 * 如果未给出@run时标记，则这是默认值。
 	 */
-	document_idle = "document-idle",
+	document_idle = 'document-idle',
 	/**
 	 * 如果在浏览器上下文菜单上单击脚本(仅在基于桌面chrome的浏览器上)，脚本将被注入。
 	 * 注意:如果使用这个值，所有的@include和@exclude语句都将被忽略，但是这在将来可能会改变。
 	 */
-	context_menu = "context-menu",
+	context_menu = 'context-menu'
 }
 
 export enum GmFunctions {
@@ -46,7 +46,7 @@ export enum GmFunctions {
 	getTabs,
 	notification,
 	setClipboard,
-	info,
+	info
 }
 
 /**
@@ -101,7 +101,7 @@ interface UserScript {
 	 * window.focus
 	 * window.onurlchange
 	 */
-	grants: (GmFunctions | string)[] | "none"
+	grants: (GmFunctions | string)[] | 'none'
 	/**
 	 * 在选项页中使用的作者主页从脚本名称链接到给定页面。请注意，如果@namespace标签以"http://"开头，其内容也将用于此。
 	 */
@@ -189,7 +189,7 @@ interface UserScript {
 	nocompat: string
 }
 
-export interface IHeadMetaData extends Partial<UserScript> {}
+export type HeadMetaData = Partial<UserScript>
 
 export interface IUsOptions {
 	/**
@@ -207,19 +207,24 @@ export interface IUsOptions {
 	// }
 	server?: {
 		/**
-		 * @default 5858 - if it avalible, otherwise random
+		 * @defaultValue `5858` if it avalible, otherwise random
 		 */
 		port?: number
 
 		/**
-		 * @default false
+		 * @defaultValue `false`
 		 */
 		open?: boolean
+
+		/**
+		 * @defaultValue `localhost`
+		 */
+		host?: string
 	}
 	/**
 	 * userscript header metadata config.
 	 *
 	 * @see https://www.tampermonkey.net/documentation.php
 	 */
-	headMetaData: IHeadMetaData
+	headMetaData: HeadMetaData
 }
