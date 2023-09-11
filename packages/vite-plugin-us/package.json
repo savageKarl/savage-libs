@@ -1,12 +1,12 @@
 {
-  "name": "vite-plugin-us",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+	"name": "vite-plugin-us",
+	"version": "1.0.0",
+	"description": "A Vite plugin for developing and building userscript that can be run with the tampermonkey extension.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
 }

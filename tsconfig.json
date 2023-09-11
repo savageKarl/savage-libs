@@ -8,8 +8,11 @@
 		"useDefineForClassFields": false,
 		"module": "esnext",
 		"moduleResolution": "node",
-		"allowJs": false,
+		"allowSyntheticDefaultImports": true,
+		"allowJs": true,
 		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
 		"noUnusedLocals": false,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
@@ -17,9 +20,9 @@
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"removeComments": false,
-		"jsx": "preserve",
+		"jsx": "react-jsx",
 		"lib": ["esnext", "dom"],
-		"types": ["vitest/globals", "node", "@testing-library/jest-dom"],
+		"types": ["vitest/globals", "@testing-library/jest-dom"],
 		"rootDir": ".",
 		"paths": {
 			"savage-*": ["packages/savage-*/src"]
@@ -31,6 +34,7 @@
 		"docs",
 		"scripts",
 		"packages/*/__tests__",
+		"setupVitest.ts",
 		"vitest.config.ts"
 	]
 }
