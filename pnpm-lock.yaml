@@ -38,12 +38,18 @@ importers:
       '@testing-library/react':
         specifier: 13.4.0
         version: 13.4.0(react-dom@18.2.0)(react@18.2.0)
+      '@ts-type/package-dts':
+        specifier: 2.0.8
+        version: 2.0.8(ts-toolbelt@9.6.0)
       '@types/cross-spawn':
         specifier: ^6.0.3
         version: 6.0.3
       '@types/jest':
         specifier: ^27.5.2
         version: 27.5.2
+      '@types/lodash-es':
+        specifier: 4.17.9
+        version: 4.17.9
       '@types/minimist':
         specifier: ^1.2.2
         version: 1.2.2
@@ -113,6 +119,9 @@ importers:
       execa:
         specifier: ^4.0.2
         version: 4.1.0
+      get-port:
+        specifier: 7.0.0
+        version: 7.0.0
       husky:
         specifier: ^8.0.3
         version: 8.0.3
@@ -125,6 +134,9 @@ importers:
       lint-staged:
         specifier: ^14.0.1
         version: 14.0.1
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
       magic-string:
         specifier: ^0.30.3
         version: 0.30.3
@@ -185,6 +197,9 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
+      vite:
+        specifier: 4.4.9
+        version: 4.4.9(@types/node@20.5.9)
       vitepress:
         specifier: 1.0.0-rc.10
         version: 1.0.0-rc.10(@algolia/client-search@4.19.1)(@types/node@20.5.9)(react-dom@18.2.0)(react@18.2.0)(search-insights@2.8.2)
@@ -326,6 +341,8 @@ importers:
         version: link:../data-types
 
   packages/vite-plugin-us: {}
+
+  packages/vite-plugin-us/example/vue-ts: {}
 
 packages:
 
@@ -2224,6 +2241,15 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
+  /@ts-type/package-dts@2.0.8(ts-toolbelt@9.6.0):
+    resolution: {integrity: sha512-LJ0oxAGTwy2imOYXkQQrgu+dUQKhyGilJYDlUuX98IiV15Zvv8KrX04PLR2KN7F3UfZBgfni2KoHHEW87ARJPg==}
+    dependencies:
+      '@types/semver': 7.5.1
+      ts-type: 3.0.1(ts-toolbelt@9.6.0)
+    transitivePeerDependencies:
+      - ts-toolbelt
+    dev: true
+
   /@tsconfig/node10@1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
     requiresBuild: true
@@ -2372,6 +2398,16 @@ packages:
     dependencies:
       '@types/node': 20.5.9
     dev: false
+
+  /@types/lodash-es@4.17.9:
+    resolution: {integrity: sha512-ZTcmhiI3NNU7dEvWLZJkzG6ao49zOIjEgIE0RgV7wbPxU0f2xT3VSAHw2gmst8swH6V0YkLRGp4qPlX/6I90MQ==}
+    dependencies:
+      '@types/lodash': 4.14.198
+    dev: true
+
+  /@types/lodash@4.14.198:
+    resolution: {integrity: sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==}
+    dev: true
 
   /@types/minimatch@3.0.5:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
@@ -5143,6 +5179,11 @@ packages:
     engines: {node: '>=8.0.0'}
     dev: true
 
+  /get-port@7.0.0:
+    resolution: {integrity: sha512-mDHFgApoQd+azgMdwylJrv2DX47ywGq1i5VFJE7fZ0dttNq3iQMfsU4IvEgBHojA3KqEudyu7Vq+oN8kNaNkWw==}
+    engines: {node: '>=16'}
+    dev: true
+
   /get-stream@5.2.0:
     resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
     engines: {node: '>=8'}
@@ -6701,6 +6742,10 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       p-locate: 5.0.0
+    dev: true
+
+  /lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
     dev: true
 
   /lodash.camelcase@4.3.0:
@@ -8851,6 +8896,21 @@ packages:
       yn: 3.1.1
     dev: true
 
+  /ts-toolbelt@9.6.0:
+    resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
+    dev: true
+
+  /ts-type@3.0.1(ts-toolbelt@9.6.0):
+    resolution: {integrity: sha512-cleRydCkBGBFQ4KAvLH0ARIkciduS745prkGVVxPGvcRGhMMoSJUB7gNR1ByKhFTEYrYRg2CsMRGYnqp+6op+g==}
+    peerDependencies:
+      ts-toolbelt: ^9.6.0
+    dependencies:
+      '@types/node': 20.5.9
+      ts-toolbelt: 9.6.0
+      tslib: 2.6.2
+      typedarray-dts: 1.0.0
+    dev: true
+
   /tsconfig-paths@3.14.2:
     resolution: {integrity: sha512-o/9iXgCYc5L/JxCHPe3Hvh8Q/2xm5Z+p18PESBU6Ff33695QnCHBEjcytY2q19ua7Mbl/DavtBOLq+oG0RCL+g==}
     dependencies:
@@ -8996,6 +9056,10 @@ packages:
       call-bind: 1.0.2
       for-each: 0.3.3
       is-typed-array: 1.1.12
+    dev: true
+
+  /typedarray-dts@1.0.0:
+    resolution: {integrity: sha512-Ka0DBegjuV9IPYFT1h0Qqk5U4pccebNIJCGl8C5uU7xtOs+jpJvKGAY4fHGK25hTmXZOEUl9Cnsg5cS6K/b5DA==}
     dev: true
 
   /typedoc-plugin-markdown@3.14.0(typedoc@0.23.15):
