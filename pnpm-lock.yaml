@@ -50,6 +50,9 @@ importers:
       '@types/rollup-plugin-auto-external':
         specifier: ^2.0.2
         version: 2.0.2
+      '@types/testing-library__jest-dom':
+        specifier: 5.9.1
+        version: 5.9.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.26.0
         version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.48.0)(typescript@5.2.2)
@@ -318,6 +321,8 @@ importers:
       savage-data-types:
         specifier: workspace:*
         version: link:../data-types
+
+  packages/vite-plugin-us: {}
 
 packages:
 
@@ -2188,7 +2193,7 @@ packages:
     dependencies:
       '@adobe/css-tools': 4.3.1
       '@babel/runtime': 7.22.15
-      '@types/testing-library__jest-dom': 5.14.9
+      '@types/testing-library__jest-dom': 5.9.1
       aria-query: 5.3.0
       chalk: 3.0.0
       css.escape: 1.5.1
@@ -2453,8 +2458,8 @@ packages:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
     dev: true
 
-  /@types/testing-library__jest-dom@5.14.9:
-    resolution: {integrity: sha512-FSYhIjFlfOpGSRyVoMBMuS3ws5ehFQODymf3vlI7U1K8c7PHwWwFY7VREfmsuzHSOnoKs/9/Y983ayOs7eRzqw==}
+  /@types/testing-library__jest-dom@5.9.1:
+    resolution: {integrity: sha512-yYn5EKHO3MPEMSOrcAb1dLWY+68CG29LiXKsWmmpVHqoP5+ZRiAVLyUHvPNrO2dABDdUGZvavMsaGpWNjM6N2g==}
     dependencies:
       '@types/jest': 29.5.4
     dev: true
