@@ -17,6 +17,7 @@
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
+		"noImplicitAny": true,
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"removeComments": false,
@@ -29,12 +30,15 @@
 		}
 	},
 	"include": [
+		"**/*.ts",
 		"packages/global.d.ts",
-		"packages/*/src",
+		"packages/*",
 		"docs",
 		"scripts",
 		"packages/*/__tests__",
 		"setupVitest.ts",
-		"vitest.config.ts"
+		"vitest.config.ts",
+		"**/vite.config.ts",
+		".eslintrc.cjs"
 	]
 }

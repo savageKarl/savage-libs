@@ -4,5 +4,5 @@
 		"declaration": true,
 		"emitDeclarationOnly": true
 	},
-	"exclude": ["packages/*/__tests__"]
+
 }
