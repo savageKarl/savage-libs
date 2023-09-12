@@ -79,8 +79,8 @@ export function us(usOptions: UsOptions) {
 				}
 
 				scriptStrList.forEach(s => {
-					const link = s.match(/src="(\/.+?)"/)?.[1]
-					if (link) scriptType.linkScriptList.push(`${currentOrigin}${link}`)
+					const path = s.match(/src="(\/.+?)"/)?.[1]
+					if (path) scriptType.linkScriptList.push(`${currentOrigin}${path}`)
 
 					const scriptContent = s.match(
 						/<script type="module">([\s\S]+?)<\/script>/
