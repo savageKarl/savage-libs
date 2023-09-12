@@ -2,7 +2,28 @@
 	"name": "vite-plugin-us",
 	"version": "1.0.0",
 	"description": "A Vite plugin for developing and building userscript that can be run with the tampermonkey extension.",
+	"miniprogram": "dist",
 	"main": "index.js",
+	"module": "dist/vite-plugin-us.esm-bundler.js",
+	"types": "dist/vite-plugin-us.d.ts",
+	"files": [
+		"index.js",
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/vite-plugin-us.esm-bundler.js",
+			"require": "./index.js"
+		}
+	},
+	"buildOptions": {
+		"name": "savageUtils",
+		"formats": [
+			"esm-bundler",
+			"cjs"
+		]
+	},
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

@@ -31,11 +31,13 @@ const isPro = process.env.NODE_ENV === 'production'
 const outputConfigs = {
 	'esm-bundler': {
 		file: resolve(`dist/${name}.esm-bundler.js`),
-		format: `es`
+		format: `es`,
+		sourcemap: true
 	},
 	cjs: {
 		file: resolve(`dist/${name}.cjs.js`),
-		format: `cjs`
+		format: `cjs`,
+		sourcemap: true
 	}
 }
 
@@ -107,7 +109,7 @@ function createConfig(format, output, plugins = []) {
 			// }),
 			esbuild({
 				tsconfig: path.resolve(__dirname, 'tsconfig.json'),
-				sourceMap: output.sourcemap,
+				sourceMap: true,
 				// minify: isPro,
 				target: isNodeBuild ? 'es2019' : 'es2015'
 			}),

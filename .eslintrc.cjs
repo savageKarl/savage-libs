@@ -1,4 +1,3 @@
-const DOMGlobals = ['window', 'document']
 const NodeGlobals = ['module', 'require']
 
 // eslint-disable-next-line no-restricted-globals
@@ -35,7 +34,7 @@ module.exports = {
 			{ varsIgnorePattern: '.*', args: 'none' }
 		],
 		// most of the codebase are expected to be env agnostic
-		'no-restricted-globals': ['error', ...DOMGlobals, ...NodeGlobals],
+		'no-restricted-globals': ['error', ...NodeGlobals],
 
 		'no-restricted-syntax': [
 			'error',
@@ -66,7 +65,14 @@ module.exports = {
 		},
 		// Node scripts
 		{
-			files: ['scripts/**', '*.{js,ts}', 'packages/**/index.js'],
+			files: ['scripts/**', 'index.js', 'packages/**/index.js'],
+			rules: {
+				'no-restricted-globals': 'off',
+				'no-restricted-syntax': 'off'
+			}
+		},
+		{
+			files: ['rollup.config.js'],
 			rules: {
 				'no-restricted-globals': 'off',
 				'no-restricted-syntax': 'off'

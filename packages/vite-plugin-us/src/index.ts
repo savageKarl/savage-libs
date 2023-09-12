@@ -1,39 +1,31 @@
-import { resolve } from 'node:path'
-
 import type { ServerResponse } from 'node:http'
 
-import fse from 'fs-extra'
+import fs from 'node:fs/promises'
 import open from 'open'
-import type {
-	UserConfig,
-	PluginOption,
-	ResolvedConfig,
-	ServerOptions
-} from 'vite'
+import type { UserConfig, PluginOption } from 'vite'
 
-import { IUsOptions } from './types/UserScript'
+import { UsOptions } from './types/UserScript'
 import { mergeOptions } from './optionsResolve'
 import { generateHeadMeta } from './generateHeadMeta'
+import { existFile } from './utils'
+export { createUsContainer, existFile } from './utils'
 
-export function createUsContainer() {
-	const usContainer = document.createElement('div')
-	document.body.appendChild(usContainer)
-	return usContainer
-}
-
-export function us(usOptions: IUsOptions) {
+export function us(usOptions: UsOptions) {
 	const fileName = usOptions.fileName ?? usOptions.headMetaData.name
 
 	// let resovledConfig: ResolvedConfig
-	let usOptionsMerged: Required<IUsOptions>
-
+	let usOptionsMerged: Required<UsOptions>
 	return {
 		name: 'vite-plugin-us',
 		enforce: 'post',
 		config() {
 			return {
+				define: {
+					'process.env': {}
+				},
 				server: {
-					open: false
+					open: false,
+					cors: true
 				},
 				build: {
 					modulePreload: false,
@@ -67,56 +59,51 @@ export function us(usOptions: IUsOptions) {
 		},
 		async configureServer(server) {
 			const installPath = 'vite-plugin-us.user.js'
-			const entryPath = 'vite-plugin-us.entry.js'
+			const proxyEntryPath = 'vite-plugin-us.entry.js'
 			console.log('configureServer')
 
 			const newMetaData = generateHeadMeta(usOptions.headMetaData)
 			const { host, port } = usOptionsMerged.server
-			server.middlewares.use((req, res, next) => {
+			server.middlewares.use(async (req, res, next) => {
+				const url = req.url as string
+				const regex = new RegExp(`${[installPath, proxyEntryPath].join('|')}`)
+
+				if (!regex.test(url)) return next()
+
 				setResHeader(res, {
 					'access-control-allow-origin': '*',
 					'content-type': 'application/javascript'
 				})
-				const url = req.url as string
+
 				if (new RegExp(installPath).test(url)) {
-					res.end(
+					return res.end(
 						[
 							newMetaData,
 							`(${function (entryUrl: string) {
 								const script = document.createElement('script')
+								script.type = 'module'
 								script.src = entryUrl
 								document.head.insertBefore(script, document.head.firstChild)
-							}})('http://${host as string}:${port as number}/${entryPath}')`,
-							``
+							}})('http://${host as string}:${
+								port as number
+							}/${proxyEntryPath}')`
 						].join('')
 					)
 				}
 
-				if (new RegExp(entryPath).test(url)) {
-					res.end('wait..')
+				if (new RegExp(proxyEntryPath).test(url)) {
+					const scriptStr = await server.transformIndexHtml('', '')
+					const reg = /src="(.+?)"/g
+					const allMatch = [...scriptStr.matchAll(reg)]
+					const scripts: string[] = []
+
+					allMatch.forEach(v => scripts.push(v[1]))
+
+					scripts.push(`/${usOptionsMerged.entry}`)
+					return res.end(
+						scripts.map(s => `import ${JSON.stringify(s)};`).join('\n')
+					)
 				}
-
-				// const url = req.url || '/'
-				// if (['/', '/index.html'].includes(url)) {
-				// 	// 第一次返回进行重定向到安装url
-				// 	res.setHeader('content-type', 'text/html')
-				// 	res.setHeader('cache-control', 'no-cache')
-				// 	res.setHeader('access-control-allow-origin', '*')
-				// 	// return res.end(htmlText)
-				// }
-
-				// next()
-				// console.log(req.originalUrl, req.url, req.headers.host)
-				// Object.entries({
-				// 	"access-control-allow-origin": "*",
-				// 	"content-type": "application/javascript",
-				// }).forEach(([k, v]) => {
-				// 	res.setHeader(k, v)
-				// })
-				// const str = `
-				// fuck
-				// `
-				// res.end(str)
 			})
 
 			if (!usOptionsMerged.server?.open) return
@@ -124,13 +111,15 @@ export function us(usOptions: IUsOptions) {
 			const cachePath = 'node_modules/.vite/vite-plugin-us.cache.js'
 			let cacheMetaData = ''
 
-			if (await fse.pathExists(cachePath)) {
-				cacheMetaData = (await fse.readFile(cachePath)).toString('utf-8')
+			if (await existFile(cachePath)) {
+				cacheMetaData = (await fs.readFile(cachePath)).toString('utf-8')
 			}
 
-			if (cacheMetaData !== newMetaData) {
+			let firstOpen = true
+			if (firstOpen || cacheMetaData !== newMetaData) {
+				firstOpen = false
 				const url = `http://${host as string}:${port as number}/${installPath}`
-				await open(url)
+				Promise.all([open(url), fs.writeFile(cachePath, newMetaData)])
 			}
 		}
 	} as PluginOption

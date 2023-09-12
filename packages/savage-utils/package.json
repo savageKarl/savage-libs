@@ -4,8 +4,8 @@
 	"description": "js工具库",
 	"miniprogram": "dist",
 	"main": "index.js",
-	"module": "dist/shared.esm-bundler.js",
-	"types": "dist/shared.d.ts",
+	"module": "dist/savage-utils.esm-bundler.js",
+	"types": "dist/savage-utils.d.ts",
 	"files": [
 		"index.js",
 		"dist"

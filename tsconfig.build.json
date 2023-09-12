@@ -4,5 +4,14 @@
 		"declaration": true,
 		"emitDeclarationOnly": true
 	},
-
+	"exclude": [
+		"packages/*/__tests__",
+		"packages/*/example",
+		"docs",
+		"scripts",
+		"setupVitest.ts",
+		"vitest.config.ts",
+		"**/vite.config.ts",
+		".eslintrc.cjs"
+	]
 }

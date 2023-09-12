@@ -191,7 +191,7 @@ interface UserScript {
 
 export type HeadMetaData = Partial<UserScript>
 
-export interface IUsOptions {
+export interface UsOptions {
 	/**
 	 * path of userscript entry.
 	 */
