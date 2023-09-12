@@ -51,59 +51,75 @@ export function us(usOptions: UsOptions) {
 			usOptionsMerged = await mergeOptions(usOptions)
 			const { host, port } = usOptionsMerged.server
 
-			config.server.host = config.server.host || host
-			config.server.port = config.server.port || port
-
-			usOptionsMerged.server.host = config.server.host as string
-			usOptionsMerged.server.port = config.server.port as number
+			config.server.host = host
+			config.server.port = port
 		},
 		async configureServer(server) {
 			const installPath = 'vite-plugin-us.user.js'
-			const proxyEntryPath = 'vite-plugin-us.entry.js'
-			console.log('configureServer')
-
 			const newMetaData = generateHeadMeta(usOptions.headMetaData)
 			const { host, port } = usOptionsMerged.server
+			const currentOrigin = `http://${host as string}:${port as number}`
+
 			server.middlewares.use(async (req, res, next) => {
 				const url = req.url as string
-				const regex = new RegExp(`${[installPath, proxyEntryPath].join('|')}`)
 
-				if (!regex.test(url)) return next()
+				if (!new RegExp(installPath).test(url)) return next()
 
 				setResHeader(res, {
 					'access-control-allow-origin': '*',
 					'content-type': 'application/javascript'
 				})
 
-				if (new RegExp(installPath).test(url)) {
-					return res.end(
-						[
-							newMetaData,
-							`(${function (entryUrl: string) {
+				const htmlStr = await server.transformIndexHtml('', '')
+				const regex = /<(script)[\s\S]+?<\/script>/g
+				const scriptStrList = [...htmlStr.matchAll(regex)].map(item => item[0])
+				const scriptType = {
+					inlineScriptList: [] as string[][],
+					linkScriptList: [] as string[]
+				}
+
+				scriptStrList.forEach(s => {
+					const link = s.match(/src="(\/.+?)"/)?.[1]
+					if (link) scriptType.linkScriptList.push(`${currentOrigin}${link}`)
+
+					const scriptContent = s.match(
+						/<script type="module">([\s\S]+?)<\/script>/
+					)?.[1]
+
+					if (scriptContent)
+						scriptType.inlineScriptList.push(
+							scriptContent
+								.replace(/"/g, "'")
+								.replace(/'(.+?)'/, `'${currentOrigin}$1'`)
+								.split('\n')
+						)
+				})
+
+				scriptType.linkScriptList.push(`${currentOrigin}/${usOptions.entry}`)
+
+				type ScriptType = typeof scriptType
+				return res.end(
+					[
+						newMetaData,
+						`(${function (scriptType: string) {
+							const scriptTypes = JSON.parse(scriptType) as ScriptType
+							scriptTypes.linkScriptList.reverse().forEach(src => {
 								const script = document.createElement('script')
 								script.type = 'module'
-								script.src = entryUrl
+								script.src = src as string
 								document.head.insertBefore(script, document.head.firstChild)
-							}})('http://${host as string}:${
-								port as number
-							}/${proxyEntryPath}')`
-						].join('')
-					)
-				}
+							})
 
-				if (new RegExp(proxyEntryPath).test(url)) {
-					const scriptStr = await server.transformIndexHtml('', '')
-					const reg = /src="(.+?)"/g
-					const allMatch = [...scriptStr.matchAll(reg)]
-					const scripts: string[] = []
-
-					allMatch.forEach(v => scripts.push(v[1]))
-
-					scripts.push(`/${usOptionsMerged.entry}`)
-					return res.end(
-						scripts.map(s => `import ${JSON.stringify(s)};`).join('\n')
-					)
-				}
+							scriptTypes.inlineScriptList.reverse().forEach(str => {
+								const script = document.createElement('script')
+								script.type = 'module'
+								script.textContent = str.join('\n')
+								document.head.insertBefore(script, document.head.firstChild)
+							})
+						}})(` + '`',
+						JSON.stringify(scriptType) + '`)'
+					].join('')
+				)
 			})
 
 			if (!usOptionsMerged.server?.open) return
@@ -118,7 +134,7 @@ export function us(usOptions: UsOptions) {
 			let firstOpen = true
 			if (firstOpen || cacheMetaData !== newMetaData) {
 				firstOpen = false
-				const url = `http://${host as string}:${port as number}/${installPath}`
+				const url = `${currentOrigin}/${installPath}`
 				Promise.all([open(url), fs.writeFile(cachePath, newMetaData)])
 			}
 		}

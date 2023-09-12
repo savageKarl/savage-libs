@@ -23,7 +23,7 @@
 	"scripts": {
 		"dev": "ts-node --esm scripts/dev.ts",
 		"build": "ts-node --esm scripts/build.ts",
-		"build-dts": "tsc -p tsconfig.build.json && rollup -c rollup.dts.config.js",
+		"build-dts": "rimraf temp && tsc -p tsconfig.build.json && rollup -c rollup.dts.config.js",
 		"check": "tsc --incremental --noEmit",
 		"lint": "eslint --cache --ext .ts packages/*/{src,__tests__}/**.ts",
 		"format": "prettier --write --cache \"**/*.[tj]s?(x)\"",
