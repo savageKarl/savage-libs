@@ -7,8 +7,8 @@ import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { UsOptions } from './types/UserScript'
 import { mergeOptions } from './optionsResolve'
 import { generateHeadMeta } from './generateHeadMeta'
-import { existFile } from './utils'
-export { createUsContainer, existFile } from './utils'
+import { existFile, pkg } from './utils'
+import { build } from './plugins/build'
 
 export function us(usOptions: UsOptions) {
 	const fileName = usOptions.fileName ?? usOptions.headMetaData.name
@@ -16,7 +16,7 @@ export function us(usOptions: UsOptions) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
 	let usOptionsMerged: Required<UsOptions>
-	return {
+	const usPlugin = {
 		name: 'vite-plugin-us',
 		enforce: 'post',
 		config() {
@@ -32,11 +32,20 @@ export function us(usOptions: UsOptions) {
 					modulePreload: false,
 					assetsDir: './',
 					target: 'esnext',
+					// TODO 这里为什么不开，先暂时，待研究
 					minify: false,
 					rollupOptions: {
 						input: usOptions.entry,
+						// TODO 这里是一个比较复杂的功能，自动cdn以及options 让用户自己选择依赖抽离
+						external: [...Reflect.ownKeys(pkg.dependencies ?? {})],
 						output: {
-							extend: true
+							extend: true,
+							format: 'iife',
+							// TODO 这里是一个比较复杂的功能，自动cdn要如何解决全局变量的问题
+							globals: {
+								vue: 'Vue',
+								'lodash-es': 'lodashDs'
+							}
 						}
 					}
 				}
@@ -63,9 +72,7 @@ export function us(usOptions: UsOptions) {
 			currentOrigin = `http://${host as string}:${port as number}`
 
 			server.middlewares.use(async (req, res, next) => {
-				const url = req.url as string
-
-				if (!new RegExp(installPath).test(url)) return next()
+				if (!new RegExp(installPath).test(req.url as string)) return next()
 
 				setResHeader(res, {
 					'access-control-allow-origin': '*',
@@ -82,7 +89,8 @@ export function us(usOptions: UsOptions) {
 
 				scriptStrList.forEach(s => {
 					const path = s.match(/src="(\/.+?)"/)?.[1]
-					if (path) scriptType.linkScriptList.push(`${currentOrigin}${path}`)
+					if (path)
+						return scriptType.linkScriptList.push(`${currentOrigin}${path}`)
 
 					const scriptContent = s.match(
 						/<script type="module">([\s\S]+?)<\/script>/
@@ -147,6 +155,8 @@ export function us(usOptions: UsOptions) {
 			}
 		}
 	} as PluginOption
+
+	return [usPlugin, build()]
 }
 
 function setResHeader(res: ServerResponse, headers: Record<string, string>) {

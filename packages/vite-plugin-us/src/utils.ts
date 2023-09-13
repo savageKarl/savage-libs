@@ -1,11 +1,20 @@
 import fs from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { readFileSync } from 'node:fs'
 
-export function createUsContainer() {
-	const usContainer = document.createElement('div')
-	usContainer.id = 'usContainer'
-	document.body.appendChild(usContainer)
-	return usContainer
-}
+import type { IPackageJson } from '@ts-type/package-dts'
+
+export const pkg = (() => {
+	let pkg: IPackageJson
+	try {
+		pkg = JSON.parse(
+			readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
+		) as IPackageJson
+	} catch {
+		pkg = {}
+	}
+	return pkg
+})()
 
 export const existFile = async (path: string) => {
 	try {

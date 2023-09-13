@@ -1,25 +1,9 @@
-import { resolve } from 'node:path'
-import { readFileSync } from 'node:fs'
-
 import getPort from 'get-port'
-
-import type { IPackageJson } from '@ts-type/package-dts'
 
 import { merge } from 'lodash-es'
 
 import { UsOptions } from './types/UserScript'
-
-const pkg = (() => {
-	let pkg: IPackageJson
-	try {
-		pkg = JSON.parse(
-			readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
-		) as IPackageJson
-	} catch {
-		pkg = {}
-	}
-	return pkg
-})()
+import { pkg } from './utils'
 
 type TargetType = string | Record<string, string> | undefined
 
