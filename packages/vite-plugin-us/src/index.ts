@@ -2,7 +2,7 @@ import type { ServerResponse } from 'node:http'
 
 import fs from 'node:fs/promises'
 import open from 'open'
-import type { UserConfig, PluginOption } from 'vite'
+import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 
 import { UsOptions } from './types/UserScript'
 import { mergeOptions } from './optionsResolve'
@@ -13,7 +13,8 @@ export { createUsContainer, existFile } from './utils'
 export function us(usOptions: UsOptions) {
 	const fileName = usOptions.fileName ?? usOptions.headMetaData.name
 
-	// let resovledConfig: ResolvedConfig
+	let resovledConfig: ResolvedConfig
+	let currentOrigin: string
 	let usOptionsMerged: Required<UsOptions>
 	return {
 		name: 'vite-plugin-us',
@@ -48,6 +49,7 @@ export function us(usOptions: UsOptions) {
 			// console.log('resolveId', source, importer, options)
 		},
 		async configResolved(config) {
+			resovledConfig = config
 			usOptionsMerged = await mergeOptions(usOptions)
 			const { host, port } = usOptionsMerged.server
 
@@ -58,7 +60,7 @@ export function us(usOptions: UsOptions) {
 			const installPath = 'vite-plugin-us.user.js'
 			const newMetaData = generateHeadMeta(usOptions.headMetaData)
 			const { host, port } = usOptionsMerged.server
-			const currentOrigin = `http://${host as string}:${port as number}`
+			currentOrigin = `http://${host as string}:${port as number}`
 
 			server.middlewares.use(async (req, res, next) => {
 				const url = req.url as string
@@ -136,6 +138,12 @@ export function us(usOptions: UsOptions) {
 				firstOpen = false
 				const url = `${currentOrigin}/${installPath}`
 				Promise.all([open(url), fs.writeFile(cachePath, newMetaData)])
+			}
+		},
+		transform(code, id) {
+			const reg = /export\s+default\s+"(.+?)"/
+			if (resovledConfig.assetsInclude(id) && reg.test(code)) {
+				return code.replace(reg, `export default '${currentOrigin}$1'`)
 			}
 		}
 	} as PluginOption
