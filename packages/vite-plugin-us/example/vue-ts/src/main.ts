@@ -2,7 +2,10 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 
-import { createUsContainer } from '../../../src'
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-createApp(App).mount(createUsContainer())
+createApp(App).mount(
+	(() => {
+		const app = document.createElement('div')
+		document.body.append(app)
+		return app
+	})()
+)
