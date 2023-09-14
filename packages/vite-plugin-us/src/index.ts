@@ -80,7 +80,7 @@ export function us(usOptions: UsOptions) {
 
 				const htmlStr = await server.transformIndexHtml('', '')
 				const regex = /<(script)[\s\S]+?<\/script>/g
-				const scriptStrList = [...htmlStr.matchAll(regex)].map(item => item[0])
+				const scriptStrList = [...htmlStr.matchAll(regex)].map(v => v[0])
 				const scriptType = {
 					inlineScriptList: [] as string[][],
 					linkScriptList: [] as string[]
@@ -96,7 +96,7 @@ export function us(usOptions: UsOptions) {
 					)?.[1]
 
 					if (scriptContent)
-						scriptType.inlineScriptList.push(
+						return scriptType.inlineScriptList.push(
 							scriptContent
 								.replace(/"/g, "'")
 								.replace(/'(.+?)'/, `'${currentOrigin}$1'`)
@@ -110,23 +110,25 @@ export function us(usOptions: UsOptions) {
 				return res.end(
 					[
 						newMetaData,
-						`(${function (scriptType: string) {
-							const scriptTypes = JSON.parse(scriptType) as ScriptType
-							scriptTypes.linkScriptList.reverse().forEach(src => {
+						`(${function (scriptType: ScriptType, gmApiList: string[]) {
+							scriptType.linkScriptList.reverse().forEach(src => {
 								const script = document.createElement('script')
 								script.type = 'module'
 								script.src = src as string
 								document.head.insertBefore(script, document.head.firstChild)
 							})
 
-							scriptTypes.inlineScriptList.reverse().forEach(str => {
+							scriptType.inlineScriptList.reverse().forEach(str => {
 								const script = document.createElement('script')
 								script.type = 'module'
 								script.textContent = str.join('\n')
 								document.head.insertBefore(script, document.head.firstChild)
 							})
-						}})(` + '`',
-						JSON.stringify(scriptType) + '`)'
+
+							window.GM.log('GM api has been added to the page')
+							// @ts-ignore
+							gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
+						}})(${JSON.stringify(scriptType)}, ${JSON.stringify(grants)})`
 					].join('')
 				)
 			})
