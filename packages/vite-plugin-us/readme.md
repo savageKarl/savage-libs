@@ -4,4 +4,4 @@ A [Vite](https://vitejs.dev/) plugin for developing and building userscript that
 
 # documentation
 
-see [here](https://savage181855.github.io/savage-libs/savage-utils/modules)
+see [here](https://savage181855.github.io/savage-libs/vite-plugin-us/modules)
