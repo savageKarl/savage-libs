@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises'
-import open from 'open'
+import { resolve } from 'path'
+
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
+import open from 'open'
 
 import { UsOptions, grants, Grants } from './types/userscript'
 import { mergeOptions } from './optionsMerge'
@@ -27,19 +29,20 @@ export function us(usOptions: UsOptions) {
 					cors: true
 				},
 				build: {
-					modulePreload: false,
+					assetsInlineLimit: Number.MAX_SAFE_INTEGER,
+					chunkSizeWarningLimit: Number.MAX_SAFE_INTEGER,
 					assetsDir: './',
 					target: 'esnext',
-					// TODO 这里为什么不开，先暂时，待研究
 					minify: false,
+					cssMinify: false,
 					rollupOptions: {
 						input: usOptions.entry,
-						// TODO 这里是一个比较复杂的功能，自动cdn以及options 让用户自己选择依赖抽离
+						// TODO 自动cdn以及options 让用户自己选择依赖抽离
 						external: [...Reflect.ownKeys(pkg.dependencies ?? {})],
 						output: {
 							extend: true,
 							format: 'iife',
-							// TODO 这里是一个比较复杂的功能，自动cdn要如何解决全局变量的问题
+							// TODO 自动cdn要如何解决全局变量的问题
 							globals: {
 								vue: 'Vue',
 								'lodash-es': 'lodashDs'
@@ -130,6 +133,9 @@ export function us(usOptions: UsOptions) {
 							)
 							// @ts-ignore
 							gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
+							// @ts-ignore
+							// eslint-disable-next-line dot-notation
+							unsafeWindow['GM'] = window['GM']
 						}})(${JSON.stringify(scriptType)}, ${JSON.stringify(grants)})`
 					].join('')
 				)
@@ -159,5 +165,5 @@ export function us(usOptions: UsOptions) {
 		}
 	} as PluginOption
 
-	return [usPlugin, build()]
+	return [usPlugin, build(usOptions)]
 }
