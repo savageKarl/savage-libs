@@ -125,7 +125,9 @@ export function us(usOptions: UsOptions) {
 								document.head.insertBefore(script, document.head.firstChild)
 							})
 
-							window.GM.log('GM api has been added to the page')
+							window.GM.log(
+								`current vserion is ${GM.info.version}, GM api has been added to the page, enjoy your day!`
+							)
 							// @ts-ignore
 							gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
 						}})(${JSON.stringify(scriptType)}, ${JSON.stringify(grants)})`
