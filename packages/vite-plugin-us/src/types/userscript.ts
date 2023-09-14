@@ -55,14 +55,22 @@ const gmFunctions = [
 	'info'
 ] as const
 
-export type GMLiterals<T extends string> = [`GM_${T}` | `GM.${T}`]
-export type GMWindow = (typeof gmWindow)[number]
-export type Grants = GMWindow | GMLiterals<(typeof gmFunctions)[number]>[number]
+const incompatibleFun = ['GM.getResourceURL', 'GM.xmlhttpRequest'] as const
+type IncompatibleFun = (typeof incompatibleFun)[number]
+
+type GMLiterals<T extends string> = [`GM_${T}` | `GM.${T}`]
+type GMWindow = (typeof gmWindow)[number]
+
+export type Grants = Exclude<
+	GMWindow | GMLiterals<(typeof gmFunctions)[number]>[number],
+	(typeof incompatibleFun)[number]
+>
 
 export const grants = gmFunctions
 	.map(grant => [`GM_${grant}`, `GM.${grant}`])
 	.flat()
-	.concat(gmWindow) as unknown as Grants
+	.concat(gmWindow)
+	.filter(v => !incompatibleFun.includes(v as IncompatibleFun))
 
 /**
  * version: @see https://www.tampermonkey.net/changelog.phpversion=4.19.0&ext=dhdg

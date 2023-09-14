@@ -1,4 +1,4 @@
-import { HeadMetaData } from './types/UserScript'
+import { HeadMetaData } from './types/userscript'
 
 const padLen = 20
 
@@ -40,28 +40,28 @@ export function generateHeadMeta(script: HeadMetaData) {
 	if (script.downloadURL) {
 		result += '// @downloadURL'.padEnd(padLen, ' ') + script.downloadURL + '\n'
 	}
-	if (script.includes) {
-		script.includes.forEach(include => {
+	if (script.include) {
+		script.include.forEach(include => {
 			result += '// @include'.padEnd(padLen, ' ') + include + '\n'
 		})
 	}
-	if (script.matches) {
-		script.matches.forEach(m => {
+	if (script.matche) {
+		script.matche.forEach(m => {
 			result += '// @match'.padEnd(padLen, ' ') + m + '\n'
 		})
 	}
-	if (script.excludes) {
-		script.excludes.forEach(exclude => {
+	if (script.exclude) {
+		script.exclude.forEach(exclude => {
 			result += '// @exclude'.padEnd(padLen, ' ') + exclude + '\n'
 		})
 	}
-	if (script.requires) {
-		script.requires.forEach(m => {
+	if (script.require) {
+		script.require.forEach(m => {
 			result += '// @require'.padEnd(padLen, ' ') + m + '\n'
 		})
 	}
-	if (script.resources) {
-		script.resources.forEach(m => {
+	if (script.resource) {
+		script.resource.forEach(m => {
 			result += '// @resource '.padEnd(padLen, ' ') + m + '\n'
 		})
 	}
@@ -71,11 +71,11 @@ export function generateHeadMeta(script: HeadMetaData) {
 	if (script.runAt) {
 		result += '// @run-at'.padEnd(padLen, ' ') + script.runAt + '\n'
 	}
-	if (script.grants) {
-		if (typeof script.grants === 'string') {
-			result += '// @grant'.padEnd(padLen, ' ') + script.grants + '\n'
+	if (script.grant) {
+		if (typeof script.grant === 'string') {
+			result += '// @grant'.padEnd(padLen, ' ') + script.grant + '\n'
 		} else {
-			const arr = script.grants
+			const arr = script.grant
 			arr.forEach(item => {
 				result += '// @grant'.padEnd(padLen, ' ') + String(item) + '\n'
 			})

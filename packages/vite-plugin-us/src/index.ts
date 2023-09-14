@@ -1,13 +1,11 @@
-import type { ServerResponse } from 'node:http'
-
 import fs from 'node:fs/promises'
 import open from 'open'
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 
-import { UsOptions } from './types/UserScript'
-import { mergeOptions } from './optionsResolve'
+import { UsOptions, grants, Grants } from './types/userscript'
+import { mergeOptions } from './optionsMerge'
 import { generateHeadMeta } from './generateHeadMeta'
-import { existFile, pkg } from './utils'
+import { existFile, pkg, setResHeader } from './utils'
 import { build } from './plugins/build'
 
 export function us(usOptions: UsOptions) {
@@ -67,6 +65,7 @@ export function us(usOptions: UsOptions) {
 		},
 		async configureServer(server) {
 			const installPath = 'vite-plugin-us.user.js'
+			usOptions.headMetaData.grant = grants as unknown as Grants[]
 			const newMetaData = generateHeadMeta(usOptions.headMetaData)
 			const { host, port } = usOptionsMerged.server
 			currentOrigin = `http://${host as string}:${port as number}`
@@ -157,10 +156,4 @@ export function us(usOptions: UsOptions) {
 	} as PluginOption
 
 	return [usPlugin, build()]
-}
-
-function setResHeader(res: ServerResponse, headers: Record<string, string>) {
-	for (const h in headers) {
-		res.setHeader(h, headers[h])
-	}
 }
