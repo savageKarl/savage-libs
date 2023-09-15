@@ -258,6 +258,16 @@ export interface UsOptions {
 	 */
 	entry: string
 	/**
+	 * add prefix for script name when development, preview and production mode
+	 *
+	 * @example
+	 *
+	 * `// @name            dev: myscript`
+	 * `// @name            preview: myscript`
+	 * `// @name            production: myscript`
+	 */
+	prefix?: boolean
+	/**
 	 * automatically add grant to head metadata in development or production mode
 	 */
 	// autoAddGrant?: boolean

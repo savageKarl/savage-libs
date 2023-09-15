@@ -12,34 +12,35 @@ function takeFieldFromTarget(field: string, target: TargetType) {
 	return target ?? ''
 }
 
-export function mergeOptions(opts: UsOptions) {
-	const defaultOpts: Required<UsOptions> = {
-		entry: '',
-		server: {
-			port: 12345,
-			open: true,
-			host: 'localhost'
-		},
-		build: {
-			minify: true,
-			cssMinify: true,
-			external: {
-				cdn: 'auto',
-				exclude: [],
-				include: []
-			}
-		},
-		headMetaData: {
-			name: pkg.name,
-			version: pkg.version,
-			description: pkg.description,
-			author: takeFieldFromTarget('name', pkg.author as TargetType),
-			supportURL: takeFieldFromTarget('url', pkg.bugs as TargetType)
+const defaultOpts: Required<UsOptions> = {
+	entry: '',
+	prefix: true,
+	server: {
+		port: 12345,
+		open: true,
+		host: 'localhost'
+	},
+	build: {
+		minify: true,
+		cssMinify: true,
+		external: {
+			cdn: 'auto',
+			exclude: [],
+			include: []
 		}
+	},
+	headMetaData: {
+		name: pkg.name,
+		version: pkg.version,
+		description: pkg.description,
+		author: takeFieldFromTarget('name', pkg.author as TargetType),
+		supportURL: takeFieldFromTarget('url', pkg.bugs as TargetType)
 	}
+}
 
-	getPort({ port: 12345 }).then(n => (defaultOpts.server.port = n))
+getPort({ port: 12345 }).then(n => (defaultOpts.server.port = n))
 
+export function mergeOptions(opts: UsOptions) {
 	const mergedOpts = merge(defaultOpts, opts)
 	return mergedOpts as Required<UsOptions>
 }

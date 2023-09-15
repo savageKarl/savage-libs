@@ -1,17 +1,16 @@
 import { readFileSync, writeFileSync } from 'node:fs'
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { resolve, extname } from 'node:path'
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk } from 'rollup'
 
 import { UsOptions, grants } from '../types/userscript'
 import { generateHeadMeta } from '../generateHeadMeta'
-import { funcToString } from '../utils'
+import { funcToString, pkg, collectCssDependencies } from '../utils'
 import type { Grants } from '../types/userscript'
 
-export function build(usOptions: Required<UsOptions>) {
-	let resovledConfig: ResolvedConfig
+let resovledConfig: ResolvedConfig
 
+export function build(usOptions: Required<UsOptions>) {
 	const links = [
 		'https://unpkg.com/element-plus@2.3.14/theme-chalk/base.css',
 		'https://unpkg.com/element-plus@2.3.14/theme-chalk/el-button.css'
@@ -22,6 +21,9 @@ export function build(usOptions: Required<UsOptions>) {
 		enforce: 'post',
 		apply: 'build',
 		config() {
+			const name = usOptions.headMetaData.name
+			if (usOptions.prefix) usOptions.headMetaData.name = `production: ${name}`
+
 			return {
 				build: {
 					assetsInlineLimit: Number.MAX_SAFE_INTEGER,
@@ -33,7 +35,7 @@ export function build(usOptions: Required<UsOptions>) {
 					rollupOptions: {
 						input: usOptions.entry,
 						// TODO
-						external: ['vue'],
+						// external: ['vue'],
 						output: {
 							extend: true,
 							format: 'iife',
@@ -47,27 +49,13 @@ export function build(usOptions: Required<UsOptions>) {
 			} as UserConfig
 		},
 		load(id) {
-			if (/css$/.test(id) && /node_modules/.test(id)) {
-				// TODO collect css path and analyze cdn resource global name here
-				return ''
-			}
-
-			return null
+			return collectCssDependencies(id)
 		},
 		async configResolved(config) {
 			resovledConfig = config
 		},
 		async transform(code, id) {
-			if (
-				resovledConfig.assetsInclude(id) &&
-				/\.svg/.test(id) &&
-				/__VITE_ASSET__/.test(code)
-			) {
-				const base64 = readFileSync(/.+?\.svg/.exec(id)?.[0] as string, {
-					encoding: 'base64'
-				})
-				return `export default 'data:image/svg+xml;base64,${base64}'`
-			}
+			return inlineSvg(code, id)
 		},
 		generateBundle(options, bundle) {
 			for (const filename in bundle) {
@@ -107,4 +95,17 @@ export function build(usOptions: Required<UsOptions>) {
 			)
 		}
 	} as PluginOption
+}
+
+function inlineSvg(code: string, id: string) {
+	if (
+		resovledConfig.assetsInclude(id) &&
+		/\.svg/.test(id) &&
+		/__VITE_ASSET__/.test(code)
+	) {
+		const base64 = readFileSync(/.+?\.svg/.exec(id)?.[0] as string, {
+			encoding: 'base64'
+		})
+		return `export default 'data:image/svg+xml;base64,${base64}'`
+	}
 }

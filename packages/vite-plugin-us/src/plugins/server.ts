@@ -4,32 +4,33 @@ import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
 import { UsOptions, grants, Grants } from '../types/userscript'
-import { mergeOptions } from '../optionsMerge'
 import { generateHeadMeta } from '../generateHeadMeta'
 import { existFile, setResHeader, funcToString } from '../utils'
 
 export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
+
 	return {
 		name: 'vite-plugin-us:serve',
 		enforce: 'post',
 		apply: 'serve',
 		config() {
+			const name = usOptions.headMetaData.name
+			if (usOptions.prefix) usOptions.headMetaData.name = `dev: ${name}`
+
+			const { host, port } = usOptions.server
 			return {
 				server: {
 					open: false,
-					cors: true
+					cors: true,
+					host,
+					port
 				}
 			} as UserConfig
 		},
 		async configResolved(config) {
 			resovledConfig = config
-			usOptions = await mergeOptions(usOptions)
-			const { host, port } = usOptions.server
-
-			config.server.host = host
-			config.server.port = port
 		},
 		async configureServer(server) {
 			const installPath = 'vite-plugin-us.user.js'

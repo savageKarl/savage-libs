@@ -25,12 +25,6 @@ export const existFile = (path: string) => {
 	}
 }
 
-/**
- * set HTTP response header
- *
- * @param res - http server response
- * @param headers - http server response headers
- */
 export function setResHeader(
 	res: ServerResponse,
 	headers: Record<string, string>
@@ -40,16 +34,19 @@ export function setResHeader(
 	}
 }
 
-/**
- * remove values from target array
- */
 export function rmValueFromArr(arr: string[], values: string[]) {
 	return [...arr].filter(v => !values.includes(v))
 }
 
-/**
- * transform function to string
- */
 export function funcToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
+}
+
+export function collectCssDependencies(id: string, ids?: Set<string>) {
+	if (/node_modules/.test(id) && /css$/.test(id)) {
+		if (ids) ids.add(id)
+		return ''
+	}
+
+	return null
 }
