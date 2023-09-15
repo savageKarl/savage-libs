@@ -46,3 +46,10 @@ export function setResHeader(
 export function rmValueFromArr(arr: string[], values: string[]) {
 	return [...arr].filter(v => !values.includes(v))
 }
+
+/**
+ * transform function to string
+ */
+export function funcToString(fn: (...args: never[]) => unknown, args: unknown) {
+	return `;(${fn})(${JSON.stringify(args)});`
+}

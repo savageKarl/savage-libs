@@ -223,29 +223,54 @@ export interface UsOptions {
 	 */
 	entry: string
 	/**
-	 * userscript file name.
+	 * automatically add grant to head metadata in development or production mode
 	 */
-	fileName?: string
-	autoAddGrant?: boolean
-	// 这个自动引入外部依赖的操作方范围待定
-	// autoExternal: {
-	// 	enable: boolean
-	// }
+	// autoAddGrant?: boolean
 	server?: {
 		/** if it avalible, otherwise random
 		 * @defaultValue `5858`
 		 */
 		port?: number
 
-		/**
-		 * @defaultValue `false`
+		/** auto open browser
+		 * @defaultValue `true`
 		 */
 		open?: boolean
-
 		/**
 		 * @defaultValue `localhost`
 		 */
 		host?: string
+	}
+	build?: {
+		/**
+		 * minify js in production mode
+		 */
+		minify?: boolean
+		/**
+		 * minify css in production mode
+		 */
+		cssMinify?: boolean
+
+		external?: {
+			/**
+			 * automatically load package dependencies using CDN
+			 *
+			 * if value is `auto`, `include` will not work
+			 *
+			 * if value is `manual`, `exclude` will not work
+			 *
+			 * @defaultValue `auto`
+			 */
+			cdn: 'auto' | 'manual'
+			/**
+			 * exclude dependencies that do not require automatic CDN
+			 */
+			exclude: string[]
+			/**
+			 * include dependencies that require manual CDN
+			 */
+			include: unknown[]
+		}
 	}
 	/**
 	 * userscript header metadata config.
@@ -253,4 +278,39 @@ export interface UsOptions {
 	 * @see https://www.tampermonkey.net/documentation.php
 	 */
 	headMetaData: HeadMetaData
+}
+
+interface ManualCdnResource {
+	/**
+	 * the global variable name of dependencies, if it is a CSS resource, it is not required
+	 *
+	 * @example
+	 *
+	 * ```
+	 * name: 'Vue'
+	 * ```
+	 */
+	name?: string
+	/**
+	 * imported path
+	 *
+	 *
+	 * when the code looks like this`import { createApp } from 'vue'`, the path is `vue`
+	 *
+	 * @example
+	 * ```
+	 * path: 'vue'
+	 * ```
+	 */
+	path: string
+	/**
+	 * url of CDN resource
+	 *
+	 * @example
+	 *
+	 * ```
+	 * url: 'https://unpkg.com/vue@3.3.4/dist/vue.global.js'
+	 * ```
+	 */
+	url: string
 }

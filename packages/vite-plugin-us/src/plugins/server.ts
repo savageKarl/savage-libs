@@ -6,7 +6,7 @@ import open from 'open'
 import { UsOptions, grants, Grants } from '../types/userscript'
 import { mergeOptions } from '../optionsMerge'
 import { generateHeadMeta } from '../generateHeadMeta'
-import { existFile, setResHeader } from '../utils'
+import { existFile, setResHeader, funcToString } from '../utils'
 
 export function serve(usOptions: UsOptions) {
 	let resovledConfig: ResolvedConfig
@@ -76,10 +76,11 @@ export function serve(usOptions: UsOptions) {
 				scriptType.linkScriptList.push(`${currentOrigin}/${usOptions.entry}`)
 
 				type ScriptType = typeof scriptType
+
 				return res.end(
 					[
 						newMetaData,
-						`(${function (scriptType: ScriptType, gmApiList: string[]) {
+						funcToString((scriptType: ScriptType) => {
 							scriptType.linkScriptList.reverse().forEach(src => {
 								const script = document.createElement('script')
 								script.type = 'module'
@@ -95,15 +96,18 @@ export function serve(usOptions: UsOptions) {
 							})
 
 							window.GM.log(
-								`current vserion is ${GM.info.version}, GM api has been added to the page, enjoy your day!`
+								`current vserion is ${GM.info.version}, enjoy your day!`
 							)
+						}, scriptType),
+
+						funcToString((gmApiList: string[]) => {
 							// @ts-ignore
 							gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
 							// @ts-ignore
 							// eslint-disable-next-line dot-notation
 							unsafeWindow['GM'] = window['GM']
-						}})(${JSON.stringify(scriptType)}, ${JSON.stringify(grants)})`
-					].join('')
+						}, grants)
+					].join('\n')
 				)
 			})
 
