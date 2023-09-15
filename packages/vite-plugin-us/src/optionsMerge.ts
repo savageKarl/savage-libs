@@ -9,16 +9,25 @@ type TargetType = string | Record<string, string> | undefined
 
 function takeFieldFromTarget(field: string, target: TargetType) {
 	if (typeof target === 'object') return target[field] ?? ''
-	return target
+	return target ?? ''
 }
 
-export async function mergeOptions(opts: UsOptions) {
-	const defaultOpts: UsOptions = {
+export function mergeOptions(opts: UsOptions) {
+	const defaultOpts: Required<UsOptions> = {
 		entry: '',
 		server: {
-			port: await getPort({ port: 5858 }),
+			port: 12345,
 			open: true,
 			host: 'localhost'
+		},
+		build: {
+			minify: true,
+			cssMinify: true,
+			external: {
+				cdn: 'auto',
+				exclude: [],
+				include: []
+			}
 		},
 		headMetaData: {
 			name: pkg.name,
@@ -28,6 +37,8 @@ export async function mergeOptions(opts: UsOptions) {
 			supportURL: takeFieldFromTarget('url', pkg.bugs as TargetType)
 		}
 	}
+
+	getPort({ port: 12345 }).then(n => (defaultOpts.server.port = n))
 
 	const mergedOpts = merge(defaultOpts, opts)
 	return mergedOpts as Required<UsOptions>

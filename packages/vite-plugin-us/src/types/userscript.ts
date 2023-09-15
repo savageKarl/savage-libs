@@ -217,69 +217,6 @@ interface UserScript {
 
 export type HeadMetaData = Partial<UserScript>
 
-export interface UsOptions {
-	/**
-	 * path of userscript entry.
-	 */
-	entry: string
-	/**
-	 * automatically add grant to head metadata in development or production mode
-	 */
-	// autoAddGrant?: boolean
-	server?: {
-		/** if it avalible, otherwise random
-		 * @defaultValue `5858`
-		 */
-		port?: number
-
-		/** auto open browser
-		 * @defaultValue `true`
-		 */
-		open?: boolean
-		/**
-		 * @defaultValue `localhost`
-		 */
-		host?: string
-	}
-	build?: {
-		/**
-		 * minify js in production mode
-		 */
-		minify?: boolean
-		/**
-		 * minify css in production mode
-		 */
-		cssMinify?: boolean
-
-		external?: {
-			/**
-			 * automatically load package dependencies using CDN
-			 *
-			 * if value is `auto`, `include` will not work
-			 *
-			 * if value is `manual`, `exclude` will not work
-			 *
-			 * @defaultValue `auto`
-			 */
-			cdn: 'auto' | 'manual'
-			/**
-			 * exclude dependencies that do not require automatic CDN
-			 */
-			exclude: string[]
-			/**
-			 * include dependencies that require manual CDN
-			 */
-			include: unknown[]
-		}
-	}
-	/**
-	 * userscript header metadata config.
-	 *
-	 * @see https://www.tampermonkey.net/documentation.php
-	 */
-	headMetaData: HeadMetaData
-}
-
 interface ManualCdnResource {
 	/**
 	 * the global variable name of dependencies, if it is a CSS resource, it is not required
@@ -313,4 +250,67 @@ interface ManualCdnResource {
 	 * ```
 	 */
 	url: string
+}
+
+export interface UsOptions {
+	/**
+	 * path of userscript entry.
+	 */
+	entry: string
+	/**
+	 * automatically add grant to head metadata in development or production mode
+	 */
+	// autoAddGrant?: boolean
+	server?: {
+		/** if it avalible, otherwise random
+		 * @defaultValue `12345`
+		 */
+		port?: number
+
+		/** auto open browser
+		 * @defaultValue `true`
+		 */
+		open?: boolean
+		/**
+		 * @defaultValue `localhost`
+		 */
+		host?: string
+	}
+	build?: {
+		/**
+		 * minify js in production mode
+		 */
+		minify?: boolean
+		/**
+		 * minify css in production mode
+		 */
+		cssMinify?: boolean
+
+		external?: {
+			/**
+			 * automatically load package dependencies using CDN
+			 *
+			 * if value is `auto`, `include` will not work
+			 *
+			 * if value is `manual`, `exclude` will not work
+			 *
+			 * @defaultValue `auto`
+			 */
+			cdn?: 'auto' | 'manual'
+			/**
+			 * exclude dependencies that do not require automatic CDN
+			 */
+			exclude?: string[]
+			/**
+			 * include dependencies that require manual CDN
+			 */
+			include?: ManualCdnResource[]
+		}
+	}
+	/**
+	 * userscript header metadata config.
+	 *
+	 * @see https://www.tampermonkey.net/documentation.php
+	 */
+	headMetaData: HeadMetaData
 }

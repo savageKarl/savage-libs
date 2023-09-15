@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { readFileSync } from 'node:fs'
+import { readFileSync, statSync } from 'node:fs'
 import type { ServerResponse } from 'node:http'
 
 import type { IPackageJson } from '@ts-type/package-dts'
@@ -17,9 +17,9 @@ export const pkg = (() => {
 	return pkg
 })()
 
-export const existFile = async (path: string) => {
+export const existFile = (path: string) => {
 	try {
-		return (await fs.stat(path)).isFile()
+		return statSync(path).isFile()
 	} catch {
 		return false
 	}
@@ -50,6 +50,6 @@ export function rmValueFromArr(arr: string[], values: string[]) {
 /**
  * transform function to string
  */
-export function funcToString(fn: (...args: never[]) => unknown, args: unknown) {
+export function funcToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }

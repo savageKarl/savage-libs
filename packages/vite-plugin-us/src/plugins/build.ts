@@ -9,7 +9,7 @@ import { generateHeadMeta } from '../generateHeadMeta'
 import { funcToString } from '../utils'
 import type { Grants } from '../types/userscript'
 
-export function build(usOptions: UsOptions) {
+export function build(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 
 	const links = [
@@ -28,8 +28,8 @@ export function build(usOptions: UsOptions) {
 					chunkSizeWarningLimit: Number.MAX_SAFE_INTEGER,
 					assetsDir: './',
 					target: 'esnext',
-					minify: false,
-					cssMinify: false,
+					minify: usOptions.build.minify,
+					cssMinify: usOptions.build.cssMinify,
 					rollupOptions: {
 						input: usOptions.entry,
 						// TODO

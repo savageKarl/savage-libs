@@ -8,10 +8,9 @@ import { mergeOptions } from '../optionsMerge'
 import { generateHeadMeta } from '../generateHeadMeta'
 import { existFile, setResHeader, funcToString } from '../utils'
 
-export function serve(usOptions: UsOptions) {
+export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
-	let usOptionsMerged: Required<UsOptions>
 	return {
 		name: 'vite-plugin-us:serve',
 		enforce: 'post',
@@ -26,8 +25,8 @@ export function serve(usOptions: UsOptions) {
 		},
 		async configResolved(config) {
 			resovledConfig = config
-			usOptionsMerged = await mergeOptions(usOptions)
-			const { host, port } = usOptionsMerged.server
+			usOptions = await mergeOptions(usOptions)
+			const { host, port } = usOptions.server
 
 			config.server.host = host
 			config.server.port = port
@@ -36,7 +35,7 @@ export function serve(usOptions: UsOptions) {
 			const installPath = 'vite-plugin-us.user.js'
 			usOptions.headMetaData.grant = grants as unknown as Grants[]
 			const newMetaData = generateHeadMeta(usOptions.headMetaData)
-			const { host, port } = usOptionsMerged.server
+			const { host, port } = usOptions.server
 			currentOrigin = `http://${host as string}:${port as number}`
 
 			server.middlewares.use(async (req, res, next) => {
@@ -94,8 +93,9 @@ export function serve(usOptions: UsOptions) {
 								script.textContent = str.join('\n')
 								document.head.insertBefore(script, document.head.firstChild)
 							})
-
+							// @ts-ignore
 							window.GM.log(
+								// @ts-ignore
 								`current vserion is ${GM.info.version}, enjoy your day!`
 							)
 						}, scriptType),
@@ -111,12 +111,12 @@ export function serve(usOptions: UsOptions) {
 				)
 			})
 
-			if (!usOptionsMerged.server?.open) return
+			if (!usOptions.server?.open) return
 
 			const cachePath = 'node_modules/.vite/vite-plugin-us.cache.js'
 			let cacheMetaData = ''
 
-			if (await existFile(cachePath)) {
+			if (existFile(cachePath)) {
 				cacheMetaData = (await fs.readFile(cachePath)).toString('utf-8')
 			}
 
