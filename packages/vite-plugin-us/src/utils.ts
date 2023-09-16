@@ -25,6 +25,9 @@ export const existFile = (path: string) => {
 	}
 }
 
+/**
+ * not pure func
+ */
 export function setResHeader(
 	res: ServerResponse,
 	headers: Record<string, string>
@@ -55,3 +58,5 @@ export function collectCssDependencies(id: string, ids?: Set<string>) {
 		}
 	}
 }
+
+export const resourcePath = 'node_modules/.vite/vite-plugin-us.resource.json'

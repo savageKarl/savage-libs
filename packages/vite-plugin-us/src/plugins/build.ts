@@ -5,17 +5,19 @@ import { OutputChunk } from 'rollup'
 
 import { UsOptions, grants } from '../types/userscript'
 import { generateHeadMeta } from '../generateHeadMeta'
-import { funcToString, pkg, collectCssDependencies } from '../utils'
-import type { Grants } from '../types/userscript'
+import {
+	funcToString,
+	pkg,
+	collectCssDependencies,
+	resourcePath
+} from '../utils'
+import type { Grants, Resource } from '../types/userscript'
 
 let resovledConfig: ResolvedConfig
+let resource: Resource
+let cssUrls: string[]
 
 export function build(usOptions: Required<UsOptions>) {
-	const links = [
-		'https://unpkg.com/element-plus@2.3.14/theme-chalk/base.css',
-		'https://unpkg.com/element-plus@2.3.14/theme-chalk/el-button.css'
-	]
-
 	return {
 		name: 'vite-plugin-us:build',
 		enforce: 'post',
@@ -23,6 +25,13 @@ export function build(usOptions: Required<UsOptions>) {
 		config() {
 			const name = usOptions.headMetaData.name
 			if (usOptions.prefix) usOptions.headMetaData.name = `production: ${name}`
+
+			resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
+			cssUrls = resource.urls.css || []
+			const jsUrls = resource.urls.js || []
+
+			const r = usOptions.headMetaData.require
+			usOptions.headMetaData.require = r?.concat(jsUrls)
 
 			return {
 				build: {
@@ -34,15 +43,11 @@ export function build(usOptions: Required<UsOptions>) {
 					cssMinify: usOptions.build.cssMinify,
 					rollupOptions: {
 						input: usOptions.entry,
-						// TODO
-						// external: ['vue'],
+						external: resource.external,
 						output: {
 							extend: true,
 							format: 'iife',
-							// TODO
-							globals: {
-								vue: 'Vue'
-							}
+							globals: resource.names
 						}
 					}
 				}
@@ -83,7 +88,7 @@ export function build(usOptions: Required<UsOptions>) {
 					link.href = v
 					document.head.appendChild(link)
 				})
-			}, links)
+			}, cssUrls)
 			fullCodeList.push(autoInjectExternalCss)
 
 			fullCodeList.unshift(newMetaData)
@@ -108,4 +113,5 @@ function inlineSvg(code: string, id: string) {
 		})
 		return `export default 'data:image/svg+xml;base64,${base64}'`
 	}
+	return null
 }

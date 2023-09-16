@@ -321,3 +321,9 @@ export interface UsOptions {
 	 */
 	headMetaData: HeadMetaData
 }
+
+export interface Resource {
+	names: Record<string, string>
+	external: string[]
+	urls: Record<string, string[]>
+}
