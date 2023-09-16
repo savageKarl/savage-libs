@@ -1,23 +1,23 @@
 /**
  * @packageDocumentation
-`savage-rollup-command` is a rollup plugin that provides several rollup hooks, introduces the [`del`](https://www.npmjs.com/package/del/v/5.1.0) library, and adds shell command execution.
+`rollup-plugin-executer` is a rollup plugin that provides several rollup hooks, introduces the [`del`](https://www.npmjs.com/package/del/v/5.1.0) library, and adds shell command execution.
  
- `savage-rollup-command`是一个`rollup`插件，提供了几个`rollup`钩子，并引入了[`del`](https://www.npmjs.com/package/del/v/5.1.0)库，还增加了`shell`命令执行。
+ `rollup-plugin-executer`是一个`rollup`插件，提供了几个`rollup`钩子，并引入了[`del`](https://www.npmjs.com/package/del/v/5.1.0)库，还增加了`shell`命令执行。
 
  ## install
 
 ::: code-group
 
 ```[npm]
-npm i savage-rollup-command
+npm i rollup-plugin-executer
 ```
 
 ```[pnpm]
-pnpm add savage-rollup-command
+pnpm add rollup-plugin-executer
 ```
 
 ```[yarn]
-yarn add savage-rollup-command
+yarn add rollup-plugin-executer
 ```
 :::
 
@@ -26,7 +26,7 @@ yarn add savage-rollup-command
 
 `rollup.config.mjs`
 ```js
-import { rollupCommand } from 'savage-rollup-command'
+import { rollupCommand } from 'rollup-plugin-executer'
 
 export default {
 	input: 'src/main.js',

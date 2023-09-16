@@ -1,7 +1,7 @@
 {
-	"name": "savage-rollup-command",
+	"name": "rollup-plugin-executer",
 	"version": "0.0.13",
-	"description": "一个rollup插件，用于在rollup构建过程中执行自定义命令。",
+	"description": "",
 	"miniprogram": "dist",
 	"main": "index.js",
 	"module": "dist/rollup-command.esm-bundler.js",

@@ -79,7 +79,7 @@ export const rollupCommand = (hookOptions?: hookOptions) => {
 	) as Required<hookOptions>
 
 	return {
-		name: 'savage-rollup-command',
+		name: 'rollup-plugin-executer',
 		options(options: InputOptions) {
 			mergedOptions.options(context, options)
 			return options

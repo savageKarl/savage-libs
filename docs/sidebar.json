@@ -1,1 +1,90 @@
-{"/savage-data-types/":{"base":"/savage-data-types/","items":[{"text":"savage-data-types","link":"modules"},{"text":"functions","items":[{"text":"getType","link":"functions/getType"},{"text":"isSameType","link":"functions/isSameType"}]},{"text":"variables","items":[{"text":"dataTypes","link":"variables/dataTypes"}]}]},"/savage-electron-ipc/":{"base":"/savage-electron-ipc/","items":[{"text":"savage-electron-ipc","link":"modules"},{"text":"functions","items":[{"text":"addToChannel","link":"functions/addToChannel"},{"text":"receive","link":"functions/receive"},{"text":"send","link":"functions/send"}]}]},"/savage-rollup-command/":{"base":"/savage-rollup-command/","items":[{"text":"savage-rollup-command","link":"modules"},{"text":"functions","items":[{"text":"rollupCommand","link":"functions/rollupCommand"}]},{"text":"interfaces","items":[{"text":"hookOptions","link":"interfaces/hookOptions"},{"text":"IContext","link":"interfaces/IContext"},{"text":"RunCommand","link":"interfaces/RunCommand"}]},{"text":"types","items":[{"text":"CommandCaller","link":"types/CommandCaller"}]}]},"/savage-utils/":{"base":"/savage-utils/","items":[{"text":"savage-utils","link":"modules"},{"text":"classes","items":[{"text":"EventCenter","link":"classes/EventCenter"},{"text":"Iterator","link":"classes/Iterator"}]},{"text":"functions","items":[{"text":"debounce","link":"functions/debounce"},{"text":"deepCompare","link":"functions/deepCompare"},{"text":"deepCopy","link":"functions/deepCopy"},{"text":"deepMerge","link":"functions/deepMerge"},{"text":"each","link":"functions/each"},{"text":"get","link":"functions/get"},{"text":"getSingle","link":"functions/getSingle"},{"text":"parseAreaListData","link":"functions/parseAreaListData"},{"text":"shallowCompare","link":"functions/shallowCompare"},{"text":"shallowCopy","link":"functions/shallowCopy"},{"text":"shallowMerge","link":"functions/shallowMerge"},{"text":"throttle","link":"functions/throttle"}]}]}}
+{
+	"/savage-data-types/": {
+		"base": "/savage-data-types/",
+		"items": [
+			{ "text": "savage-data-types", "link": "modules" },
+			{
+				"text": "functions",
+				"items": [
+					{ "text": "getType", "link": "functions/getType" },
+					{ "text": "isSameType", "link": "functions/isSameType" }
+				]
+			},
+			{
+				"text": "variables",
+				"items": [{ "text": "dataTypes", "link": "variables/dataTypes" }]
+			}
+		]
+	},
+	"/savage-electron-ipc/": {
+		"base": "/savage-electron-ipc/",
+		"items": [
+			{ "text": "savage-electron-ipc", "link": "modules" },
+			{
+				"text": "functions",
+				"items": [
+					{ "text": "addToChannel", "link": "functions/addToChannel" },
+					{ "text": "receive", "link": "functions/receive" },
+					{ "text": "send", "link": "functions/send" }
+				]
+			}
+		]
+	},
+	"/rollup-plugin-executer/": {
+		"base": "/rollup-plugin-executer/",
+		"items": [
+			{ "text": "rollup-plugin-executer", "link": "modules" },
+			{
+				"text": "functions",
+				"items": [
+					{ "text": "rollupCommand", "link": "functions/rollupCommand" }
+				]
+			},
+			{
+				"text": "interfaces",
+				"items": [
+					{ "text": "hookOptions", "link": "interfaces/hookOptions" },
+					{ "text": "IContext", "link": "interfaces/IContext" },
+					{ "text": "RunCommand", "link": "interfaces/RunCommand" }
+				]
+			},
+			{
+				"text": "types",
+				"items": [{ "text": "CommandCaller", "link": "types/CommandCaller" }]
+			}
+		]
+	},
+	"/savage-utils/": {
+		"base": "/savage-utils/",
+		"items": [
+			{ "text": "savage-utils", "link": "modules" },
+			{
+				"text": "classes",
+				"items": [
+					{ "text": "EventCenter", "link": "classes/EventCenter" },
+					{ "text": "Iterator", "link": "classes/Iterator" }
+				]
+			},
+			{
+				"text": "functions",
+				"items": [
+					{ "text": "debounce", "link": "functions/debounce" },
+					{ "text": "deepCompare", "link": "functions/deepCompare" },
+					{ "text": "deepCopy", "link": "functions/deepCopy" },
+					{ "text": "deepMerge", "link": "functions/deepMerge" },
+					{ "text": "each", "link": "functions/each" },
+					{ "text": "get", "link": "functions/get" },
+					{ "text": "getSingle", "link": "functions/getSingle" },
+					{
+						"text": "parseAreaListData",
+						"link": "functions/parseAreaListData"
+					},
+					{ "text": "shallowCompare", "link": "functions/shallowCompare" },
+					{ "text": "shallowCopy", "link": "functions/shallowCopy" },
+					{ "text": "shallowMerge", "link": "functions/shallowMerge" },
+					{ "text": "throttle", "link": "functions/throttle" }
+				]
+			}
+		]
+	}
+}

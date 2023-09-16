@@ -108,7 +108,7 @@
 		"rollup-plugin-esbuild": "^5.0.0",
 		"rollup-plugin-polyfill-node": "^0.12.0",
 		"rollup-plugin-typescript2": "^0.34.1",
-		"savage-rollup-command": "workspace:^",
+		"rollup-plugin-executer": "workspace:^",
 		"savage-utils": "^1.0.45",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.6.2",
