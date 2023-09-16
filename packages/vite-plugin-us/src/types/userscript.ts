@@ -222,7 +222,6 @@ interface ManualCdnResource {
 	 * the global variable name of dependencies, if it is a CSS resource, it is not required
 	 *
 	 * @example
-	 *
 	 * ```
 	 * name: 'Vue'
 	 * ```
@@ -230,7 +229,6 @@ interface ManualCdnResource {
 	name?: string
 	/**
 	 * imported path
-	 *
 	 *
 	 * when the code looks like this`import { createApp } from 'vue'`, the path is `vue`
 	 *
@@ -244,7 +242,6 @@ interface ManualCdnResource {
 	 * url of CDN resource
 	 *
 	 * @example
-	 *
 	 * ```
 	 * url: 'https://unpkg.com/vue@3.3.4/dist/vue.global.js'
 	 * ```

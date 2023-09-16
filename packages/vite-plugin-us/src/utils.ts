@@ -42,11 +42,16 @@ export function funcToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }
 
+/**
+ * not pure func
+ */
 export function collectCssDependencies(id: string, ids?: Set<string>) {
 	if (/node_modules/.test(id) && /css$/.test(id)) {
-		if (ids) ids.add(id)
-		return ''
+		if (ids) {
+			ids.add(id)
+			return null
+		} else {
+			return ''
+		}
 	}
-
-	return null
 }
