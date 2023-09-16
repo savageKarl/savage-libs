@@ -1,4 +1,4 @@
-import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
+import type { UserConfig, PluginOption } from 'vite'
 
 import { UsOptions } from './types/userscript'
 import { plugins } from './plugins'

@@ -76,7 +76,7 @@ export const grants = gmFunctions
  * version: @see https://www.tampermonkey.net/changelog.phpversion=4.19.0&ext=dhdg
  * document: @see https://www.tampermonkey.net/documentation.phpext=dhdg&version=4.19.0
  */
-interface UserScript {
+export interface UserScript {
 	/**
 	 * 脚本名称
 	 * @see https://www.tampermonkey.net/documentation.php#meta:name
@@ -249,6 +249,8 @@ interface ManualCdnResource {
 	url: string
 }
 
+type Mode = 'development' | 'production' | 'preview'
+
 export interface UsOptions {
 	/**
 	 * path of userscript entry.
@@ -265,9 +267,12 @@ export interface UsOptions {
 	 */
 	prefix?: boolean
 	/**
-	 * automatically add grant to head metadata in development or production mode
+	 * automatically add grant to head metaData in development or production mode
 	 */
-	// autoAddGrant?: boolean
+	autoAddGrant?: boolean
+	/**
+	 * server options for development mode
+	 */
 	server?: {
 		/** if it avalible, otherwise random
 		 * @defaultValue `12345`
@@ -283,6 +288,9 @@ export interface UsOptions {
 		 */
 		host?: string
 	}
+	/**
+	 * build options for production mode
+	 */
 	build?: {
 		/**
 		 * minify js in production mode
@@ -292,7 +300,7 @@ export interface UsOptions {
 		 * minify css in production mode
 		 */
 		cssMinify?: boolean
-
+		/** extract external dependencies */
 		external?: {
 			/**
 			 * automatically load package dependencies using CDN
@@ -313,6 +321,14 @@ export interface UsOptions {
 			 */
 			include?: ManualCdnResource[]
 		}
+		/**
+		 * can modify the bundle
+		 */
+		generate?: {
+			/** headMetaData */
+			headMetaData?: (metaData: string, mode: Mode) => string
+			bundle?: (code: string, mode: Mode) => string
+		}
 	}
 	/**
 	 * userscript header metadata config.
@@ -327,3 +343,10 @@ export interface Resource {
 	external: string[]
 	urls: Record<string, string[]>
 }
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type DeepRequired<T> = T extends Function
+	? T
+	: T extends object
+	? { [P in keyof T]-?: DeepRequired<T[P]> }
+	: T

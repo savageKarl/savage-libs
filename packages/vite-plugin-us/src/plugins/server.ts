@@ -3,11 +3,11 @@ import fs from 'node:fs/promises'
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
-import { UsOptions, grants, Grants } from '../types/userscript'
+import { UsOptions, grants, Grants, DeepRequired } from '../types/userscript'
 import { generateHeadMeta } from '../generateHeadMeta'
 import { existFile, setResHeader, funcToString } from '../utils'
 
-export function serve(usOptions: Required<UsOptions>) {
+export function serve(usOptions: DeepRequired<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
 
@@ -101,13 +101,15 @@ export function serve(usOptions: Required<UsOptions>) {
 							)
 						}, scriptType),
 
-						funcToString((gmApiList: string[]) => {
-							// @ts-ignore
-							gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
-							// @ts-ignore
-							// eslint-disable-next-line dot-notation
-							unsafeWindow['GM'] = window['GM']
-						}, grants)
+						usOptions.autoAddGrant
+							? funcToString((gmApiList: string[]) => {
+									// @ts-ignore
+									gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
+									// @ts-ignore
+									// eslint-disable-next-line dot-notation
+									unsafeWindow['GM'] = window['GM']
+							  }, grants)
+							: ''
 					].join('\n')
 				)
 			})

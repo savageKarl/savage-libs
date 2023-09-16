@@ -1,23 +1,19 @@
 import { readFileSync, writeFileSync } from 'node:fs'
-import { resolve, extname } from 'node:path'
+import { resolve } from 'node:path'
+
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk } from 'rollup'
 
-import { UsOptions, grants } from '../types/userscript'
+import { UsOptions, grants, DeepRequired } from '../types/userscript'
 import { generateHeadMeta } from '../generateHeadMeta'
-import {
-	funcToString,
-	pkg,
-	collectCssDependencies,
-	resourcePath
-} from '../utils'
+import { funcToString, collectCssDependencies, resourcePath } from '../utils'
 import type { Grants, Resource } from '../types/userscript'
 
 let resovledConfig: ResolvedConfig
 let resource: Resource
 let cssUrls: string[]
 
-export function build(usOptions: Required<UsOptions>) {
+export function build(usOptions: DeepRequired<UsOptions>) {
 	return {
 		name: 'vite-plugin-us:build',
 		enforce: 'post',
@@ -76,7 +72,9 @@ export function build(usOptions: Required<UsOptions>) {
 			const matchRes = [...code.matchAll(regex)]
 			const collectedGrant = matchRes.map(v => v[0])
 
-			usOptions.headMetaData.grant = collectedGrant as unknown as Grants[]
+			if (usOptions.autoAddGrant) {
+				usOptions.headMetaData.grant = collectedGrant as Grants[]
+			}
 			const newMetaData = generateHeadMeta(usOptions.headMetaData)
 
 			const fullCodeList: string[] = []

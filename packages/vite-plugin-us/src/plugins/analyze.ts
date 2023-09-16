@@ -4,7 +4,7 @@ import { writeFile } from 'node:fs/promises'
 import type { PluginOption } from 'vite'
 import { debounce, cloneDeep, merge } from 'lodash-es'
 
-import type { UsOptions, Resource } from '../types/userscript'
+import type { UsOptions, Resource, DeepRequired } from '../types/userscript'
 import { collectCssDependencies, pkg, resourcePath } from '../utils'
 
 let exclude: string[]
@@ -17,7 +17,7 @@ const resource = {
 	urls: {}
 } as Resource
 
-export function analyze(usOptions: Required<UsOptions>) {
+export function analyze(usOptions: DeepRequired<UsOptions>) {
 	exclude = usOptions.build.external?.exclude as string[]
 
 	return {
