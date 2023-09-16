@@ -66,7 +66,7 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 		writeBundle(options, bundle) {
 			const key = Object.keys(bundle)[0]
 			const mainBundle = bundle[key] as OutputChunk
-			const code = mainBundle.code
+			const code = usOptions.generate.bundle(mainBundle.code)
 
 			const regex = new RegExp(grants.join('|').replace('|$', ''), 'g')
 			const matchRes = [...code.matchAll(regex)]
@@ -75,7 +75,10 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 			if (usOptions.autoAddGrant) {
 				usOptions.headMetaData.grant = collectedGrant as Grants[]
 			}
-			const newMetaData = generateHeadMeta(usOptions.headMetaData)
+			const newMetaData = usOptions.generate.headMetaData(
+				generateHeadMeta(usOptions.headMetaData),
+				'production'
+			)
 
 			const fullCodeList: string[] = []
 

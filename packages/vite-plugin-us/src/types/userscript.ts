@@ -321,14 +321,19 @@ export interface UsOptions {
 			 */
 			include?: ManualCdnResource[]
 		}
+	}
+	/**
+	 * can modify the head metaData and bundle
+	 */
+	generate?: {
+		/** pass in a function to modify head metaData */
+		headMetaData?: (metaData: string, mode: Mode) => string
 		/**
-		 * can modify the bundle
+		 * pass in a function to modify bundle
+		 *
+		 * it will not work, if in development mode
 		 */
-		generate?: {
-			/** headMetaData */
-			headMetaData?: (metaData: string, mode: Mode) => string
-			bundle?: (code: string, mode: Mode) => string
-		}
+		bundle?: (code: string) => string
 	}
 	/**
 	 * userscript header metadata config.

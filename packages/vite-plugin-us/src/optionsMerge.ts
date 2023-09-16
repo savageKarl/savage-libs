@@ -28,11 +28,11 @@ const defaultOpts: DeepRequired<UsOptions> = {
 			cdn: 'auto',
 			exclude: [],
 			include: []
-		},
-		generate: {
-			headMetaData: metaData => metaData,
-			bundle: code => code
 		}
+	},
+	generate: {
+		headMetaData: metaData => metaData,
+		bundle: code => code
 	},
 	headMetaData: {
 		name: pkg.name || 'vite-plugin-us',

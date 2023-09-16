@@ -35,7 +35,10 @@ export function serve(usOptions: DeepRequired<UsOptions>) {
 		async configureServer(server) {
 			const installPath = 'vite-plugin-us.user.js'
 			usOptions.headMetaData.grant = grants as unknown as Grants[]
-			const newMetaData = generateHeadMeta(usOptions.headMetaData)
+			const newMetaData = usOptions.generate.headMetaData(
+				generateHeadMeta(usOptions.headMetaData),
+				'development'
+			)
 			const { host, port } = usOptions.server
 			currentOrigin = `http://${host as string}:${port as number}`
 
