@@ -4,17 +4,18 @@ import { resolve } from 'node:path'
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk } from 'rollup'
 
-import { UsOptions, grants, DeepRequired } from '../types/userscript'
+import { grants } from '../types/userscript'
 import { generateHeadMeta } from '../utils/generateMetadata'
 import {
 	funcToString,
 	collectCssDependencies,
 	resourcePath
 } from '../utils/utils'
-import type { Grants, Resource } from '../types/userscript'
+import type { Grants, UsOptions } from '../types/userscript'
+import type { ResourceRecord, DeepRequired } from '../types/types'
 
 let resovledConfig: ResolvedConfig
-let resource: Resource
+let resource: ResourceRecord
 let cssUrls: string[]
 
 export function build(usOptions: DeepRequired<UsOptions>) {

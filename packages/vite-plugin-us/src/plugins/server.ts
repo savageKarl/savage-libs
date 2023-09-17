@@ -3,7 +3,10 @@ import fs from 'node:fs/promises'
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
-import { UsOptions, grants, Grants, DeepRequired } from '../types/userscript'
+import type { UsOptions, Grants } from '../types/userscript'
+import type { DeepRequired } from '../types/types'
+
+import { grants } from '../types/userscript'
 import { generateHeadMeta } from '../utils/generateMetadata'
 import { existFile, setResHeader, funcToString } from '../utils/utils'
 

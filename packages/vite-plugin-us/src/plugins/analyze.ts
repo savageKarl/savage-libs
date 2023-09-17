@@ -4,7 +4,8 @@ import { writeFile } from 'node:fs/promises'
 import type { PluginOption } from 'vite'
 import { debounce, cloneDeep, merge } from 'lodash-es'
 
-import type { UsOptions, Resource, DeepRequired } from '../types/userscript'
+import type { UsOptions } from '../types/userscript'
+import type { ResourceRecord, DeepRequired, PkgInfo } from '../types/types'
 import { collectCssDependencies, pkg, resourcePath } from '../utils/utils'
 import { getFastCdn } from '../utils/cdn'
 import { getGlobalNameFromUrl } from '../utils/getNameOfCode'
@@ -19,15 +20,7 @@ const resource = {
 	names: {},
 	external: [],
 	urls: {}
-} as Resource
-
-type PkgInfo = Record<
-	string,
-	{
-		paths: string[]
-		version: string
-	}
->
+} as ResourceRecord
 
 export function analyze(usOptions: DeepRequired<UsOptions>) {
 	exclude = usOptions.build.external?.exclude as string[]
