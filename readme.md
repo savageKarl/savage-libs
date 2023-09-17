@@ -1,3 +1,3 @@
 # savage-libs
 
-A monrepo is used to manage all npm packages
+A monorepo for manage all npm packages
