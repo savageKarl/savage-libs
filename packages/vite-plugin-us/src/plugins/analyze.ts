@@ -5,8 +5,8 @@ import type { PluginOption } from 'vite'
 import { debounce, cloneDeep, merge } from 'lodash-es'
 
 import type { UsOptions, Resource, DeepRequired } from '../types/userscript'
-import { collectCssDependencies, pkg, resourcePath } from '../utils'
-import { getFastCdn } from './cdn'
+import { collectCssDependencies, pkg, resourcePath } from '../utils/utils'
+import { getFastCdn } from '../utils/cdn'
 
 let exclude: string[]
 
@@ -19,6 +19,14 @@ const resource = {
 	external: [],
 	urls: {}
 } as Resource
+
+type PkgInfo = Record<
+	string,
+	{
+		paths: string[]
+		version: string
+	}
+>
 
 export function analyze(usOptions: DeepRequired<UsOptions>) {
 	exclude = usOptions.build.external?.exclude as string[]
@@ -59,19 +67,23 @@ async function collectDependencies(code: string, id: string) {
 		if (isInPkg) ids.add(path)
 	})
 }
+
 /** not pure function */
 const parseIds = debounce(async () => {
 	const paths = await normalizePaths(ids)
 	const external = await getExternal(paths)
-	const pkgPaths = await getPkgInfo(paths)
-	const pkgCdn = await getPkgCdn(pkgPaths)
-	const classifiedPath = await classifyPath(await setCdnUrl(pkgPaths, pkgCdn))
-	const globalNames = await getGolbalName(external, pkgCdn)
+	const pkgInfo = await getPkgInfo(paths)
+	const fastCdn = await getFastCdn()
+	const classifiedPath = await classifyPath(
+		await getPkgPathsWithCdn(pkgInfo, fastCdn)
+	)
+
+	const globalNames = await getGlobalNames(external, classifiedPath.js || [])
 
 	resource.external = [...resource.external, ...external]
 	resource.names = merge(resource.names, globalNames)
 	resource.urls = merge(resource.urls, classifiedPath)
-
+	// TODO handle resources
 	await writeFile(resourcePath, JSON.stringify(resource), { encoding: 'utf-8' })
 
 	ids.clear()
@@ -98,55 +110,60 @@ async function getExternal(ids: string[]) {
 	return [...new Set(external)]
 }
 
-// TODO need to collec version info
 async function getPkgInfo(ids: string[]) {
-	const pkgPaths: Record<string, string[]> = {}
+	const pkgInfo: PkgInfo = {}
 	ids.forEach(id => {
 		const pkgname = regPkg.exec(id)?.[0] as string
-		if (pkgPaths[pkgname]) pkgPaths[pkgname].push(id)
-		else pkgPaths[pkgname] = [id]
+		pkgInfo[pkgname].version = pkg.dependencies?.[pkgname] as string
+		if (pkgInfo[pkgname].paths) pkgInfo[pkgname].paths.push(id)
+		else pkgInfo[pkgname].paths = [id]
 	})
-	return pkgPaths
+	return pkgInfo
 }
-/**
- *
- * @returns example`{ 'vue': 'https://unpkg.com' }`
- */
-async function getPkgCdn(pkgPaths: Record<string, string[]>) {
-	const pkgCdn: Record<string, string> = {}
-	const cdn = await getFastCdn()
-	for (const pkg in pkgPaths) {
-		pkgCdn[pkg] = cdn
+// /**
+//  *
+//  * @returns example`{ 'vue': 'https://unpkg.com' }`
+//  */
+// async function getPkgCdn(pkgPaths: Record<string, string[]>) {
+// 	const pkgCdn: Record<string, string> = {}
+// 	const cdn = await getFastCdn()
+// 	for (const pkg in pkgPaths) {
+// 		pkgCdn[pkg] = cdn
+// 	}
+
+// 	return pkgCdn
+// }
+
+async function getNameFromCode(pkgName: string, url: string) {
+	// TODO get global name from code by url
+	let globalName: string
+
+	return {
+		pkgName,
+		globalName: pkgName
 	}
-
-	return pkgCdn
 }
 
-async function getGolbalName(
-	external: string[],
-	pkgcdn: Record<string, string>
-) {
+async function getGlobalNames(external: string[], urls: string[]) {
 	const names: Record<string, string> = {}
 
-	external.forEach(v => {
-		const url = `${pkgcdn[v]}/${v}`
-		// TODO use ast to analyze global name
-		if (v === 'vue') names[v] = 'Vue'
-		else names[v] = v
-	})
+	// external.forEach(v => {
+	// 	const url = `${cdn}/${v}`
+	// 	// TODO use ast to analyze global name
+	// 	if (v === 'vue') names[v] = 'Vue'
+	// 	else names[v] = v
+	// })
 
 	return names
 }
 
-async function setCdnUrl(
-	pkgPaths: Record<string, string[]>,
-	pkgcdn: Record<string, string>
-) {
-	const _pkgPaths = cloneDeep(pkgPaths)
-	for (const k in _pkgPaths) {
-		_pkgPaths[k] = _pkgPaths[k].map(p => `${pkgcdn[k]}/${p}`)
+async function getPkgPathsWithCdn(pkgInfo: PkgInfo, cdn: string) {
+	// TODO auto find url
+	const pkgPaths = {} as Record<string, string[]>
+	for (const k in pkgInfo) {
+		pkgPaths[k] = pkgInfo[k].paths.map(p => `${cdn}/${p}`)
 	}
-	return _pkgPaths
+	return pkgPaths
 }
 
 async function classifyPath(pkgPaths: Record<string, string[]>) {

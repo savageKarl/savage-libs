@@ -1,4 +1,4 @@
-import { HeadMetaData } from './types/userscript'
+import { HeadMetaData } from '../types/userscript'
 
 const padLen = 20
 

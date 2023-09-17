@@ -2,7 +2,7 @@ import type { UserConfig, PluginOption } from 'vite'
 
 import { UsOptions } from './types/userscript'
 import { plugins } from './plugins'
-import { mergeOptions } from './optionsMerge'
+import { mergeOptions } from './utils/optionsMerge'
 
 export function us(usOptions: UsOptions) {
 	const usOptionsMerged = mergeOptions(usOptions)

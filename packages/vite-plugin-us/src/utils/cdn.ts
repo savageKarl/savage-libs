@@ -7,7 +7,7 @@ axios.interceptors.response.use(
 
 // @ts-ignore
 // eslint-disable-next-line dot-notation
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
+// process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
 const without = [
 	// https://unpkg.com/

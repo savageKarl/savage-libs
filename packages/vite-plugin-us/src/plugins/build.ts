@@ -5,8 +5,12 @@ import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk } from 'rollup'
 
 import { UsOptions, grants, DeepRequired } from '../types/userscript'
-import { generateHeadMeta } from '../generateHeadMeta'
-import { funcToString, collectCssDependencies, resourcePath } from '../utils'
+import { generateHeadMeta } from '../utils/generateMetadata'
+import {
+	funcToString,
+	collectCssDependencies,
+	resourcePath
+} from '../utils/utils'
 import type { Grants, Resource } from '../types/userscript'
 
 let resovledConfig: ResolvedConfig
@@ -28,7 +32,7 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 
 			const r = usOptions.headMetaData.require
 			usOptions.headMetaData.require = r?.concat(jsUrls)
-
+			// TODO handle resources
 			return {
 				build: {
 					assetsInlineLimit: Number.MAX_SAFE_INTEGER,
