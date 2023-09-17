@@ -4,8 +4,8 @@ import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
 import { UsOptions, grants, Grants, DeepRequired } from '../types/userscript'
-import { generateHeadMeta } from '../generateMetadata'
-import { existFile, setResHeader, funcToString } from '../utils'
+import { generateHeadMeta } from '../utils/generateMetadata'
+import { existFile, setResHeader, funcToString } from '../utils/utils'
 
 export function serve(usOptions: DeepRequired<UsOptions>) {
 	let resovledConfig: ResolvedConfig

@@ -51,3 +51,12 @@ export function collectCssDependencies(id: string, ids?: Set<string>) {
 }
 
 export const resourcePath = 'node_modules/.vite/vite-plugin-us.resource.json'
+
+export function unionRegex(arr: RegExp[]) {
+	return new RegExp(
+		arr
+			.map(r => String(r).replace(/\/|g/g, ''))
+			.join('|')
+			.replace(/|$/, '')
+	)
+}

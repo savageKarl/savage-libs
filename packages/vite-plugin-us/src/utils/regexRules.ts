@@ -1,0 +1,18 @@
+export const regUmdRules = [
+	/typeof exports ?={2,3} ?(?<quote>'|")object\k<quote> ?&& ?typeof module ?!={1,2} ?\k<quote>undefined\k<quote>/g,
+	/typeof define ?={2,3} ?(?<quote>'|")function\k<quote> ?&& ?define\.amd/g,
+	/typeof globalThis ?!={1,2} ?(?<quote>'|")undefined\k<quote> ?\? ?globalThis/g,
+	/function"={2,3}typeof ?define&&define/g,
+	/"object"={2,3}typeof exports ?&& ?"undefined"!={1,2}typeof module/g,
+	/typeof ?module ?={2,3} ?"object" ?&& ?typeof ?module.exports ?={2,3} ?"object"/g,
+	/"object"={2,3}typeof ?module ?&& ?"object" ?={2,3} ?typeof module.exports/g
+]
+
+export const regNameWithUmdRules = [
+	/function ?\((?<this>\w+?), ?\w+?\)[\s\S]+?\k<this>\.(?<name2>\w+) ?= ?/g,
+	/\.(?<name3>\w+)=((\{\})|(\w+\(\)))/g
+]
+
+export const regGlobalRules = [/^var (\w+) ?= ?\(?function ?\(\w+/g]
+
+export const regNameWithGlobalRules = regGlobalRules
