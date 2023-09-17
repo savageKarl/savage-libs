@@ -305,8 +305,6 @@ export interface UsOptions {
 			/**
 			 * automatically load package dependencies using CDN
 			 *
-			 * if value is `auto`, `include` will not work
-			 *
 			 * if value is `manual`, `exclude` will not work
 			 *
 			 * @defaultValue `auto`

@@ -7,6 +7,7 @@ import { debounce, cloneDeep, merge } from 'lodash-es'
 import type { UsOptions, Resource, DeepRequired } from '../types/userscript'
 import { collectCssDependencies, pkg, resourcePath } from '../utils/utils'
 import { getFastCdn } from '../utils/cdn'
+import { getGlobalNameFromUrl } from '../utils/getNameOfCode'
 
 let exclude: string[]
 
@@ -120,39 +121,25 @@ async function getPkgInfo(ids: string[]) {
 	})
 	return pkgInfo
 }
-// /**
-//  *
-//  * @returns example`{ 'vue': 'https://unpkg.com' }`
-//  */
-// async function getPkgCdn(pkgPaths: Record<string, string[]>) {
-// 	const pkgCdn: Record<string, string> = {}
-// 	const cdn = await getFastCdn()
-// 	for (const pkg in pkgPaths) {
-// 		pkgCdn[pkg] = cdn
-// 	}
 
-// 	return pkgCdn
-// }
-
-async function getNameFromCode(pkgName: string, url: string) {
-	// TODO get global name from code by url
-	let globalName: string
-
-	return {
-		pkgName,
-		globalName: pkgName
-	}
-}
-
+/**
+ *
+ * @returns
+ * `{ vue: 'Vue' }`
+ */
 async function getGlobalNames(external: string[], urls: string[]) {
 	const names: Record<string, string> = {}
 
-	// external.forEach(v => {
-	// 	const url = `${cdn}/${v}`
-	// 	// TODO use ast to analyze global name
-	// 	if (v === 'vue') names[v] = 'Vue'
-	// 	else names[v] = v
-	// })
+	const records = external.map(v => {
+		const url = urls.filter(u => new RegExp(v).test(u))[0]
+		return [v, url]
+	})
+
+	const res = await Promise.all(
+		records.map(v => getGlobalNameFromUrl(v[0], v[1]))
+	)
+
+	res.forEach(v => (names[v[0]] = v[1]))
 
 	return names
 }
