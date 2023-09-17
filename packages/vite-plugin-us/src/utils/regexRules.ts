@@ -1,7 +1,7 @@
 export const regUmdRules = [
 	/typeof exports ?={2,3} ?(?<quote>'|")object\k<quote> ?&& ?typeof module ?!={1,2} ?\k<quote>undefined\k<quote>/g,
-	/typeof define ?={2,3} ?(?<quote>'|")function\k<quote> ?&& ?define\.amd/g,
-	/typeof globalThis ?!={1,2} ?(?<quote>'|")undefined\k<quote> ?\? ?globalThis/g,
+	/typeof define ?={2,3} ?(?<quote1>'|")function\k<quote1> ?&& ?define\.amd/g,
+	/typeof globalThis ?!={1,2} ?(?<quote2>'|")undefined\k<quote2> ?\? ?globalThis/g,
 	/function"={2,3}typeof ?define&&define/g,
 	/"object"={2,3}typeof exports ?&& ?"undefined"!={1,2}typeof module/g,
 	/typeof ?module ?={2,3} ?"object" ?&& ?typeof ?module.exports ?={2,3} ?"object"/g,
@@ -13,6 +13,12 @@ export const regNameWithUmdRules = [
 	/\.(?<name3>\w+)=((\{\})|(\w+\(\)))/g
 ]
 
-export const regGlobalRules = [/^var (\w+) ?= ?\(?function ?\(\w+/g]
+export const regGlobalRules = [/^var (?<name>\w+) ?= ?\(?function ?\(\w+/g]
 
 export const regNameWithGlobalRules = regGlobalRules
+
+export const regIifeRules = [
+	/(;\(|!)function ?\((?<this>.)\) ?\{[\s\S]+\k<this>\.(?<name>\w+) ?= ?\w+/g
+]
+
+export const regNameWithIifeRules = regIifeRules
