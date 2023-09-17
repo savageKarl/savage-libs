@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { readFileSync, statSync } from 'node:fs'
 import type { ServerResponse } from 'node:http'
@@ -6,15 +5,11 @@ import type { ServerResponse } from 'node:http'
 import type { IPackageJson } from '@ts-type/package-dts'
 
 export const pkg = (() => {
-	let pkg: IPackageJson
+	let pkg = '{}'
 	try {
-		pkg = JSON.parse(
-			readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
-		) as IPackageJson
-	} catch {
-		pkg = {}
-	}
-	return pkg
+		pkg = readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
+	} catch {}
+	return JSON.parse(pkg) as IPackageJson
 })()
 
 export const existFile = (path: string) => {
@@ -25,9 +20,7 @@ export const existFile = (path: string) => {
 	}
 }
 
-/**
- * not pure func
- */
+/** not pure func */
 export function setResHeader(
 	res: ServerResponse,
 	headers: Record<string, string>
@@ -45,9 +38,7 @@ export function funcToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }
 
-/**
- * not pure func
- */
+/** not pure func */
 export function collectCssDependencies(id: string, ids?: Set<string>) {
 	if (/node_modules/.test(id) && /css$/.test(id)) {
 		if (ids) {

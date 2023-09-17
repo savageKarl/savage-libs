@@ -83,11 +83,13 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 			const fullCodeList: string[] = []
 
 			const autoInjectExternalCss = funcToString(function (links: string[]) {
-				links.forEach(v => {
-					const link = document.createElement('link')
-					link.rel = 'stylesheet'
-					link.href = v
-					document.head.appendChild(link)
+				window.addEventListener('DOMContentLoaded', () => {
+					links.forEach(v => {
+						const link = document.createElement('link')
+						link.rel = 'stylesheet'
+						link.href = v
+						document.head.appendChild(link)
+					})
 				})
 			}, cssUrls)
 			fullCodeList.push(autoInjectExternalCss)
