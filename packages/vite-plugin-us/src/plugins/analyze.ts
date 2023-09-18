@@ -5,9 +5,9 @@ import type { PluginOption } from 'vite'
 import { debounce, merge } from 'lodash-es'
 
 import type { UsOptions } from '../types/userscript'
-import type { ResourceRecord, DeepRequired, PkgInfo } from '../types/types'
+import type { ResourceRecord, DeepRequired, PkgRecord } from '../types/types'
 import { collectCssDependencies, pkg, resourcePath } from '../utils/utils'
-import { getPkgPathsWithCdn } from '../utils/cdn'
+import { getPkgCdnUrlsRecord } from '../utils/cdn'
 import { getGlobalNameFromUrl } from '../utils/getNameOfCode'
 
 let exclude: string[]
@@ -67,13 +67,14 @@ const parseIds = debounce(async () => {
 	const paths = await normalizePaths(ids)
 	const external = await getExternal(paths)
 	const pkgInfo = await getPkgInfo(paths)
-	const classifiedPath = await classifyPath(await getPkgPathsWithCdn(pkgInfo))
+	const pkgCdnUrl = await getPkgCdnUrlsRecord(pkgInfo)
+	const classifiedUrls = await classifyPath(pkgCdnUrl)
 
-	const globalNames = await getGlobalNames(external, classifiedPath.js || [])
+	const globalNames = await getGlobalNames(external, classifiedUrls.js || [])
 
 	resource.external = [...resource.external, ...external]
 	resource.names = merge(resource.names, globalNames)
-	resource.urls = merge(resource.urls, classifiedPath)
+	resource.urls = merge(resource.urls, classifiedUrls)
 	// TODO handle resources
 	await writeFile(resourcePath, JSON.stringify(resource), { encoding: 'utf-8' })
 
@@ -102,7 +103,7 @@ async function getExternal(ids: string[]) {
 }
 
 async function getPkgInfo(ids: string[]) {
-	const pkgInfo: PkgInfo = {}
+	const pkgInfo: PkgRecord = {}
 	ids.forEach(id => {
 		const pkgname = regPkg.exec(id)?.[0] as string
 		pkgInfo[pkgname].version = pkg.dependencies?.[pkgname] as string

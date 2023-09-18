@@ -1,6 +1,13 @@
 import axios from 'axios'
 
-import type { PkgInfo } from '../types/types'
+import {
+	PkgRecord,
+	JsdelivrPkgPathInfo,
+	NpmmirrorPkgPathInfo,
+	PkgPathInfo,
+	isJsdelivrPkgPathInfo,
+	isNpmmirrorPkgPathInfo
+} from '../types/types'
 
 axios.interceptors.response.use(
 	response => response,
@@ -35,11 +42,11 @@ const widthin = [
 
 const urls = [...without, ...widthin]
 
-let cdn: string
+let cdnFastest: string
 let cdnType: 'without' | 'within'
 
 getFastCdn().then(res => {
-	cdn = res
+	cdnFastest = res
 	cdnType = getCdnType(res)
 })
 
@@ -55,23 +62,20 @@ function getCdnType(cdn: string) {
 	return type
 }
 
-// function jointUrl(pkgName: string, version: string) {
-
-// }
-
-async function getPkgJsonAndFilesPathUrl(pkgName: string, version: string) {
+function getPkgJsonAndDirectoryUrl(pkgName: string, version: string) {
 	const isWithout = cdnType === 'without'
-	const origin = isWithout ? without[0] : widthin[0]
+	const cdnOrigin = isWithout ? without[0] : widthin[0]
 	const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm/'
 
 	let pkgJsonUrl = ''
 	let filesDirectoryUrl = ''
+
 	if (isWithout) {
-		pkgJsonUrl = `${origin}/${pkgName}@${version}/package.json`
+		pkgJsonUrl = `${cdnOrigin}/${pkgName}@${version}/package.json`
 		filesDirectoryUrl = `${jsdelivrDirectoryOrigin}/${pkgName}@${version}`
 	} else {
-		pkgJsonUrl = `${origin}/${pkgName}/${version}/files/package.json`
-		filesDirectoryUrl = `${origin}/${pkgName}/${version}/files?meta`
+		pkgJsonUrl = `${cdnOrigin}/${pkgName}/${version}/files/package.json`
+		filesDirectoryUrl = `${cdnOrigin}/${pkgName}/${version}/files?meta`
 	}
 
 	return {
@@ -80,17 +84,83 @@ async function getPkgJsonAndFilesPathUrl(pkgName: string, version: string) {
 	}
 }
 
-async function getPkgPathList(pkgName: string, version: string) {}
+// async function analyzePkgInfo(params: type) {}
 
-function setCdnUrlWithPkg(pkgName: string, paths: string[], version: string) {
-	// const pkg
-	return { pkgName, paths }
+async function getPkgPathList(directoryInfo: PkgPathInfo) {
+	const strategy = {
+		without: parseJsDelivrPathInfo,
+		within: parseNpmmirrorPathInfo
+	}
+
+	return strategy[cdnType](directoryInfo)
 }
 
-export async function getPkgPathsWithCdn(pkgInfo: PkgInfo) {
-	const pkgPaths = {} as Record<string, string[]>
-	for (const k in pkgInfo) {
-		pkgPaths[k] = pkgInfo[k].paths.map(p => `${cdn}/${p}`)
+function parseJsDelivrPathInfo(
+	pathInfo: JsdelivrPkgPathInfo,
+	upperLevernName?: string
+) {
+	const paths: string[] = []
+
+	if (pathInfo.type === 'file' || pathInfo.type === 'npm') {
+		paths.push(
+			upperLevernName ? `${upperLevernName}/${pathInfo.name}` : pathInfo.name
+		)
 	}
-	return pkgPaths
+
+	if (pathInfo.type === 'directory' || pathInfo.type === 'npm') {
+		pathInfo.files.forEach(v =>
+			paths.push(...parseJsDelivrPathInfo(v, pathInfo.name))
+		)
+	}
+
+	return paths
+}
+function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
+	const paths: string[] = []
+
+	if (pathInfo.type === 'file') {
+		paths.push(pathInfo.path)
+	}
+
+	if (pathInfo.type === 'directory') {
+		pathInfo.files.forEach(v => paths.push(...parseNpmmirrorPathInfo(v)))
+	}
+
+	return paths
+}
+
+async function setCdnUrlWithPkg(
+	pkgName: string,
+	urls: string[],
+	version: string
+) {
+	const { pkgJsonUrl, filesDirectoryUrl } = await getPkgJsonAndDirectoryUrl(
+		pkgName,
+		version
+	)
+
+	const [pkg, directoryInfo] = await Promise.all([
+		axios.get(pkgJsonUrl),
+		axios.get(filesDirectoryUrl)
+	])
+
+	// const pkg = await axios.get(pkgJsonUrl)
+	// const directoryInfo =
+
+	// const res = await getPkgPathList(pkgName, version)
+	// return { urls }
+}
+
+export async function getPkgCdnUrlsRecord(pkgRecord: PkgRecord) {
+	const pkgUrlsRecord = {} as Record<string, string[]>
+
+	for (const pkgName in pkgRecord) {
+		const { urls } = await setCdnUrlWithPkg(
+			pkgName,
+			pkgRecord[pkgName].paths,
+			pkgRecord[pkgName].version
+		)
+		pkgUrlsRecord[pkgName] = urls
+	}
+	return pkgUrlsRecord
 }

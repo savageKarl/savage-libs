@@ -1,4 +1,4 @@
-export type PkgInfo = Record<
+export type PkgRecord = Record<
 	string,
 	{
 		paths: string[]
@@ -40,7 +40,7 @@ interface NpmmirrorDirectoryType {
 	files: (NpmmirrorFileType | NpmmirrorDirectoryType)[]
 }
 
-export type PkgPathInfoWithNpmmirror = NpmmirrorDirectoryType
+export type NpmmirrorPkgPathInfo = NpmmirrorDirectoryType | NpmmirrorFileType
 
 interface JsDelivrFileType {
 	type: 'file'
@@ -55,6 +55,17 @@ interface JsDelivrDirectoryType {
 	files: (JsDelivrFileType | JsDelivrDirectoryType)[]
 }
 
-export type PkgPathInfoWitJsdelivr = JsDelivrDirectoryType
+export type JsdelivrPkgPathInfo =
+	| JsDelivrFileType
+	| JsDelivrDirectoryType
+	| {
+			type: 'npm'
+			name: string
+			version: string
+			default: string
+			files: (JsDelivrFileType | JsDelivrDirectoryType)[]
+	  }
 
 export type Fun = (...args: unknown[]) => 'nextNode' | null
+
+export type PkgPathInfo = NpmmirrorPkgPathInfo & JsdelivrPkgPathInfo
