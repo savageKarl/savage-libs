@@ -1,10 +1,10 @@
-import { Fun } from '../types/types'
+import { ChainNodeFun } from '../types/types'
 
 class ChainNode {
-	private fn: Fun
+	private fn: ChainNodeFun
 	private successor: this | null = null
 
-	constructor(fn: Fun) {
+	constructor(fn: ChainNodeFun) {
 		this.fn = fn
 	}
 
@@ -28,33 +28,7 @@ class ChainNode {
 }
 
 export class Chain {
-	turnToNode(fn: Fun) {
+	turnToNode(fn: ChainNodeFun) {
 		return new ChainNode(fn)
 	}
 }
-
-const chain = new Chain()
-
-const fn1 = chain.turnToNode(function () {
-	console.log('1')
-	return 'nextNode'
-})
-
-const fn2 = chain.turnToNode(function () {
-	console.log('2')
-	return 'nextNode'
-})
-
-const fn3 = chain.turnToNode(function () {
-	console.log('3')
-	return 'nextNode'
-})
-
-const last = chain.turnToNode(function () {
-	console.log('i am the last ndoe')
-	return null
-})
-
-fn1.setNextNode(fn2).setNextNode(fn3).setNextNode(last)
-
-fn1.passRequest()

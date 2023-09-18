@@ -66,6 +66,6 @@ export type JsdelivrPkgPathInfo =
 			files: (JsDelivrFileType | JsDelivrDirectoryType)[]
 	  }
 
-export type Fun = (...args: unknown[]) => 'nextNode' | null
+export type ChainNodeFun = (...args: unknown[]) => 'nextNode' | void
 
 export type PkgPathInfo = NpmmirrorPkgPathInfo & JsdelivrPkgPathInfo

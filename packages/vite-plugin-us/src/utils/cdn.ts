@@ -5,9 +5,10 @@ import {
 	JsdelivrPkgPathInfo,
 	NpmmirrorPkgPathInfo,
 	PkgPathInfo,
-	isJsdelivrPkgPathInfo,
-	isNpmmirrorPkgPathInfo
+	PkgCDN
 } from '../types/types'
+
+import { seekPkgMainPath } from './seekPkgMainPath'
 
 axios.interceptors.response.use(
 	response => response,
@@ -40,7 +41,7 @@ const widthin = [
 	'https://cdn.staticfile.org'
 ]
 
-const urls = [...without, ...widthin]
+const cdnUrls = [...without, ...widthin]
 
 let cdnFastest: string
 let cdnType: 'without' | 'within'
@@ -51,7 +52,7 @@ getFastCdn().then(res => {
 })
 
 async function getFastCdn() {
-	const winner = await Promise.race([...urls.map(v => axios.options(v))])
+	const winner = await Promise.race([...cdnUrls.map(v => axios.options(v))])
 	return winner.config.url as string
 }
 
@@ -84,9 +85,7 @@ function getPkgJsonAndDirectoryUrl(pkgName: string, version: string) {
 	}
 }
 
-// async function analyzePkgInfo(params: type) {}
-
-async function getPkgPathList(directoryInfo: PkgPathInfo) {
+function getPkgPathList(directoryInfo: PkgPathInfo) {
 	const strategy = {
 		without: parseJsDelivrPathInfo,
 		within: parseNpmmirrorPathInfo
@@ -131,10 +130,10 @@ function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
 
 async function setCdnUrlWithPkg(
 	pkgName: string,
-	urls: string[],
+	paths: string[],
 	version: string
 ) {
-	const { pkgJsonUrl, filesDirectoryUrl } = await getPkgJsonAndDirectoryUrl(
+	const { pkgJsonUrl, filesDirectoryUrl } = getPkgJsonAndDirectoryUrl(
 		pkgName,
 		version
 	)
@@ -144,11 +143,23 @@ async function setCdnUrlWithPkg(
 		axios.get(filesDirectoryUrl)
 	])
 
+	const allPaths = getPkgPathList(directoryInfo as unknown as PkgPathInfo)
+	const urls: string[] = []
+
+	// TODO need to join cdn origin, wait..
+	paths.forEach(async p => {
+		if (p === pkgName) {
+			urls.push(await seekPkgMainPath(pkg as unknown as PkgCDN, allPaths))
+		} else {
+			urls.push(p)
+		}
+	})
+
 	// const pkg = await axios.get(pkgJsonUrl)
 	// const directoryInfo =
 
 	// const res = await getPkgPathList(pkgName, version)
-	// return { urls }
+	return { urls }
 }
 
 export async function getPkgCdnUrlsRecord(pkgRecord: PkgRecord) {
