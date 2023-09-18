@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import type { PkgInfo } from '../types/types'
+
 axios.interceptors.response.use(
 	response => response,
 	err => Promise.resolve(err)
@@ -10,10 +12,10 @@ axios.interceptors.response.use(
 // process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
 const without = [
+	// https://www.jsdelivr.com/
+	'https://cdn.jsdelivr.net/npm/',
 	// https://unpkg.com/
 	'https://unpkg.com',
-	// https://www.jsdelivr.com/
-	'https://www.jsdelivr.com',
 	// https://cdnjs.com/libraries
 	'https://cdnjs.cloudflare.com'
 ]
@@ -31,13 +33,64 @@ const widthin = [
 	'https://cdn.staticfile.org'
 ]
 
-// 区分国内外的情况，国内的cdn拿npmmirror这个来做分析，国外的
-// 用路径分析，然后再去使用最新的cdn进行组合url
 const urls = [...without, ...widthin]
 
-// 将在这里进行自动选择cdn
-export async function getFastCdn() {
-	const winner = await Promise.race([...urls.map(v => axios.options(v))])
+let cdn: string
+let cdnType: 'without' | 'within'
 
+getFastCdn().then(res => {
+	cdn = res
+	cdnType = getCdnType(res)
+})
+
+async function getFastCdn() {
+	const winner = await Promise.race([...urls.map(v => axios.options(v))])
 	return winner.config.url as string
+}
+
+function getCdnType(cdn: string) {
+	let type: 'without' | 'within' = 'without'
+	if (without.includes(cdn)) type = 'without'
+	if (widthin.includes(cdn)) type = 'within'
+	return type
+}
+
+// function jointUrl(pkgName: string, version: string) {
+
+// }
+
+async function getPkgJsonAndFilesPathUrl(pkgName: string, version: string) {
+	const isWithout = cdnType === 'without'
+	const origin = isWithout ? without[0] : widthin[0]
+	const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm/'
+
+	let pkgJsonUrl = ''
+	let filesDirectoryUrl = ''
+	if (isWithout) {
+		pkgJsonUrl = `${origin}/${pkgName}@${version}/package.json`
+		filesDirectoryUrl = `${jsdelivrDirectoryOrigin}/${pkgName}@${version}`
+	} else {
+		pkgJsonUrl = `${origin}/${pkgName}/${version}/files/package.json`
+		filesDirectoryUrl = `${origin}/${pkgName}/${version}/files?meta`
+	}
+
+	return {
+		pkgJsonUrl,
+		filesDirectoryUrl
+	}
+}
+
+async function getPkgPathList(pkgName: string, version: string) {}
+
+function setCdnUrlWithPkg(pkgName: string, paths: string[], version: string) {
+	// const pkg
+	return { pkgName, paths }
+}
+
+export async function getPkgPathsWithCdn(pkgInfo: PkgInfo) {
+	const pkgPaths = {} as Record<string, string[]>
+	for (const k in pkgInfo) {
+		pkgPaths[k] = pkgInfo[k].paths.map(p => `${cdn}/${p}`)
+	}
+	return pkgPaths
 }

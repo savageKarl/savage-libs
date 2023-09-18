@@ -2,12 +2,12 @@ import { extname } from 'node:path'
 import { writeFile } from 'node:fs/promises'
 
 import type { PluginOption } from 'vite'
-import { debounce, cloneDeep, merge } from 'lodash-es'
+import { debounce, merge } from 'lodash-es'
 
 import type { UsOptions } from '../types/userscript'
 import type { ResourceRecord, DeepRequired, PkgInfo } from '../types/types'
 import { collectCssDependencies, pkg, resourcePath } from '../utils/utils'
-import { getFastCdn } from '../utils/cdn'
+import { getPkgPathsWithCdn } from '../utils/cdn'
 import { getGlobalNameFromUrl } from '../utils/getNameOfCode'
 
 let exclude: string[]
@@ -67,10 +67,7 @@ const parseIds = debounce(async () => {
 	const paths = await normalizePaths(ids)
 	const external = await getExternal(paths)
 	const pkgInfo = await getPkgInfo(paths)
-	const fastCdn = await getFastCdn()
-	const classifiedPath = await classifyPath(
-		await getPkgPathsWithCdn(pkgInfo, fastCdn)
-	)
+	const classifiedPath = await classifyPath(await getPkgPathsWithCdn(pkgInfo))
 
 	const globalNames = await getGlobalNames(external, classifiedPath.js || [])
 
@@ -123,27 +120,18 @@ async function getPkgInfo(ids: string[]) {
 async function getGlobalNames(external: string[], urls: string[]) {
 	const names: Record<string, string> = {}
 
-	const records = external.map(v => {
-		const url = urls.filter(u => new RegExp(v).test(u))[0]
-		return [v, url]
+	const records = external.map(pkgName => {
+		const url = urls.filter(url => new RegExp(pkgName).test(url))[0]
+		return { pkgName, url }
 	})
 
 	const res = await Promise.all(
-		records.map(v => getGlobalNameFromUrl(v[0], v[1]))
+		records.map(v => getGlobalNameFromUrl(v.pkgName, v.url))
 	)
 
-	res.forEach(v => (names[v[0]] = v[1]))
+	res.forEach(v => (names[v.pkgName] = v.globalVariableName))
 
 	return names
-}
-
-async function getPkgPathsWithCdn(pkgInfo: PkgInfo, cdn: string) {
-	// TODO auto find url
-	const pkgPaths = {} as Record<string, string[]>
-	for (const k in pkgInfo) {
-		pkgPaths[k] = pkgInfo[k].paths.map(p => `${cdn}/${p}`)
-	}
-	return pkgPaths
 }
 
 async function classifyPath(pkgPaths: Record<string, string[]>) {

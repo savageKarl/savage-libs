@@ -20,7 +20,7 @@ axios.interceptors.response.use(
 )
 
 let code: string
-let packageName: string
+let pkgName: string
 
 const regUmd = unionRegex(regUmdRules)
 const regNameWithUmd = unionRegex(regNameWithUmdRules)
@@ -41,7 +41,7 @@ function getModuleType() {
 }
 
 function capitalizeName() {
-	const upperCase = packageName.split('-').reduce((pre, cur) => {
+	const upperCase = pkgName.split('-').reduce((pre, cur) => {
 		const splitArr = cur.split('')
 		splitArr[0] = splitArr[0].toUpperCase()
 		return pre + splitArr.join('')
@@ -84,26 +84,24 @@ function getNameFromUmdModule() {
 		return isNameKey && isHaveValue
 	})[0]
 
-	const name = matchResult?.groups?.[key] ?? packageName
+	const name = matchResult?.groups?.[key] ?? pkgName
 
 	return name
 }
 
 function getNameFromGlobalModule() {
-	return code.match(regNameWithGlobal)?.groups?.name ?? packageName
+	return code.match(regNameWithGlobal)?.groups?.name ?? pkgName
 }
 
 function getNameFromIifeModule() {
-	return code.match(regNameWithIife)?.groups?.name ?? packageName
+	return code.match(regNameWithIife)?.groups?.name ?? pkgName
 }
 
 /** not pure function */
 export async function getGlobalNameFromUrl(pkgName: string, url: string) {
-	packageName = pkgName
-
 	const content = (await axios.get(url)) as string
 	code = content
 	const globalVariableName = getNameFromCode()
 
-	return [packageName, globalVariableName]
+	return { pkgName, globalVariableName }
 }
