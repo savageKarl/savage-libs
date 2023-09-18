@@ -118,8 +118,5 @@
 		"vitest": "^0.34.3",
 		"vue": "^3.3.4",
 		"vue-tsc": "1.8.11"
-	},
-	"dependencies": {
-		"fs-extra": "11.1.1"
 	}
 }
