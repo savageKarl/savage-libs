@@ -2,19 +2,36 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import HelloWorld from './components/HelloWorld.vue';
-import viteLogoUrl from './assets/vite.svg';
-import vueLogoUrl from './assets/vue.svg';
+import viteLogoUrl from './assets/vite.svg?inline';
+import vueLogoUrl from './assets/vue.svg?inline';
+// import fastUrl from './assets/fast.jpg'
+// import remote from 'https://vitejs.dev/logo.svg'
+
+
+// GM_log('hello, world')
+
+// console.log(typeof GM_xmlhttpRequest)
+// console.log(GM_info)
+// console.log(typeof (window as any).GM.setValue)
+//@ts-ignore
 
 </script>
 
 <template>
   <div>
+    <el-button type="primary">click</el-button>
     <a href="https://vitejs.dev" target="_blank">
       <img :src="viteLogoUrl" class="logo" alt="Vite logo" />
     </a>
     <a href="https://vuejs.org/" target="_blank">
       <img :src="vueLogoUrl" class="logo vue" alt="Vue logo" />
     </a>
+    <a href="https://vuejs.org/" target="_blank">
+      <!-- <img :src="fastUrl" class="logo vue" alt="Vue logo" /> -->
+    </a>
+    <!-- <a href="https://vuejs.org/" target="_blank">
+      <img :src="remote" class="logo vue" alt="Vue logo" />
+    </a> -->
   </div>
   <HelloWorld msg="Vite + Vue" />
 </template>
