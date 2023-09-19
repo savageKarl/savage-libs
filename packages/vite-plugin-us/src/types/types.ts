@@ -107,4 +107,9 @@ export interface ItemCDN {
 	 * @defaultValue `true`
 	 */
 	removeDistPath?: boolean
+
+	/**
+	 * if is the leading CDN
+	 */
+	isLeading?: boolean
 }

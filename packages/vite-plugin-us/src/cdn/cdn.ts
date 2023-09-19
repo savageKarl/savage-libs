@@ -1,9 +1,3 @@
-import path, { extname } from 'node:path'
-
-import axios from 'axios'
-
-import { getSingle } from 'savage-utils'
-
 import {
 	PkgRecord,
 	JsdelivrPkgPathInfo,
@@ -14,29 +8,14 @@ import {
 } from '../types/types'
 
 import { seekPkgMainPath } from './seekPkgMainPath'
-import { jsdelivr, npmmirror, usedCdnList } from './useCdn'
-import { Chain } from '../utils/chain'
-
-const serviceCDN = axios.create({
-	headers: {
-		'User-Agent':
-			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62'
-	}
-})
-
-// serviceCDN.interceptors.response.use(
-// 	response => response,
-// 	err => {
-// 		if (err.config.method === 'options') return Promise.resolve(err)
-// 		else return Promise.reject(err)
-// 	}
-// )
+import { usedCdnList } from './useCdn'
+import { serviceCDN } from './service'
 
 class CDN {
 	private list: Required<ItemCDN>[] = []
-	private leadingForignCDN = {} as ItemCDN
-	private leadingDomesticCDN = {} as ItemCDN
-	private fastest = {} as ItemCDN
+	private leadingForignCDN = {} as Required<ItemCDN>
+	private leadingDomesticCDN = {} as Required<ItemCDN>
+	private fastest = {} as Required<ItemCDN>
 
 	public use(options: ItemCDN | ItemCDN[]) {
 		const defaultOptions = {
@@ -44,26 +23,23 @@ class CDN {
 			provideMinify: true,
 			useAt: false,
 			addFilesFolder: false,
-			removeDistPath: true
+			removeDistPath: true,
+			isLeading: false
 		} as Required<ItemCDN>
 
-		if (Array.isArray(options)) {
-			options = options.map(v => Object.assign(defaultOptions, v))
-			this.list.push(...(options as Required<ItemCDN>[]))
-		} else {
-			this.list.push(Object.assign(defaultOptions, options))
-		}
-	}
+		const list = (
+			Array.isArray(options) ? options : [options]
+		) as Required<ItemCDN>[]
 
-	public setLeadingCDN(itemCDN: ItemCDN, type: 'domestic' | 'foreign') {
-		if (type === 'domestic') this.leadingDomesticCDN = itemCDN
-		if (type === 'foreign') this.leadingForignCDN = itemCDN
+		list.forEach(v => {
+			Object.assign(defaultOptions, v)
+			if (v.isLeading) {
+				if (v.range === 'domestic') this.leadingDomesticCDN = v
+				if (v.range === 'foreign') this.leadingForignCDN = v
+			}
+		})
+		this.list.push(...(list as Required<ItemCDN>[]))
 	}
-
-	private getCdnRange = getSingle(async () => {
-		const winner = await Promise.race([...this.list.map(v => axios.get(v.url))])
-		return this.list.filter(v => v.url === winner.config.url)[0].range
-	})
 
 	private async getFastest(pkgName: string, version: string) {
 		const urls: string[] = []
@@ -72,12 +48,13 @@ class CDN {
 			urls.push(...this.spliceUrl(pkgName, ['package.json'], version))
 		})
 
-		const winner = await Promise.race(urls.map(url => axios.get(url)))
+		const winner = await Promise.race(urls.map(url => serviceCDN.get(url)))
 
 		this.fastest = this.list.filter(v => v.url === winner.config.url)[0]
+		return this.fastest
 	}
 
-	spliceUrl(pkgName: string, paths: string[], version: string) {
+	public spliceUrl(pkgName: string, paths: string[], version: string) {
 		const urls: string[] = []
 		paths.forEach(p => {
 			const splitPath: string[] = []
@@ -97,10 +74,12 @@ class CDN {
 	}
 
 	public async getPkgJsonAndDirectoryContent(pkgName: string, version: string) {
-		const range = this.getCdnRange()
+		const fastestCDN = await this.getFastest(pkgName, version)
+		const range = fastestCDN.range
+
 		const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm/'
 
-		const isDomestic = (await range) === 'domestic'
+		const isDomestic = range === 'domestic'
 
 		let pkgJsonUrl = ''
 		let filesDirectoryUrl = ''
@@ -124,25 +103,18 @@ class CDN {
 		}
 	}
 
-	public async getPkgPathList(directoryInfo: PkgPathInfo) {
-		const cdnType = await this.getCdnRange()
+	public getPkgPathList(directoryInfo: PkgPathInfo) {
 		const strategy = {
 			foreign: parseJsDelivrPathInfo,
 			domestic: parseNpmmirrorPathInfo
 		}
 
-		return strategy[cdnType](directoryInfo)
+		return strategy[this.fastest.range](directoryInfo)
 	}
 }
 
 const cdn = new CDN()
-cdn.setLeadingCDN(jsdelivr, 'foreign')
-cdn.setLeadingCDN(npmmirror, 'domestic')
 cdn.use(usedCdnList)
-
-// @ts-ignore
-// eslint-disable-next-line dot-notation
-// process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
 function parseJsDelivrPathInfo(
 	pathInfo: JsdelivrPkgPathInfo,
@@ -164,6 +136,7 @@ function parseJsDelivrPathInfo(
 
 	return paths
 }
+
 function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
 	const paths: string[] = []
 
@@ -178,38 +151,37 @@ function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
 	return paths
 }
 
-async function setCdnUrlWithPkg(
+async function addCdnUrlToPkgPath(
 	pkgName: string,
 	paths: string[],
 	version: string
 ) {
-	const urls: string[] = []
-
 	const { pkg, directoryInfo } = await cdn.getPkgJsonAndDirectoryContent(
 		pkgName,
 		version
 	)
 
-	const allPaths = await cdn.getPkgPathList(
-		directoryInfo as unknown as PkgPathInfo
+	const allPaths = cdn.getPkgPathList(directoryInfo as unknown as PkgPathInfo)
+
+	const pkgMainFilePath = await seekPkgMainPath(
+		pkg as unknown as PkgCDN,
+		allPaths
 	)
 
-	paths.forEach(async p => {
-		if (p === pkgName) {
-			urls.push(await seekPkgMainPath(pkg as unknown as PkgCDN, allPaths))
-		} else {
-			urls.push(p)
-		}
-	})
+	paths = paths
+		.map(p => (p === pkgName ? pkgMainFilePath : p))
+		.map(p => p.replace(`${pkgName}/`, ''))
 
-	return { urls }
+	paths = cdn.spliceUrl(pkgName, paths, version)
+
+	return { urls: paths }
 }
 
 export async function getPkgCdnUrlsRecord(pkgRecord: PkgRecord) {
 	const pkgUrlsRecord = {} as Record<string, string[]>
 
 	for (const pkgName in pkgRecord) {
-		const { urls } = await setCdnUrlWithPkg(
+		const { urls } = await addCdnUrlToPkgPath(
 			pkgName,
 			pkgRecord[pkgName].paths,
 			pkgRecord[pkgName].version

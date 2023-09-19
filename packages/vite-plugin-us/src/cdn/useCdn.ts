@@ -1,11 +1,12 @@
 import { ItemCDN } from '../types/types'
 
-export const jsdelivr: ItemCDN = {
+const jsdelivr: ItemCDN = {
 	// https://www.jsdelivr.com
 	name: 'jsdelivr',
 	url: 'https://cdn.jsdelivr.net/npm',
 	useAt: true,
-	range: 'foreign'
+	range: 'foreign',
+	isLeading: true
 }
 
 const unpkg: ItemCDN = {
@@ -17,19 +18,20 @@ const unpkg: ItemCDN = {
 	provideMinify: false
 }
 
-export const cloudflare: ItemCDN = {
+const cloudflare: ItemCDN = {
 	// https://cdnjs.com
 	name: 'cloudflare',
 	url: ' https://cdnjs.cloudflare.com/ajax/libs',
 	range: 'foreign'
 }
 
-export const npmmirror: ItemCDN = {
+const npmmirror: ItemCDN = {
 	// https://cnpmweb.vercel.app
 	name: 'npmmirror',
 	url: 'https://registry.npmmirror.com',
 	addFilesFolder: true,
-	provideMinify: false
+	provideMinify: false,
+	isLeading: true
 }
 
 const bytedance: ItemCDN = {
@@ -57,8 +59,10 @@ const staticfile: ItemCDN = {
 }
 
 export const usedCdnList = [
+	jsdelivr,
 	unpkg,
 	cloudflare,
+	npmmirror,
 	bytedance,
 	bootcdn,
 	baomitu,
