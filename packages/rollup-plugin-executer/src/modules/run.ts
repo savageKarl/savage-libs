@@ -1,32 +1,64 @@
-import { spawn } from 'cross-spawn'
+import { spawn as async, sync } from 'cross-spawn'
+import delRaw from 'del'
 
-export type CommandCaller = string | (() => void)
+import type { Context, Command, DelOptions, executeOptions } from './types'
+import { isCommand } from './types'
 
-export async function execute(command: CommandCaller) {
-	if (typeof command === 'function') return await command()
+const ctx: Context = {
+	run,
+	del,
+	hookOptions: []
+}
+
+async function execute(command: Command, options?: executeOptions) {
+	if (typeof command === 'function') {
+		if (options?.sync) {
+			return await command(ctx)
+		} else {
+			return command(ctx)
+		}
+	}
 	if (typeof command !== 'string')
 		return console.error(
 			`command must be a function or a string.  Recieved type ${typeof command}`
 		)
 
-	await new Promise(() => {
-		spawn(command, {
-			shell: true,
-			stdio: 'inherit'
-		})
+	const spawn = options?.sync ? sync : async
+
+	return spawn(command, {
+		shell: true,
+		stdio: 'inherit'
 	})
 }
 
-export function runCommand(command: CommandCaller | CommandCaller[]) {
-	if (Array.isArray(command)) {
-		command.forEach(v => {
-			execute(v)
-		})
-	} else {
-		execute(command)
-	}
+async function run(command: string | string[], options?: executeOptions) {
+	runCommand(command, options)
 }
 
-export interface RunCommand {
-	(command: CommandCaller | CommandCaller[]): void
+async function del(pattern: string[], options?: DelOptions) {
+	if (options?.sync) return delRaw.sync(pattern, options)
+	else return delRaw(pattern, options)
+}
+
+export async function runCommand(
+	command: Command | Command[],
+	options?: executeOptions,
+	hookOptions?: unknown[]
+) {
+	if (hookOptions) ctx.hookOptions = hookOptions
+	let commands: Command[] = []
+
+	if (isCommand(command)) {
+		commands = [command]
+	} else {
+		commands = command
+	}
+
+	if (options?.sync) {
+		for (const v of commands) {
+			await execute(v, options)
+		}
+	} else {
+		commands.forEach(v => execute(v, options))
+	}
 }
