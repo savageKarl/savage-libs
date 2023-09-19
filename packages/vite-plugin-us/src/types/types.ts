@@ -100,7 +100,7 @@ export interface ItemCDN {
 	 *
 	 * @defaultValue `false`
 	 */
-	addFilesPath?: boolean
+	addFilesFolder?: boolean
 	/**
 	 * if the path is `/dist/xxx.js`, CDN will automatically remove dist path and
 	 * it will become `/xxx.js`

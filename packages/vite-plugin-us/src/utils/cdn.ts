@@ -1,4 +1,8 @@
+import path, { extname } from 'node:path'
+
 import axios from 'axios'
+
+import { getSingle } from 'savage-utils'
 
 import {
 	PkgRecord,
@@ -11,6 +15,7 @@ import {
 
 import { seekPkgMainPath } from './seekPkgMainPath'
 import { jsdelivr, npmmirror, usedCdnList } from './useCdn'
+import { Chain } from './chain'
 
 const serviceCDN = axios.create({
 	headers: {
@@ -29,16 +34,16 @@ const serviceCDN = axios.create({
 
 class CDN {
 	private list: Required<ItemCDN>[] = []
-	private range: 'domestic' | 'foreign' = 'domestic'
 	private leadingForignCDN = {} as ItemCDN
 	private leadingDomesticCDN = {} as ItemCDN
+	private fastest = {} as ItemCDN
 
-	use(options: ItemCDN | ItemCDN[]) {
+	public use(options: ItemCDN | ItemCDN[]) {
 		const defaultOptions = {
 			range: 'domestic',
 			provideMinify: true,
 			useAt: false,
-			addFilesPath: false,
+			addFilesFolder: false,
 			removeDistPath: true
 		} as Required<ItemCDN>
 
@@ -50,21 +55,48 @@ class CDN {
 		}
 	}
 
-	setLeadingCDN(itemCDN: ItemCDN, type: 'domestic' | 'foreign') {
+	public setLeadingCDN(itemCDN: ItemCDN, type: 'domestic' | 'foreign') {
 		if (type === 'domestic') this.leadingDomesticCDN = itemCDN
 		if (type === 'foreign') this.leadingForignCDN = itemCDN
 	}
 
-	async getCdnRange() {
+	private getCdnRange = getSingle(async () => {
 		const winner = await Promise.race([...this.list.map(v => axios.get(v.url))])
 		return this.list.filter(v => v.url === winner.config.url)[0].range
+	})
+
+	private async getFastest(pkgName: string, version: string) {
+		const urls: string[] = []
+		this.list.forEach(item => {
+			this.fastest = item
+			urls.push(...this.spliceUrl(pkgName, ['package.json'], version))
+		})
+
+		const winner = await Promise.race(urls.map(url => axios.get(url)))
+
+		this.fastest = this.list.filter(v => v.url === winner.config.url)[0]
 	}
 
-	// getFastest() {}
+	spliceUrl(pkgName: string, paths: string[], version: string) {
+		const urls: string[] = []
+		paths.forEach(p => {
+			const splitPath: string[] = []
 
-	// spliceUrl() {}
+			splitPath.push(`${this.fastest.url}/${pkgName}`)
+			splitPath.push(this.fastest.useAt ? '@' : '/')
+			splitPath.push(`${version}/`)
+			if (this.fastest.addFilesFolder) splitPath.push('files/')
+			if (this.fastest.removeDistPath) p = p.replace('dist/', '')
+			if (this.fastest.provideMinify) {
+				splitPath.push(p.replace(/(\.css|\.js)/, '.min$1'))
+			}
 
-	async getPkgJsonAndDirectoryContent(pkgName: string, version: string) {
+			urls.push(splitPath.join(''))
+		})
+		return urls
+	}
+
+	public async getPkgJsonAndDirectoryContent(pkgName: string, version: string) {
 		const range = this.getCdnRange()
 		const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm/'
 
@@ -91,6 +123,16 @@ class CDN {
 			directoryInfo
 		}
 	}
+
+	public async getPkgPathList(directoryInfo: PkgPathInfo) {
+		const cdnType = await this.getCdnRange()
+		const strategy = {
+			foreign: parseJsDelivrPathInfo,
+			domestic: parseNpmmirrorPathInfo
+		}
+
+		return strategy[cdnType](directoryInfo)
+	}
 }
 
 const cdn = new CDN()
@@ -102,93 +144,77 @@ cdn.use(usedCdnList)
 // eslint-disable-next-line dot-notation
 // process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
-// function getPkgPathList(directoryInfo: PkgPathInfo) {
-// 	const strategy = {
-// 		foreign: parseJsDelivrPathInfo,
-// 		within: parseNpmmirrorPathInfo
-// 	}
+function parseJsDelivrPathInfo(
+	pathInfo: JsdelivrPkgPathInfo,
+	upperLevernName?: string
+) {
+	const paths: string[] = []
 
-// 	return strategy[cdnType](directoryInfo)
-// }
+	if (pathInfo.type === 'file' || pathInfo.type === 'npm') {
+		paths.push(
+			upperLevernName ? `${upperLevernName}/${pathInfo.name}` : pathInfo.name
+		)
+	}
 
-// function parseJsDelivrPathInfo(
-// 	pathInfo: JsdelivrPkgPathInfo,
-// 	upperLevernName?: string
-// ) {
-// 	const paths: string[] = []
+	if (pathInfo.type === 'directory' || pathInfo.type === 'npm') {
+		pathInfo.files.forEach(v =>
+			paths.push(...parseJsDelivrPathInfo(v, pathInfo.name))
+		)
+	}
 
-// 	if (pathInfo.type === 'file' || pathInfo.type === 'npm') {
-// 		paths.push(
-// 			upperLevernName ? `${upperLevernName}/${pathInfo.name}` : pathInfo.name
-// 		)
-// 	}
+	return paths
+}
+function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
+	const paths: string[] = []
 
-// 	if (pathInfo.type === 'directory' || pathInfo.type === 'npm') {
-// 		pathInfo.files.forEach(v =>
-// 			paths.push(...parseJsDelivrPathInfo(v, pathInfo.name))
-// 		)
-// 	}
+	if (pathInfo.type === 'file') {
+		paths.push(pathInfo.path)
+	}
 
-// 	return paths
-// }
-// function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
-// 	const paths: string[] = []
+	if (pathInfo.type === 'directory') {
+		pathInfo.files.forEach(v => paths.push(...parseNpmmirrorPathInfo(v)))
+	}
 
-// 	if (pathInfo.type === 'file') {
-// 		paths.push(pathInfo.path)
-// 	}
+	return paths
+}
 
-// 	if (pathInfo.type === 'directory') {
-// 		pathInfo.files.forEach(v => paths.push(...parseNpmmirrorPathInfo(v)))
-// 	}
+async function setCdnUrlWithPkg(
+	pkgName: string,
+	paths: string[],
+	version: string
+) {
+	const urls: string[] = []
 
-// 	return paths
-// }
+	const { pkg, directoryInfo } = await cdn.getPkgJsonAndDirectoryContent(
+		pkgName,
+		version
+	)
 
-// async function setCdnUrlWithPkg(
-// 	pkgName: string,
-// 	paths: string[],
-// 	version: string
-// ) {
-// 	const { pkgJsonUrl, filesDirectoryUrl } = getPkgJsonAndDirectoryUrl(
-// 		pkgName,
-// 		version
-// 	)
+	const allPaths = await cdn.getPkgPathList(
+		directoryInfo as unknown as PkgPathInfo
+	)
 
-// 	const [pkg, directoryInfo] = await Promise.all([
-// 		serviceCDN.get(pkgJsonUrl),
-// 		serviceCDN.get(filesDirectoryUrl)
-// 	])
+	paths.forEach(async p => {
+		if (p === pkgName) {
+			urls.push(await seekPkgMainPath(pkg as unknown as PkgCDN, allPaths))
+		} else {
+			urls.push(p)
+		}
+	})
 
-// 	const allPaths = getPkgPathList(directoryInfo as unknown as PkgPathInfo)
-// 	const urls: string[] = []
-
-// 	// TODO need to join cdn origin, wait..
-// 	paths.forEach(async p => {
-// 		if (p === pkgName) {
-// 			urls.push(await seekPkgMainPath(pkg as unknown as PkgCDN, allPaths))
-// 		} else {
-// 			urls.push(p)
-// 		}
-// 	})
-
-// 	// const pkg = await serviceCDN.get(pkgJsonUrl)
-// 	// const directoryInfo =
-
-// 	// const res = await getPkgPathList(pkgName, version)
-// 	return { urls }
-// }
+	return { urls }
+}
 
 export async function getPkgCdnUrlsRecord(pkgRecord: PkgRecord) {
 	const pkgUrlsRecord = {} as Record<string, string[]>
 
-	// for (const pkgName in pkgRecord) {
-	// 	const { urls } = await setCdnUrlWithPkg(
-	// 		pkgName,
-	// 		pkgRecord[pkgName].paths,
-	// 		pkgRecord[pkgName].version
-	// 	)
-	// 	pkgUrlsRecord[pkgName] = urls
-	// }
+	for (const pkgName in pkgRecord) {
+		const { urls } = await setCdnUrlWithPkg(
+			pkgName,
+			pkgRecord[pkgName].paths,
+			pkgRecord[pkgName].version
+		)
+		pkgUrlsRecord[pkgName] = urls
+	}
 	return pkgUrlsRecord
 }

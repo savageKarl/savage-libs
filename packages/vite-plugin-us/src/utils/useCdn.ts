@@ -28,7 +28,7 @@ export const npmmirror: ItemCDN = {
 	// https://cnpmweb.vercel.app
 	name: 'npmmirror',
 	url: 'https://registry.npmmirror.com',
-	addFilesPath: true,
+	addFilesFolder: true,
 	provideMinify: false
 }
 
