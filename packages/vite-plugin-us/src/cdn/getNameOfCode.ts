@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { unionRegex } from './utils'
+import { unionRegex } from '../utils/utils'
 import {
 	regGlobalRules,
 	regNameWithGlobalRules,

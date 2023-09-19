@@ -1,5 +1,5 @@
 import { PkgCDN } from '../types/types'
-import { Chain } from './chain'
+import { Chain } from '../utils/chain'
 
 let pkg: PkgCDN
 let paths: string[]

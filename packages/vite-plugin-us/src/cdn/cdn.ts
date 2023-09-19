@@ -15,7 +15,7 @@ import {
 
 import { seekPkgMainPath } from './seekPkgMainPath'
 import { jsdelivr, npmmirror, usedCdnList } from './useCdn'
-import { Chain } from './chain'
+import { Chain } from '../utils/chain'
 
 const serviceCDN = axios.create({
 	headers: {

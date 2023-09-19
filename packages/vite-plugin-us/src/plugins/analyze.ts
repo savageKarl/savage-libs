@@ -7,8 +7,8 @@ import { debounce, merge } from 'lodash-es'
 import type { UsOptions } from '../types/userscript'
 import type { ResourceRecord, DeepRequired, PkgRecord } from '../types/types'
 import { collectCssDependencies, pkg, resourcePath } from '../utils/utils'
-import { getPkgCdnUrlsRecord } from '../utils/cdn'
-import { getGlobalNameFromUrl } from '../utils/getNameOfCode'
+import { getPkgCdnUrlsRecord } from '../cdn/cdn'
+import { getGlobalNameFromUrl } from '../cdn/getNameOfCode'
 
 let exclude: string[]
 
