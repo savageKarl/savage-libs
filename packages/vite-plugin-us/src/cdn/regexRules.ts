@@ -22,3 +22,14 @@ export const regIifeRules = [
 ]
 
 export const regNameWithIifeRules = regIifeRules
+
+export const regPkgFolderRules: string[] = ['dist', 'umd', 'iife', 'js']
+export const regPkgFileNameRules: string[] = [
+	'global',
+	'global.production',
+	'global.prod',
+	'iife',
+	'iife.prod',
+	'iife.production',
+	'production'
+]

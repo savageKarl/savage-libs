@@ -1,23 +1,51 @@
 import { PkgCDN } from '../types/types'
-import { Chain } from '../utils/chain'
 
-let pkg: PkgCDN
-let paths: string[]
-let mainPathResove: (value: string) => void
+import { regPkgFileNameRules, regPkgFolderRules } from './regexRules'
 
-export function seekPkgMainPath(_pkg: PkgCDN, _paths: string[]) {
-	pkg = _pkg
-	paths = _paths
-	return new Promise<string>(resolve => (mainPathResove = resolve))
+export function seekPkgMainPath(pkg: PkgCDN, paths: string[]) {
+	const pkgName = pkg.name
+	const regFullPathRules: string[] = []
+	const field = pkg.unpkg || pkg.jsdelivr
+
+	// the order is important, don't change it randomly
+	if (field) regFullPathRules.push(field.replace('.', ''))
+
+	regPkgFolderRules.forEach(folder => {
+		regFullPathRules.push(...splicePath({ folder, pkgName }))
+
+		regPkgFileNameRules.forEach(name => {
+			regFullPathRules.push(...splicePath({ folder, pkgName, name }))
+		})
+		regFullPathRules.push(...splicePath({ folder, pkgName: 'index' }))
+	})
+	regFullPathRules.push(...splicePath({ pkgName }))
+	regFullPathRules.push(...splicePath({ pkgName: 'index' }))
+
+	const mainField = pkg.main
+	if (mainField) regFullPathRules.push(mainField.replace('.', ''))
+
+	return regFullPathRules.filter(v => paths.includes(v))[0]
 }
 
-const chain = new Chain()
+function splicePath(options: {
+	pkgName: string
+	name?: string
+	folder?: string
+}) {
+	const splitArr: string[] = []
+	const twoPaths: string[] = []
 
-const seekCdnField = chain.turnToNode(function () {
-	const field = pkg.unpkg || pkg.jsdelivr
-	if (field) return mainPathResove(field)
+	const { name, folder, pkgName } = options
 
-	return 'nextNode'
-})
+	if (folder) splitArr.push(`/${folder}`)
+	splitArr.push(`/${pkgName}`)
+	if (name) splitArr.push(`.${name}`)
+	splitArr.push('.min.js')
+	twoPaths.push(splitArr.join(''))
 
-// const seekUmd
+	splitArr.pop()
+	splitArr.push('.js')
+	twoPaths.push(splitArr.join(''))
+
+	return twoPaths
+}

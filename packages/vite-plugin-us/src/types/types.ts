@@ -68,7 +68,10 @@ export type JsdelivrPkgPathInfo =
 	  }
 
 export type Fun = (...args: unknown[]) => void
-export type ChainNodeFun = (next: Fun, ...args: unknown[]) => 'nextNode' | void
+export type ChainNodeFun = (
+	next: Fun,
+	...args: unknown[]
+) => 'nextNode' | unknown
 
 export type PkgPathInfo = NpmmirrorPkgPathInfo & JsdelivrPkgPathInfo
 

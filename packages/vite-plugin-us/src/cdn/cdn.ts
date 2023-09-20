@@ -124,7 +124,9 @@ function parseJsDelivrPathInfo(
 
 	if (pathInfo.type === 'file' || pathInfo.type === 'npm') {
 		paths.push(
-			upperLevernName ? `${upperLevernName}/${pathInfo.name}` : pathInfo.name
+			upperLevernName
+				? `/${upperLevernName}/${pathInfo.name}`
+				: `/${pathInfo.name}`
 		)
 	}
 
