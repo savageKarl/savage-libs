@@ -2,9 +2,9 @@ import getPort from 'get-port'
 
 import { merge } from 'lodash-es'
 
-import { UsOptions, UserScript } from '../types/userscript'
+import { UserScript } from '../types/userscript'
 import { pkg } from './utils'
-import { DeepRequired } from '../types/types'
+import { DeepRequired, UsOptions } from '../types/types'
 
 type TargetType = string | Record<string, string> | undefined
 

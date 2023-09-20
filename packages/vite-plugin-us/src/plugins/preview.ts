@@ -14,11 +14,10 @@ export function preview(usOptions: DeepRequired<UsOptions>) {
 		enforce: 'post',
 		apply: 'serve',
 		config() {
-			addPrefixForName(usOptions, 'preview')
-
 			const { host, port } = usOptions.server
+
 			return {
-				server: {
+				preview: {
 					open: false,
 					cors: true,
 					host,
