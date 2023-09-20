@@ -124,10 +124,15 @@ export interface UsOptions {
 	headMetaData: HeadMetaData
 }
 
-export type PkgRecord = Record<
+export interface DepsRecord {
+	importName?: string
+	importPath: string
+}
+
+export type PkgDepsRecord = Record<
 	string,
 	{
-		paths: string[]
+		depsRecords: DepsRecord[]
 		version: string
 	}
 >
@@ -135,7 +140,7 @@ export type PkgRecord = Record<
 export interface ResourceRecord {
 	globalVariableName: Record<string, string>
 	external: string[]
-	urls: Record<string, string[]>
+	categoryRecord: Record<string, DepsRecord[]>
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types

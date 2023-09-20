@@ -1,10 +1,13 @@
+import { cloneDeep } from 'lodash-es'
+
 import {
-	PkgRecord,
+	PkgDepsRecord,
 	JsdelivrPkgPathInfo,
 	NpmmirrorPkgPathInfo,
 	PkgPathInfo,
 	PkgCDN,
-	ItemCDN
+	ItemCDN,
+	DepsRecord
 } from '../types/types'
 
 import { seekPkgMainPath } from './seekPkgMainPath'
@@ -153,9 +156,9 @@ function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
 	return paths
 }
 
-async function addCdnUrlToPkgPath(
+async function addCdnUrlToDepPath(
 	pkgName: string,
-	paths: string[],
+	depsRecords: DepsRecord[],
 	version: string
 ) {
 	const { pkg, directoryInfo } = await cdn.getPkgJsonAndDirectoryContent(
@@ -164,31 +167,33 @@ async function addCdnUrlToPkgPath(
 	)
 
 	const allPaths = cdn.getPkgPathList(directoryInfo as unknown as PkgPathInfo)
+	const pkgMainFilePath = seekPkgMainPath(pkg as unknown as PkgCDN, allPaths)
 
-	const pkgMainFilePath = await seekPkgMainPath(
-		pkg as unknown as PkgCDN,
-		allPaths
-	)
-
-	paths = paths
+	let paths = cloneDeep(depsRecords)
+		.map(v => v.importPath)
 		.map(p => (p === pkgName ? pkgMainFilePath : p))
 		.map(p => p.replace(`${pkgName}/`, ''))
 
 	paths = cdn.spliceUrl(pkgName, paths, version)
 
-	return { urls: paths }
+	const depsRecordsWithCDN = paths.map((v, i) => ({
+		importName: depsRecords[i].importName,
+		importPath: v
+	}))
+
+	return depsRecordsWithCDN
 }
 
-export async function getPkgCdnUrlsRecord(pkgRecord: PkgRecord) {
-	const pkgUrlsRecord = {} as Record<string, string[]>
+export async function getPkgCdnUrlsRecord(pkgDepsRecord: PkgDepsRecord) {
+	const depsRecordsWithCDN: DepsRecord[] = []
 
-	for (const pkgName in pkgRecord) {
-		const { urls } = await addCdnUrlToPkgPath(
+	for (const pkgName in pkgDepsRecord) {
+		const depsRecords = await addCdnUrlToDepPath(
 			pkgName,
-			pkgRecord[pkgName].paths,
-			pkgRecord[pkgName].version
+			pkgDepsRecord[pkgName].depsRecords,
+			pkgDepsRecord[pkgName].version
 		)
-		pkgUrlsRecord[pkgName] = urls
+		depsRecordsWithCDN.push(...depsRecords)
 	}
-	return pkgUrlsRecord
+	return { depsRecordsWithCDN }
 }

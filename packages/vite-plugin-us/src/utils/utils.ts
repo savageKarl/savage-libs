@@ -5,7 +5,7 @@ import type { ServerResponse } from 'node:http'
 import type { ResolvedConfig } from 'vite'
 import type { OutputBundle } from 'rollup'
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { UsOptions, Mode } from '../types/types'
+import type { UsOptions, Mode, DepsRecord } from '../types/types'
 
 export const pkg = (() => {
 	let pkg = '{}'
@@ -41,11 +41,14 @@ export function funcToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }
 
-/** NPF, `ids` */
-export function collectCssDependencies(id: string, ids?: Set<string>) {
+/** NPF, `depsRecordList` */
+export function collectCssDependencies(
+	id: string,
+	depsRecordList?: DepsRecord[]
+) {
 	if (/node_modules/.test(id) && /css$/.test(id)) {
-		if (ids) {
-			ids.add(id)
+		if (depsRecordList) {
+			depsRecordList.push({ importPath: id })
 			return null
 		} else {
 			return ''

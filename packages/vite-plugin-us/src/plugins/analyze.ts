@@ -2,13 +2,14 @@ import { extname } from 'node:path'
 import { writeFile } from 'node:fs/promises'
 
 import type { PluginOption } from 'vite'
-import { debounce, merge } from 'lodash-es'
+import { debounce, merge, cloneDeep } from 'lodash-es'
 
 import type {
 	UsOptions,
 	ResourceRecord,
 	DeepRequired,
-	PkgRecord
+	PkgDepsRecord,
+	DepsRecord
 } from '../types/types'
 
 import { collectCssDependencies, resourcePath, pkg } from '../utils/utils'
@@ -17,14 +18,14 @@ import { getGlobalNameFromUrl } from '../cdn/getNameOfCode'
 
 let exclude: string[]
 
-const ids = new Set<string>()
-const dependenciesList = Object.keys(pkg.dependencies ?? {})
-const regPkg = new RegExp(dependenciesList.join('|').replace(/|$/, ''))
+let depsRecordList: DepsRecord[] = []
+const deps = Object.keys(pkg.dependencies ?? {})
+const regPkgDeps = new RegExp(deps.join('|').replace(/|$/, ''))
 
 const resource = {
 	globalVariableName: {},
 	external: [],
-	urls: {}
+	categoryRecord: {}
 } as ResourceRecord
 
 export function analyze(usOptions: DeepRequired<UsOptions>) {
@@ -35,87 +36,99 @@ export function analyze(usOptions: DeepRequired<UsOptions>) {
 		enforce: 'pre',
 		apply: 'serve',
 		load(id) {
-			return collectCssDependencies(id, ids)
+			return collectCssDependencies(id, depsRecordList)
 		},
 		async transform(code, id) {
-			if (usOptions.build.external?.cdn === 'auto') {
-				collectDependencies(code, id)
-				parseIds()
-			}
+			enableCDN(usOptions, code, id)
 		}
 	} as PluginOption
 }
 
-/** not pure function */
-async function collectDependencies(code: string, id: string) {
+function enableCDN(usOptions: UsOptions, code: string, id: string) {
+	if (usOptions?.build?.external?.cdn === 'auto') {
+		collectPkgDeps(depsRecordList, code, id)
+		parsePkgDeps()
+	}
+}
+
+/** NPF, `depsRecordList` */
+async function collectPkgDeps(
+	depsRecordList: DepsRecord[],
+	code: string,
+	id: string
+) {
 	const isLocal = !/node_modules/.test(id)
 	const isFile = !!extname(id)
 	const isOriginalFile = id.split('?').length === 1
-	const isNotAsset = /js|jsx|ts|tsx|vue/.test(extname(id).replace('.', ''))
 
-	if (!isLocal || !isFile || !isOriginalFile || !isNotAsset) return false
-	// TODO maybe need to collect export variable name
-	const reg =
-		/import[\w\s\d{}@]*(?<quote>'|"|`)(?<path>[^.][\w\d@/.-]+)\k<quote>/g
+	if (!isLocal || !isFile || !isOriginalFile) return false
+	const regPkg =
+		/import( \{)? +(?<name>\b\w+\b)?( \})?( +from)? ? *(?<quote>'|")(?<path>[^.].+?)\k<quote>/g
 
-	const matchAllResult = [...code.matchAll(reg)]
+	const matchAllResult = [...code.matchAll(regPkg)]
 
 	matchAllResult.forEach(v => {
-		const path = v.groups?.path as string
-		const isInPkg = regPkg.test(path)
-		if (isInPkg) ids.add(path)
+		const importPath = v.groups?.path as string
+		const importName = v.groups?.name
+		const isInPkg = regPkgDeps.test(importPath)
+		if (isInPkg) depsRecordList.push({ importPath, importName })
 	})
 }
 
 /** not pure function */
-const parseIds = debounce(async () => {
-	const paths = await normalizePaths(ids)
-	const external = await getExternal(paths)
-	const pkgInfo = await getPkgInfo(paths)
-	const pkgCdnUrl = await getPkgCdnUrlsRecord(pkgInfo)
-	const classifiedUrls = await classifyPath(pkgCdnUrl)
+const parsePkgDeps = debounce(async () => {
+	const depsRecords = removeNodeModulesFromPath(depsRecordList)
+	const { external } = getExternal(depsRecords)
+	const { pkgDepsRecord } = getPkgDepsRecord(depsRecordList)
+	const { depsRecordsWithCDN } = await getPkgCdnUrlsRecord(pkgDepsRecord)
+	const { categoryRecord } = classifyPath(depsRecordsWithCDN)
 
-	const globalNames = await getGlobalNames(external, classifiedUrls.js || [])
+	const jsUrls = categoryRecord?.js.map(v => v.importPath) || []
+
+	const globalNames = await getGlobalNames(external, jsUrls)
 
 	resource.external = [...resource.external, ...external]
 	resource.globalVariableName = merge(resource.globalVariableName, globalNames)
-	resource.urls = merge(resource.urls, classifiedUrls)
-	// TODO handle resources
+	resource.categoryRecord = merge(resource.categoryRecord, categoryRecord)
+
 	await writeFile(resourcePath, JSON.stringify(resource), { encoding: 'utf-8' })
 
-	ids.clear()
-}, 2000)
+	depsRecordList = []
+}, 1500)
 
-async function normalizePaths(ids: Set<string>) {
-	const paths: string[] = []
-	ids.forEach(id => {
-		const splitArr = id.split('node_modules')
-		paths.push(splitArr[splitArr.length - 1].replace(/^\//, ''))
+function removeNodeModulesFromPath(depsRecordList: DepsRecord[]) {
+	return cloneDeep(depsRecordList).map(v => {
+		const splitArr = v.importPath.split('node_modules')
+		v.importPath = (splitArr?.pop() as string).replace(/^\//, '')
+		return v
 	})
-	return [...new Set(paths)]
 }
 
-async function getExternal(ids: string[]) {
-	const external: string[] = []
+function getExternal(depsRecordList: DepsRecord[]) {
 	const regExclude = new RegExp(exclude.join('|').replace(/|$/, ''))
+	const external = depsRecordList
+		.filter(v => {
+			const isPkgName = deps.includes(v.importPath)
+			const isNotExclude = !regExclude.test(v.importPath)
+			return isPkgName && isNotExclude
+		})
+		.map(v => v.importPath)
 
-	ids.forEach(id => {
-		const isPkgName = dependenciesList.includes(id)
-		const isNotExclude = !regExclude.test(id)
-		if (isPkgName && isNotExclude) external.push(id)
-	})
-	return [...new Set(external)]
+	return { external }
 }
 
-async function getPkgInfo(ids: string[]) {
-	const pkgInfo: PkgRecord = {}
-	ids.forEach(id => {
-		const pkgname = regPkg.exec(id)?.[0] as string
-		pkgInfo[pkgname].version = pkg.dependencies?.[pkgname] as string
-		if (pkgInfo[pkgname].paths) pkgInfo[pkgname].paths.push(id)
-		else pkgInfo[pkgname].paths = [id]
+function getPkgDepsRecord(depsRecordList: DepsRecord[]) {
+	const pkgDepsRecord: PkgDepsRecord = {}
+	depsRecordList.forEach(v => {
+		const pkgname = regPkgDeps.exec(v.importPath)?.[0] as string
+
+		pkgDepsRecord[pkgname].version = pkg.dependencies?.[pkgname] as string
+
+		if (pkgDepsRecord[pkgname].depsRecords)
+			pkgDepsRecord[pkgname].depsRecords.push(v)
+		else pkgDepsRecord[pkgname].depsRecords = [v]
 	})
-	return pkgInfo
+	return { pkgDepsRecord }
 }
 
 /**
@@ -140,15 +153,15 @@ async function getGlobalNames(external: string[], urls: string[]) {
 	return names
 }
 
-async function classifyPath(pkgPaths: Record<string, string[]>) {
-	const pathCategory: Record<string, string[]> = {}
-	for (const k in pkgPaths) {
-		const paths = pkgPaths[k]
-		paths.forEach(p => {
-			const ext = extname(p).replace('.', '') || 'js'
-			pathCategory[ext] ? pathCategory[ext]?.push(p) : (pathCategory[ext] = [p])
-		})
-	}
+function classifyPath(depsRecordList: DepsRecord[]) {
+	const categoryRecord: Record<string, DepsRecord[]> = {}
 
-	return pathCategory
+	depsRecordList.forEach(v => {
+		const ext = extname(v.importPath).replace('.', '') || 'js'
+		categoryRecord[ext]
+			? categoryRecord[ext]?.push(v)
+			: (categoryRecord[ext] = [v])
+	})
+
+	return { categoryRecord }
 }

@@ -26,7 +26,7 @@ export function serve(usOptions: DeepRequired<UsOptions>) {
 		config() {
 			const { host, port } = usOptions.server
 			return {
-				preview: {
+				server: {
 					open: false,
 					cors: true,
 					host,
