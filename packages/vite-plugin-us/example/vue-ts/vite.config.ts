@@ -22,7 +22,7 @@ export default defineConfig({
 				version: '1',
 				author: 'savage',
 				description: 'developing plugin',
-				include: ['http://localhost:5500/index.html'],
+				include: ['http://localhost:5500/packages/vite-plugin-us/index.html'],
 				// runAt: '',
 				runAt: 'document_start',
 				require: [
