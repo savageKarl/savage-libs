@@ -1,7 +1,8 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, unlinkSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
+import { normalizePath } from 'vite'
 import { OutputChunk } from 'rollup'
 
 import { grants } from '../types/userscript'
@@ -24,9 +25,6 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 		enforce: 'post',
 		apply: 'build',
 		config() {
-			const name = usOptions.headMetaData.name
-			if (usOptions.prefix) usOptions.headMetaData.name = `production: ${name}`
-
 			resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
 			cssUrls = resource.urls.css || []
 			const jsUrls = resource.urls.js || []
@@ -80,6 +78,10 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 			if (usOptions.autoAddGrant) {
 				usOptions.headMetaData.grant = collectedGrant as Grants[]
 			}
+
+			const name = usOptions.headMetaData.name
+			if (usOptions.prefix) usOptions.headMetaData.name = `production: ${name}`
+
 			const newMetaData = usOptions.generate.headMetaData(
 				generateHeadMeta(usOptions.headMetaData),
 				'production'
@@ -102,10 +104,10 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 			fullCodeList.unshift(newMetaData)
 			fullCodeList.push(code)
 
-			writeFileSync(
-				resolve(options.dir as string, key),
-				fullCodeList.join('\n')
-			)
+			const path = normalizePath(options.dir + `/${name}.user.js`)
+
+			writeFileSync(path, fullCodeList.join('\n'))
+			unlinkSync(resolve(options.dir as string, key))
 		}
 	} as PluginOption
 }
