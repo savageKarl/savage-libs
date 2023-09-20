@@ -1,11 +1,25 @@
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
-import { UsOptions } from '../types/userscript'
+import type { DeepRequired, UsOptions } from '../types/types'
+import { addPrefixForName } from '../utils/utils'
 
-export function preview(usOptions: UsOptions) {
+export function preview(usOptions: DeepRequired<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	return {
 		name: 'vite-plugin-us:preview',
 		enforce: 'post',
-		apply: 'build'
+		apply: 'serve',
+		config() {
+			addPrefixForName(usOptions, 'preview')
+
+			const { host, port } = usOptions.server
+			return {
+				server: {
+					open: false,
+					cors: true,
+					host,
+					port
+				}
+			} as UserConfig
+		}
 	} as PluginOption
 }

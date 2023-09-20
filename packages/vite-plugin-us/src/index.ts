@@ -1,6 +1,6 @@
 import type { UserConfig, PluginOption } from 'vite'
 
-import { UsOptions } from './types/userscript'
+import { UsOptions } from './types/types'
 import { plugins } from './plugins'
 import { mergeOptions } from './utils/optionsMerge'
 

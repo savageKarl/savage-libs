@@ -13,10 +13,11 @@ import {
 	resourcePath,
 	inlineSvg,
 	removeSvgBundle,
-	injectExternalCssLink
+	injectExternalCssLink,
+	addPrefixForName
 } from '../utils/utils'
-import type { Grants, UsOptions } from '../types/userscript'
-import type { ResourceRecord, DeepRequired } from '../types/types'
+import type { Grants } from '../types/userscript'
+import type { ResourceRecord, DeepRequired, UsOptions } from '../types/types'
 
 export function build(usOptions: DeepRequired<UsOptions>) {
 	let resovledConfig: ResolvedConfig
@@ -27,9 +28,16 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 		enforce: 'post',
 		apply: 'build',
 		config() {
-			const resource = JSON.parse(
-				readFileSync(resourcePath, { encoding: 'utf-8' })
-			)
+			let resource: ResourceRecord = {
+				external: [],
+				globalVariableName: {},
+				urls: {}
+			}
+
+			try {
+				resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
+			} catch {}
+
 			cssUrls = resource.urls.css || []
 			const jsUrls = resource.urls.js || []
 
@@ -50,7 +58,7 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 						output: {
 							extend: true,
 							format: 'iife',
-							globals: resource.names
+							globals: resource.globalVariableName
 						}
 					}
 				}
@@ -81,8 +89,7 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 				usOptions.headMetaData.grant = collectedGrant as Grants[]
 			}
 
-			const name = usOptions.headMetaData.name
-			if (usOptions.prefix) usOptions.headMetaData.name = `production: ${name}`
+			addPrefixForName(usOptions, 'production')
 
 			const metaData = usOptions.generate.headMetaData(
 				generateHeadMeta(usOptions.headMetaData),
@@ -96,7 +103,13 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 			fullCodeList.unshift(metaData)
 			fullCodeList.push(code)
 
-			const path = normalizePath(options.dir + `/${name}.user.js`)
+			const path = resolve(
+				options.dir as string,
+				`${usOptions.headMetaData.name.replaceAll(
+					/production|:|\s/g,
+					''
+				)}.user.js`
+			)
 
 			writeFileSync(path, fullCodeList.join('\n'))
 			unlinkSync(resolve(options.dir as string, key))

@@ -5,16 +5,15 @@ import type { ServerResponse } from 'node:http'
 import type { ResolvedConfig } from 'vite'
 import type { OutputBundle } from 'rollup'
 import type { IPackageJson } from '@ts-type/package-dts'
+import type { UsOptions, Mode } from '../types/types'
 
-import { getSingle } from 'savage-utils'
-
-export const getPkg = getSingle(() => {
+export const pkg = (() => {
 	let pkg = '{}'
 	try {
 		pkg = readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
 	} catch {}
 	return JSON.parse(pkg) as IPackageJson
-})
+})()
 
 export const existFile = (path: string) => {
 	try {
@@ -101,4 +100,10 @@ export function injectExternalCssLink(links: string[]) {
 			})
 		})
 	}, links)
+}
+
+/** NPF, `usOptions` */
+export function addPrefixForName(usOptions: UsOptions, mode: Mode) {
+	const name = usOptions.headMetaData.name
+	if (usOptions.prefix) usOptions.headMetaData.name = `${mode}: ${name}`
 }

@@ -3,12 +3,17 @@ import fs from 'node:fs/promises'
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
-import type { UsOptions, Grants } from '../types/userscript'
-import type { DeepRequired } from '../types/types'
+import type { Grants } from '../types/userscript'
+import type { DeepRequired, UsOptions } from '../types/types'
 
 import { grants } from '../types/userscript'
 import { generateHeadMeta } from '../utils/generateMetadata'
-import { existFile, setResHeader, funcToString } from '../utils/utils'
+import {
+	existFile,
+	setResHeader,
+	funcToString,
+	addPrefixForName
+} from '../utils/utils'
 
 export function serve(usOptions: DeepRequired<UsOptions>) {
 	let resovledConfig: ResolvedConfig
@@ -19,8 +24,7 @@ export function serve(usOptions: DeepRequired<UsOptions>) {
 		enforce: 'post',
 		apply: 'serve',
 		config() {
-			const name = usOptions.headMetaData.name
-			if (usOptions.prefix) usOptions.headMetaData.name = `dev: ${name}`
+			addPrefixForName(usOptions, 'development')
 
 			const { host, port } = usOptions.server
 			return {
@@ -54,8 +58,8 @@ export function serve(usOptions: DeepRequired<UsOptions>) {
 				})
 
 				const htmlStr = await server.transformIndexHtml('', '')
-				const regex = /<(script)[\s\S]+?<\/script>/g
-				const scriptStrList = [...htmlStr.matchAll(regex)].map(v => v[0])
+				const regScriptTag = /<(script)[\s\S]+?<\/script>/g
+				const scriptStrList = [...htmlStr.matchAll(regScriptTag)].map(v => v[0])
 				const scriptType = {
 					inlineScriptList: [] as string[][],
 					linkScriptList: [] as string[]
@@ -137,9 +141,13 @@ export function serve(usOptions: DeepRequired<UsOptions>) {
 			}
 		},
 		transform(code, id) {
-			const reg = /export\s+default\s+"(.+?)"/
-			if (resovledConfig.assetsInclude(id) && reg.test(code)) {
-				return code.replace(reg, `export default '${currentOrigin}$1'`)
+			return replaceAssetUrl()
+
+			function replaceAssetUrl() {
+				const reg = /export\s+default\s+"(.+?)"/
+				if (resovledConfig.assetsInclude(id) && reg.test(code)) {
+					return code.replace(reg, `export default '${currentOrigin}$1'`)
+				}
 			}
 		}
 	} as PluginOption

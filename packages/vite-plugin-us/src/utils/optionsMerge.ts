@@ -3,7 +3,7 @@ import getPort from 'get-port'
 import { merge } from 'lodash-es'
 
 import { UsOptions, UserScript } from '../types/userscript'
-import { getPkg } from './utils'
+import { pkg } from './utils'
 import { DeepRequired } from '../types/types'
 
 type TargetType = string | Record<string, string> | undefined
@@ -36,11 +36,11 @@ const defaultOpts: DeepRequired<UsOptions> = {
 		bundle: code => code
 	},
 	headMetaData: {
-		name: getPkg.name || 'vite-plugin-us',
-		version: getPkg.version || '0.0.1',
-		description: getPkg.description || 'welcome use vite-plugin-us',
-		author: takeFieldFromTarget('name', getPkg.author as TargetType),
-		supportURL: takeFieldFromTarget('url', getPkg.bugs as TargetType)
+		name: pkg.name || 'vite-plugin-us',
+		version: pkg.version || '0.0.1',
+		description: pkg.description || 'welcome use vite-plugin-us',
+		author: takeFieldFromTarget('name', pkg.author as TargetType),
+		supportURL: takeFieldFromTarget('url', pkg.bugs as TargetType)
 	} as UserScript
 }
 
