@@ -38,8 +38,8 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 				resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
 			} catch {}
 
-			cssUrls = resource.urls.css || []
-			const jsUrls = resource.urls.js || []
+			cssUrls = resource?.urls?.css || []
+			const jsUrls = resource?.urls?.js || []
 
 			const r = usOptions.headMetaData.require
 			usOptions.headMetaData.require = r?.concat(jsUrls)

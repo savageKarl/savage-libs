@@ -4,7 +4,7 @@ import open from 'open'
 
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import type { DeepRequired, UsOptions } from '../types/types'
-import { addPrefixForName, setResHeader } from '../utils/utils'
+import { setResHeader } from '../utils/utils'
 
 export function preview(usOptions: DeepRequired<UsOptions>) {
 	let resovledConfig: ResolvedConfig
@@ -14,11 +14,10 @@ export function preview(usOptions: DeepRequired<UsOptions>) {
 		enforce: 'post',
 		apply: 'serve',
 		config() {
-			addPrefixForName(usOptions, 'preview')
-
 			const { host, port } = usOptions.server
+
 			return {
-				server: {
+				preview: {
 					open: false,
 					cors: true,
 					host,
