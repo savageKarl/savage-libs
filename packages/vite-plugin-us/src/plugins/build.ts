@@ -28,22 +28,18 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 		enforce: 'post',
 		apply: 'build',
 		config() {
-			let resource: ResourceRecord = {
-				external: [],
-				globalVariableName: {},
-				urls: {}
-			}
+			let resource = {} as ResourceRecord
 
 			try {
 				resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
 			} catch {}
 
-			cssUrls = resource?.urls?.css || []
-			const jsUrls = resource?.urls?.js || []
+			cssUrls = resource?.categoryRecord?.css.map(v => v.importPath) || []
+			const jsUrls = resource?.categoryRecord?.js.map(v => v.importPath) || []
 
 			const r = usOptions.headMetaData.require
 			usOptions.headMetaData.require = r?.concat(jsUrls)
-			// TODO handle resources
+
 			return {
 				build: {
 					assetsInlineLimit: Number.MAX_SAFE_INTEGER,

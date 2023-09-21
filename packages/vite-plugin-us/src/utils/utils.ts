@@ -110,3 +110,13 @@ export function addPrefixForName(usOptions: UsOptions, mode: Mode) {
 	const name = usOptions.headMetaData.name
 	if (usOptions.prefix) usOptions.headMetaData.name = `${mode}: ${name}`
 }
+
+export function camelCaseToHyphen(name: string) {
+	return name.replace(/[A-Z]/g, match => {
+		return `-${match.toLocaleUpperCase()}`
+	})
+}
+
+export function padEndWithSpace(str: string, maxLength: number) {
+	return str.padEnd(maxLength, ' ')
+}
