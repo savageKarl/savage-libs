@@ -2,9 +2,8 @@ import getPort from 'get-port'
 
 import { merge } from 'lodash-es'
 
-import { UserScript } from '../types/userscript'
 import { pkg } from './utils'
-import { DeepRequired, UsOptions } from '../types/types'
+import { UsOptions } from '../types/types'
 
 type TargetType = string | Record<string, string> | undefined
 
@@ -13,7 +12,7 @@ function takeFieldFromTarget(field: string, target: TargetType) {
 	return target ?? ''
 }
 
-const defaultOpts: DeepRequired<UsOptions> = {
+const defaultOpts: Required<UsOptions> = {
 	entry: '',
 	prefix: true,
 	autoAddGrant: true,
@@ -41,12 +40,12 @@ const defaultOpts: DeepRequired<UsOptions> = {
 		description: pkg.description || 'welcome use vite-plugin-us',
 		author: takeFieldFromTarget('name', pkg.author as TargetType),
 		supportURL: takeFieldFromTarget('url', pkg.bugs as TargetType)
-	} as UserScript
+	}
 }
 
 getPort({ port: 12345 }).then(n => (defaultOpts.server.port = n))
 
 export function mergeOptions(opts: UsOptions) {
 	const mergedOpts = merge(defaultOpts, opts)
-	return mergedOpts
+	return mergedOpts as Required<UsOptions>
 }

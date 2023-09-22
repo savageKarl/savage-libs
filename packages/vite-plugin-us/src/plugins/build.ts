@@ -19,7 +19,7 @@ import {
 import type { Grants } from '../types/userscript'
 import type { ResourceRecord, DeepRequired, UsOptions } from '../types/types'
 
-export function build(usOptions: DeepRequired<UsOptions>) {
+export function build(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let cssUrls: string[]
 
@@ -75,7 +75,7 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 		writeBundle(options, bundle) {
 			const key = Object.keys(bundle)[0]
 			const mainBundle = bundle[key] as OutputChunk
-			const code = usOptions.generate.bundle(mainBundle.code)
+			const code = usOptions?.generate?.bundle?.(mainBundle.code) as string
 
 			const regex = new RegExp(grants.join('|').replace('|$', ''), 'g')
 			const matchRes = [...code.matchAll(regex)]
@@ -87,10 +87,10 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 
 			addPrefixForName(usOptions, 'production')
 
-			const metaData = usOptions.generate.headMetaData(
+			const metaData = usOptions?.generate?.headMetaData?.(
 				generateHeadMeta(usOptions.headMetaData),
 				'production'
-			)
+			) as string
 
 			const fullCodeList: string[] = []
 
@@ -101,7 +101,7 @@ export function build(usOptions: DeepRequired<UsOptions>) {
 
 			const path = resolve(
 				options.dir as string,
-				`${usOptions.headMetaData.name.replaceAll(
+				`${usOptions.headMetaData.name?.replaceAll(
 					/production|:|\s/g,
 					''
 				)}.user.js`

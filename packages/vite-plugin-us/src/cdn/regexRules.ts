@@ -31,5 +31,7 @@ export const regPkgFileNameRules: string[] = [
 	'iife',
 	'iife.prod',
 	'iife.production',
-	'production'
+	'production',
+	'index',
+	'index.full'
 ]

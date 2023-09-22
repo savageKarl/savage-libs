@@ -7,7 +7,6 @@ import { debounce, merge, cloneDeep } from 'lodash-es'
 import type {
 	UsOptions,
 	ResourceRecord,
-	DeepRequired,
 	PkgDepsRecord,
 	DepsRecord
 } from '../types/types'
@@ -28,7 +27,7 @@ const resource = {
 	categoryRecord: {}
 } as ResourceRecord
 
-export function analyze(usOptions: DeepRequired<UsOptions>) {
+export function analyze(usOptions: Required<UsOptions>) {
 	exclude = usOptions.build.external?.exclude as string[]
 
 	return {
@@ -67,6 +66,7 @@ async function collectPkgDeps(
 
 	const matchAllResult = [...code.matchAll(regPkg)]
 
+	// TODO need consider more variable import
 	matchAllResult.forEach(v => {
 		const importPath = v.groups?.path as string
 		const importName = v.groups?.name
@@ -79,7 +79,7 @@ async function collectPkgDeps(
 const parsePkgDeps = debounce(async () => {
 	const depsRecords = removeNodeModulesFromPath(depsRecordList)
 	const { external } = getExternal(depsRecords)
-	const { pkgDepsRecord } = getPkgDepsRecord(depsRecordList)
+	const { pkgDepsRecord } = getPkgDepsRecord(depsRecords)
 	const { depsRecordsWithCDN } = await getPkgCdnUrlsRecord(pkgDepsRecord)
 	const { categoryRecord } = classifyPath(depsRecordsWithCDN)
 
@@ -91,7 +91,9 @@ const parsePkgDeps = debounce(async () => {
 	resource.globalVariableName = merge(resource.globalVariableName, globalNames)
 	resource.categoryRecord = merge(resource.categoryRecord, categoryRecord)
 
-	await writeFile(resourcePath, JSON.stringify(resource), { encoding: 'utf-8' })
+	await writeFile(resourcePath, JSON.stringify(resource, null, 4), {
+		encoding: 'utf-8'
+	})
 
 	depsRecordList = []
 }, 1500)
@@ -121,6 +123,9 @@ function getPkgDepsRecord(depsRecordList: DepsRecord[]) {
 	const pkgDepsRecord: PkgDepsRecord = {}
 	depsRecordList.forEach(v => {
 		const pkgname = regPkgDeps.exec(v.importPath)?.[0] as string
+
+		if (!pkgDepsRecord[pkgname])
+			pkgDepsRecord[pkgname] = { depsRecords: [], version: '' }
 
 		pkgDepsRecord[pkgname].version = pkg.dependencies?.[pkgname] as string
 

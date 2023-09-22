@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, merge } from 'lodash-es'
 
 import {
 	PkgDepsRecord,
@@ -20,22 +20,38 @@ class CDN {
 	private leadingDomesticCDN = {} as Required<ItemCDN>
 	private fastest = {} as Required<ItemCDN>
 
-	public use(options: ItemCDN | ItemCDN[]) {
-		const defaultOptions = {
-			range: 'domestic',
-			provideMinify: true,
-			useAt: false,
-			addFilesFolder: false,
-			removeDistPath: true,
-			isLeading: false
-		} as Required<ItemCDN>
+	public listGet() {
+		return this.list
+	}
 
+	public leadingForignCDNGet() {
+		return this.leadingForignCDN
+	}
+
+	public leadingDomesticCDNGet() {
+		return this.leadingDomesticCDN
+	}
+
+	public fastestGet() {
+		return this.fastest
+	}
+
+	public use(options: ItemCDN | ItemCDN[]) {
 		const list = (
 			Array.isArray(options) ? options : [options]
 		) as Required<ItemCDN>[]
 
-		list.forEach(v => {
-			Object.assign(defaultOptions, v)
+		list.forEach((v, i, arr) => {
+			const defaultOptions = {
+				range: 'domestic',
+				provideMinify: true,
+				useAt: false,
+				addFilesFolder: false,
+				removeDistPath: true,
+				isLeading: false
+			} as Required<ItemCDN>
+
+			arr[i] = v = Object.assign(defaultOptions, v)
 			if (v.isLeading) {
 				if (v.range === 'domestic') this.leadingDomesticCDN = v
 				if (v.range === 'foreign') this.leadingForignCDN = v
@@ -48,12 +64,14 @@ class CDN {
 		const urls: string[] = []
 		this.list.forEach(item => {
 			this.fastest = item
-			urls.push(...this.spliceUrl(pkgName, ['package.json'], version))
+			urls.push(...this.spliceUrl(pkgName, [''], version))
 		})
 
 		const winner = await Promise.race(urls.map(url => serviceCDN.get(url)))
 
-		this.fastest = this.list.filter(v => v.url === winner.config.url)[0]
+		this.fastest = this.list.filter(v =>
+			new RegExp(v.url).test(winner.config.url as string)
+		)[0]
 		return this.fastest
 	}
 
@@ -69,6 +87,8 @@ class CDN {
 			if (this.fastest.removeDistPath) p = p.replace('dist/', '')
 			if (this.fastest.provideMinify) {
 				splitPath.push(p.replace(/(\.css|\.js)/, '.min$1'))
+			} else {
+				splitPath.push(p)
 			}
 
 			urls.push(splitPath.join(''))
@@ -95,14 +115,14 @@ class CDN {
 			filesDirectoryUrl = `${jsdelivrDirectoryOrigin}/${pkgName}@${version}`
 		}
 
-		const [pkg, directoryInfo] = await Promise.all([
+		const [pkgRes, directoryInfoRes] = await Promise.all([
 			serviceCDN.get(pkgJsonUrl),
 			serviceCDN.get(filesDirectoryUrl)
 		])
 
 		return {
-			pkg,
-			directoryInfo
+			pkg: pkgRes.data,
+			directoryInfo: directoryInfoRes.data
 		}
 	}
 
@@ -116,7 +136,7 @@ class CDN {
 	}
 }
 
-const cdn = new CDN()
+export const cdn = new CDN()
 cdn.use(usedCdnList)
 
 function parseJsDelivrPathInfo(
@@ -173,6 +193,7 @@ async function addCdnUrlToDepPath(
 		.map(v => v.importPath)
 		.map(p => (p === pkgName ? pkgMainFilePath : p))
 		.map(p => p.replace(`${pkgName}/`, ''))
+		.map(p => p.replace(/^\//, ''))
 
 	paths = cdn.spliceUrl(pkgName, paths, version)
 

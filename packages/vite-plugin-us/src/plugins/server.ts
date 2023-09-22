@@ -4,7 +4,7 @@ import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
 import type { Grants } from '../types/userscript'
-import type { DeepRequired, UsOptions } from '../types/types'
+import type { UsOptions } from '../types/types'
 
 import { grants } from '../types/userscript'
 import { generateHeadMeta } from '../utils/generateMetadata'
@@ -15,7 +15,7 @@ import {
 	addPrefixForName
 } from '../utils/utils'
 
-export function serve(usOptions: DeepRequired<UsOptions>) {
+export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
 
@@ -42,10 +42,10 @@ export function serve(usOptions: DeepRequired<UsOptions>) {
 
 			const installPath = 'vite-plugin-us.user.js'
 			usOptions.headMetaData.grant = grants as unknown as Grants[]
-			const newMetaData = usOptions.generate.headMetaData(
+			const newMetaData = usOptions.generate.headMetaData?.(
 				generateHeadMeta(usOptions.headMetaData),
 				'development'
-			)
+			) as string
 			const { host, port } = usOptions.server
 			currentOrigin = `http://${host as string}:${port as number}`
 

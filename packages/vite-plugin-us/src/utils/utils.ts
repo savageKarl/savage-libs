@@ -113,7 +113,7 @@ export function addPrefixForName(usOptions: UsOptions, mode: Mode) {
 
 export function camelCaseToHyphen(name: string) {
 	return name.replace(/[A-Z]/g, match => {
-		return `-${match.toLocaleUpperCase()}`
+		return `-${match.toLocaleLowerCase()}`
 	})
 }
 

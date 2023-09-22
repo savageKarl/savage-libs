@@ -15,7 +15,8 @@ const unpkg: ItemCDN = {
 	url: 'https://unpkg.com',
 	useAt: true,
 	range: 'foreign',
-	provideMinify: false
+	provideMinify: false,
+	removeDistPath: false
 }
 
 const cloudflare: ItemCDN = {
@@ -31,7 +32,8 @@ const npmmirror: ItemCDN = {
 	url: 'https://registry.npmmirror.com',
 	addFilesFolder: true,
 	provideMinify: false,
-	isLeading: true
+	isLeading: true,
+	removeDistPath: false
 }
 
 const bytedance: ItemCDN = {
@@ -44,12 +46,6 @@ const bootcdn: ItemCDN = {
 	// https://www.bootcdn.cn
 	name: 'bootcdn',
 	url: 'https://cdn.bootcdn.net/ajax'
-}
-
-const baomitu: ItemCDN = {
-	// https://cdn.baomitu.com/
-	name: 'baomitu',
-	url: 'https://lib.baomitu.com'
 }
 
 const staticfile: ItemCDN = {
@@ -65,6 +61,5 @@ export const usedCdnList = [
 	npmmirror,
 	bytedance,
 	bootcdn,
-	baomitu,
 	staticfile
 ]

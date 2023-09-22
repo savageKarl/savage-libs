@@ -15,7 +15,7 @@ export function generateHeadMeta(options: HeadMetaData) {
 	for (let [k, v] of Object.entries(options)) {
 		if (useHyphen.includes(k)) k = camelCaseToHyphen(k)
 
-		if (typeof v === 'string') v = [v]
+		if (typeof v === 'string') v = v ? [v] : []
 
 		if (Array.isArray(v)) {
 			if (tupleArray.includes(k)) {

@@ -3,10 +3,10 @@ import { readFileSync } from 'node:fs'
 import open from 'open'
 
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
-import type { DeepRequired, UsOptions } from '../types/types'
+import type { UsOptions } from '../types/types'
 import { setResHeader } from '../utils/utils'
 
-export function preview(usOptions: DeepRequired<UsOptions>) {
+export function preview(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 
 	return {
@@ -34,7 +34,10 @@ export function preview(usOptions: DeepRequired<UsOptions>) {
 			const currentOrigin = `http://${host as string}:${port as number}`
 			const path = resolve(
 				resovledConfig.build.outDir as string,
-				`${usOptions.headMetaData.name.replaceAll(/preview|:|\s/g, '')}.user.js`
+				`${usOptions.headMetaData.name?.replaceAll(
+					/preview|:|\s/g,
+					''
+				)}.user.js`
 			)
 
 			server.middlewares.use(async (req, res, next) => {
