@@ -6,7 +6,8 @@ const jsdelivr: ItemCDN = {
 	url: 'https://cdn.jsdelivr.net/npm',
 	useAt: true,
 	range: 'foreign',
-	isLeading: true
+	isLeading: true,
+	removeDistPath: false
 }
 
 const unpkg: ItemCDN = {
