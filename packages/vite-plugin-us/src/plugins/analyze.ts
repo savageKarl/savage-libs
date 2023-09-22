@@ -71,7 +71,11 @@ async function collectPkgDeps(
 		const importPath = v.groups?.path as string
 		const importName = v.groups?.name
 		const isInPkg = regPkgDeps.test(importPath)
-		if (isInPkg) depsRecordList.push({ importPath, importName })
+		const isNotInsideList = depsRecordList.every(
+			v => v.importPath !== importPath
+		)
+		if (isInPkg && isNotInsideList)
+			depsRecordList.push({ importPath, importName })
 	})
 }
 
