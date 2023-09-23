@@ -27,7 +27,7 @@ const defaultOpts: Required<UsOptions> = {
 		external: {
 			cdn: 'auto',
 			exclude: [],
-			include: []
+			resources: []
 		}
 	},
 	generate: {

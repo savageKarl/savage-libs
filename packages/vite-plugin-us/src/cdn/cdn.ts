@@ -1,4 +1,4 @@
-import { cloneDeep, merge } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 
 import {
 	PkgDepsRecord,
@@ -100,7 +100,7 @@ class CDN {
 		const fastestCDN = await this.getFastest(pkgName, version)
 		const range = fastestCDN.range
 
-		const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm/'
+		const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm'
 
 		const isDomestic = range === 'domestic'
 
@@ -212,7 +212,7 @@ export async function getPkgCdnUrlsRecord(pkgDepsRecord: PkgDepsRecord) {
 		const depsRecords = await addCdnUrlToDepPath(
 			pkgName,
 			pkgDepsRecord[pkgName].depsRecords,
-			pkgDepsRecord[pkgName].version
+			pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
 		)
 		depsRecordsWithCDN.push(...depsRecords)
 	}

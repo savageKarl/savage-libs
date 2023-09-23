@@ -74,7 +74,10 @@ async function collectPkgDeps(
 		const isNotInsideList = depsRecordList.every(
 			v => v.importPath !== importPath
 		)
-		if (isInPkg && isNotInsideList)
+		const regExclude = new RegExp(exclude.join('|').replace(/|$/, ''))
+		const isNotExclude = !regExclude.test(importPath)
+
+		if (isInPkg && isNotInsideList && isNotExclude)
 			depsRecordList.push({ importPath, importName })
 	})
 }
@@ -82,7 +85,7 @@ async function collectPkgDeps(
 /** not pure function */
 const parsePkgDeps = debounce(async () => {
 	const depsRecords = removeNodeModulesFromPath(depsRecordList)
-	const { external } = getExternal(depsRecords)
+	const { external } = getExternal()
 	const { pkgDepsRecord } = getPkgDepsRecord(depsRecords)
 	const { depsRecordsWithCDN } = await getPkgCdnUrlsRecord(pkgDepsRecord)
 	const { categoryRecord } = classifyPath(depsRecordsWithCDN)
@@ -110,15 +113,12 @@ function removeNodeModulesFromPath(depsRecordList: DepsRecord[]) {
 	})
 }
 
-function getExternal(depsRecordList: DepsRecord[]) {
+function getExternal() {
 	const regExclude = new RegExp(exclude.join('|').replace(/|$/, ''))
-	const external = depsRecordList
-		.filter(v => {
-			const isPkgName = deps.includes(v.importPath)
-			const isNotExclude = !regExclude.test(v.importPath)
-			return isPkgName && isNotExclude
-		})
-		.map(v => v.importPath)
+	const external = deps.filter(v => {
+		const isNotExclude = !regExclude.test(v)
+		return isNotExclude
+	})
 
 	return { external }
 }

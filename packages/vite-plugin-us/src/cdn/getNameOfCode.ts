@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { serviceCDN } from './service'
 
 import { unionRegex } from '../utils/utils'
 import {
@@ -10,17 +10,8 @@ import {
 	regNameWithIifeRules
 } from './regexRules'
 
-axios.interceptors.response.use(
-	function (response) {
-		return response.data
-	},
-	function (error) {
-		return Promise.reject(error)
-	}
-)
-
 let code: string
-let pkgName: string
+let pkgNameGlobal: string
 
 const regUmd = unionRegex(regUmdRules)
 const regNameWithUmd = unionRegex(regNameWithUmdRules)
@@ -41,7 +32,7 @@ function getModuleType() {
 }
 
 function capitalizeName() {
-	const upperCase = pkgName.split('-').reduce((pre, cur) => {
+	const upperCase = pkgNameGlobal.split('-').reduce((pre, cur) => {
 		const splitArr = cur.split('')
 		splitArr[0] = splitArr[0].toUpperCase()
 		return pre + splitArr.join('')
@@ -66,7 +57,7 @@ function getNameFromCode() {
 
 	const name = strategy[type]()
 
-	return name
+	return name || ''
 }
 
 /** not pure function */
@@ -84,22 +75,23 @@ function getNameFromUmdModule() {
 		return isNameKey && isHaveValue
 	})[0]
 
-	const name = matchResult?.groups?.[key] ?? pkgName
+	const name = matchResult?.groups?.[key] ?? pkgNameGlobal
 
 	return name
 }
 
 function getNameFromGlobalModule() {
-	return code.match(regNameWithGlobal)?.groups?.name ?? pkgName
+	return code.match(regNameWithGlobal)?.groups?.name ?? pkgNameGlobal
 }
 
 function getNameFromIifeModule() {
-	return code.match(regNameWithIife)?.groups?.name ?? pkgName
+	return code.match(regNameWithIife)?.groups?.name ?? pkgNameGlobal
 }
 
 /** not pure function */
 export async function getGlobalNameFromUrl(pkgName: string, url: string) {
-	const content = (await axios.get(url)) as string
+	pkgNameGlobal = pkgName
+	const content = (await serviceCDN.get(url)).data as string
 	code = content
 	const globalVariableName = getNameFromCode()
 

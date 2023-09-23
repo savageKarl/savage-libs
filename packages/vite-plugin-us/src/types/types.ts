@@ -100,7 +100,7 @@ export interface UsOptions {
 			/**
 			 * include dependencies that require manual CDN
 			 */
-			include?: ManualCdnResource[]
+			resources?: ManualCdnResource[]
 		}
 	}
 	/**
