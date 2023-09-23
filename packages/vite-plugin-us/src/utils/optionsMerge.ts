@@ -25,8 +25,8 @@ const defaultOpts: Required<UsOptions> = {
 		minify: true,
 		cssMinify: true,
 		external: {
-			cdn: 'auto',
-			exclude: [],
+			autoCDN: true,
+			exclusions: [],
 			resources: []
 		}
 	},

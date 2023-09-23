@@ -88,15 +88,15 @@ export interface UsOptions {
 			/**
 			 * automatically load package dependencies using CDN
 			 *
-			 * if value is `manual`, `exclude` will not work
+			 * if value is `false`, `exclude` will not work
 			 *
-			 * @defaultValue `auto`
+			 * @defaultValue `true`
 			 */
-			cdn?: 'auto' | 'manual'
+			autoCDN?: boolean
 			/**
 			 * exclude dependencies that do not require automatic CDN
 			 */
-			exclude?: string[]
+			exclusions?: string[]
 			/**
 			 * include dependencies that require manual CDN
 			 */

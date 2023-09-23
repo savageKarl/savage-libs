@@ -15,7 +15,7 @@ import { collectCssDependencies, resourcePath, pkg } from '../utils/utils'
 import { getPkgCdnUrlsRecord } from '../cdn/cdn'
 import { getGlobalNameFromUrl } from '../cdn/getNameOfCode'
 
-let exclude: string[]
+let exclusions: string[]
 
 let depsRecordList: DepsRecord[] = []
 const deps = Object.keys(pkg.dependencies ?? {})
@@ -28,7 +28,7 @@ const resource = {
 } as ResourceRecord
 
 export function analyze(usOptions: Required<UsOptions>) {
-	exclude = usOptions.build.external?.exclude as string[]
+	exclusions = usOptions.build.external?.exclusions as string[]
 
 	return {
 		name: 'vite-plugin-us:analyze',
@@ -44,7 +44,7 @@ export function analyze(usOptions: Required<UsOptions>) {
 }
 
 function enableCDN(usOptions: UsOptions, code: string, id: string) {
-	if (usOptions?.build?.external?.cdn === 'auto') {
+	if (usOptions.build?.external?.autoCDN) {
 		collectPkgDeps(depsRecordList, code, id)
 		parsePkgDeps()
 	}
@@ -70,11 +70,12 @@ async function collectPkgDeps(
 	matchAllResult.forEach(v => {
 		const importPath = v.groups?.path as string
 		const importName = v.groups?.name
+
 		const isInPkg = regPkgDeps.test(importPath)
 		const isNotInsideList = depsRecordList.every(
 			v => v.importPath !== importPath
 		)
-		const regExclude = new RegExp(exclude.join('|').replace(/|$/, ''))
+		const regExclude = new RegExp(exclusions.join('|').replace(/|$/, ''))
 		const isNotExclude = !regExclude.test(importPath)
 
 		if (isInPkg && isNotInsideList && isNotExclude)
@@ -114,7 +115,7 @@ function removeNodeModulesFromPath(depsRecordList: DepsRecord[]) {
 }
 
 function getExternal() {
-	const regExclude = new RegExp(exclude.join('|').replace(/|$/, ''))
+	const regExclude = new RegExp(exclusions.join('|').replace(/|$/, ''))
 	const external = deps.filter(v => {
 		const isNotExclude = !regExclude.test(v)
 		return isNotExclude

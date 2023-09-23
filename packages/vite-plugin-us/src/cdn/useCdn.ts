@@ -20,6 +20,7 @@ const unpkg: ItemCDN = {
 	removeDistPath: false
 }
 
+// not support json and svg
 const cloudflare: ItemCDN = {
 	// https://cdnjs.com
 	name: 'cloudflare',
@@ -37,18 +38,21 @@ const npmmirror: ItemCDN = {
 	removeDistPath: false
 }
 
+// not support json and svg
 const bytedance: ItemCDN = {
 	// https://cdn.bytedance.com
 	name: 'bytedance',
 	url: 'https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M'
 }
 
+// not support json and svg
 const bootcdn: ItemCDN = {
 	// https://www.bootcdn.cn
 	name: 'bootcdn',
 	url: 'https://cdn.bootcdn.net/ajax'
 }
 
+// not support json and svg
 const staticfile: ItemCDN = {
 	// https://staticfile.org
 	name: 'staticfile',
