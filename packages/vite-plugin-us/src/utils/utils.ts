@@ -48,7 +48,7 @@ export function collectCssDependencies(
 ) {
 	if (/node_modules/.test(id) && /css$/.test(id)) {
 		if (depsRecordList) {
-			depsRecordList.push({ importPath: id })
+			depsRecordList.push({ cdnURL: id })
 			return null
 		} else {
 			return ''

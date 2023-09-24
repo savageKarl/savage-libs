@@ -34,8 +34,8 @@ export function build(usOptions: Required<UsOptions>) {
 				resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
 			} catch {}
 
-			cssUrls = resource?.categoryRecord?.css.map(v => v.importPath) || []
-			const jsUrls = resource?.categoryRecord?.js.map(v => v.importPath) || []
+			cssUrls = resource?.categoryRecord?.css.map(v => v.cdnURL) || []
+			const jsUrls = resource?.categoryRecord?.js.map(v => v.cdnURL) || []
 
 			const r = usOptions.headMetaData.require
 			usOptions.headMetaData.require = r?.concat(jsUrls)
@@ -54,7 +54,7 @@ export function build(usOptions: Required<UsOptions>) {
 						output: {
 							extend: true,
 							format: 'iife',
-							globals: resource.globalVariableName
+							globals: resource.globalVariableNameRecord
 						}
 					}
 				}

@@ -138,10 +138,15 @@ function getNameByCode(pkgName: string, code: string) {
 	const nodeRegex = chain.turnToNode(() => {
 		const globalVariableNameRegex = new GlobalVariableNameRegex(pkgName, code)
 		const name = globalVariableNameRegex.getNameByCode()
-		return name
+		if (name) return name
+		return 'nextNode'
 	})
 
-	nodeEval.setNextNode(nodeRegex)
+	const nodeLast = chain.turnToNode(() => {
+		return ''
+	})
+
+	nodeEval.setNextNode(nodeRegex).setNextNode(nodeLast)
 
 	return nodeEval.passRequest()
 }

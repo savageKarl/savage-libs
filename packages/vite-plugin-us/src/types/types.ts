@@ -125,20 +125,20 @@ export interface UsOptions {
 }
 
 export interface DepsRecord {
-	importName?: string
-	importPath: string
+	globalVariableName?: string
+	cdnURL: string
 }
 
 export type PkgDepsRecord = Record<
 	string,
 	{
-		depsRecords: DepsRecord[]
+		paths: string[]
 		version: string
 	}
 >
 
 export interface ResourceRecord {
-	globalVariableName: Record<string, string>
+	globalVariableNameRecord: Record<string, string>
 	external: string[]
 	categoryRecord: Record<string, DepsRecord[]>
 }

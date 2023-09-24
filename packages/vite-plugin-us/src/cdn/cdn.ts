@@ -190,7 +190,7 @@ async function addCdnUrlToDepPath(
 	const pkgMainFilePath = seekPkgMainPath(pkg as unknown as PkgCDN, allPaths)
 
 	let paths = cloneDeep(depsRecords)
-		.map(v => v.importPath)
+		.map(v => v.cdnURL)
 		.map(p => (p === pkgName ? pkgMainFilePath : p))
 		.map(p => p.replace(`${pkgName}/`, ''))
 		.map(p => p.replace(/^\//, ''))
@@ -198,7 +198,7 @@ async function addCdnUrlToDepPath(
 	paths = cdn.spliceUrl(pkgName, paths, version)
 
 	const depsRecordsWithCDN = paths.map((v, i) => ({
-		importName: depsRecords[i].importName,
+		importName: depsRecords[i].globalVariableName,
 		importPath: v
 	}))
 
@@ -211,7 +211,7 @@ export async function getPkgCdnUrlsRecord(pkgDepsRecord: PkgDepsRecord) {
 	for (const pkgName in pkgDepsRecord) {
 		const depsRecords = await addCdnUrlToDepPath(
 			pkgName,
-			pkgDepsRecord[pkgName].depsRecords,
+			pkgDepsRecord[pkgName].paths,
 			pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
 		)
 		depsRecordsWithCDN.push(...depsRecords)
