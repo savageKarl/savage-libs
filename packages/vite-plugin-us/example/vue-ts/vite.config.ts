@@ -37,8 +37,8 @@ export default defineConfig({
 			build: {
 				minify: false,
 				external: {
-					cdn: 'auto',
-					exclude: ['element-plus']
+					autoCDN: true,
+					exclusions: ['element-plus']
 				}
 				// cssMinify: false
 			},
