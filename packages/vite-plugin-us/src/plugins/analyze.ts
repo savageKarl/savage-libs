@@ -15,27 +15,45 @@ import { collectCssDependencies, resourcePath, pkg } from '../utils/utils'
 import { getPkgCdnUrlsRecord } from '../cdn/cdn'
 import { getGlobalNameFromUrl } from '../cdn/getNameOfCode'
 
-class PkgDepsCollection {
-	exclusions: string[]
-	regExclusions: RegExp
+class DepCollection {
+	private regExclusion: RegExp
+	private manuallyDeps: string[]
 
-	readonly depCollections: string[] = []
+	private readonly collectDeps: string[] = []
 
-	readonly resource = {
+	private readonly resource = {
 		globalVariableNameRecord: {},
 		external: [],
 		categoryRecord: {}
 	} as ResourceRecord
 
-	readonly deps = Object.keys(pkg.dependencies ?? {})
-	readonly regPkgDep = new RegExp(this.deps.join('|').replace(/|$/, ''))
+	private readonly pkgDeps = Object.keys(pkg.dependencies ?? {})
+	private readonly regPkgDep = new RegExp(
+		this.pkgDeps.join('|').replace(/|$/, '')
+	)
 
-	constructor(exclusions: string[]) {
-		this.exclusions = exclusions
-		this.regExclusions = new RegExp(exclusions.join('|').replace(/|$/, ''))
+	constructor(exclusions: string[], manuallyDeps: string[]) {
+		this.regExclusion = new RegExp(exclusions.join('|').replace(/|$/, ''))
+		this.manuallyDeps = manuallyDeps
 	}
 
-	async collectPkgDeps(code: string, id: string) {
+	private pushDep(id: string) {
+		const isNotCollect = this.collectDeps.every(v => v !== id)
+		if (isNotCollect) this.collectDeps.push(id)
+	}
+
+	public collectCssDep(id: string, type: 'collect' | 'prevent') {
+		if (/node_modules/.test(id) && /css$/.test(id)) {
+			if (type === 'collect') {
+				this.pushDep(id)
+				return null
+			} else {
+				return ''
+			}
+		}
+	}
+
+	public collectDep(code: string, id: string) {
 		const isLocal = !/node_modules/.test(id)
 		const isFile = !!extname(id)
 		const isOriginalFile = id.split('?').length === 1
@@ -50,36 +68,39 @@ class PkgDepsCollection {
 			const importPath = v.groups?.path as string
 
 			const isInPkg = this.regPkgDep.test(importPath)
-			const isNotInsideList = this.deps.every(v => v !== importPath)
-			const isNotExclude = !this.regExclusions.test(importPath)
+			const isNotExclude = !this.regExclusion.test(importPath)
 			const isCssFile = extname(importPath) === '.css'
 			const isJsFile = extname(importPath) === ''
+			const isNotManualy = !this.manuallyDeps.includes(importPath)
 
-			if (isInPkg && isNotInsideList && isNotExclude && (isCssFile || isJsFile))
-				this.depCollections.push(importPath)
+			if (isInPkg) {
+				if (isCssFile || (isJsFile && isNotExclude && isNotManualy)) {
+					return this.pushDep(importPath)
+				}
+			}
 		})
 	}
 
-	removeNodeModulesFromPath() {
-		return [...this.depCollections].map(v => {
+	private removeNodeModulesFromPath() {
+		return [...this.collectDeps].map(v => {
 			const splitArr = v.split('node_modules')
 			v = (splitArr.pop() as string).replace(/^\//, '')
 			return v
 		})
 	}
 
-	getExternal() {
-		const external = this.deps.filter(v => {
-			const isNotExclude = !this.regExclusions.test(v)
+	private getExternal() {
+		const external = this.pkgDeps.filter(v => {
+			const isNotExclude = !this.regExclusion.test(v)
 			return isNotExclude
 		})
-
 		return { external }
 	}
 
-	getPkgDepsRecord() {
+	private getDepsRecord() {
 		const pkgDepsRecord: PkgDepsRecord = {}
-		this.depCollections.forEach(v => {
+
+		this.collectDeps.forEach(v => {
 			const pkgname = this.regPkgDep.exec(v)?.[0] as string
 
 			if (!pkgDepsRecord[pkgname])
@@ -110,11 +131,11 @@ class PkgDepsCollection {
 		return names
 	}
 
-	classifyPath() {
+	private classifyPath() {
 		const categoryRecord: Record<string, DepsRecord[]> = {}
 
-		depsRecordList.forEach(v => {
-			const ext = extname(v.cdnURL).replace('.', '') || 'js'
+		this.collectDeps.forEach(v => {
+			const ext = extname(v).replace('.', '') || 'js'
 			categoryRecord[ext]
 				? categoryRecord[ext]?.push(v)
 				: (categoryRecord[ext] = [v])
@@ -123,10 +144,10 @@ class PkgDepsCollection {
 		return { categoryRecord }
 	}
 
-	parsePkgDeps = debounce(async () => {
-		const depsRecords = removeNodeModulesFromPath(depsRecordList)
-		const { external } = getExternal()
-		const { pkgDepsRecord } = getPkgDepsRecord(depsRecords)
+	public parsedep = debounce(async () => {
+		const depsRecords = this.removeNodeModulesFromPath()
+		const { external } = this.getExternal()
+		const { pkgDepsRecord } = this.getPkgDepsRecord(depsRecords)
 		const { depsRecordsWithCDN } = await getPkgCdnUrlsRecord(pkgDepsRecord)
 		const { categoryRecord } = classifyPath(depsRecordsWithCDN)
 
@@ -151,25 +172,20 @@ class PkgDepsCollection {
 
 export function analyze(usOptions: Required<UsOptions>) {
 	const exclusions = usOptions.build.external?.exclusions as string[]
-
-	const pkgDeps = new PkgDepsCollection(exclusions)
+	const manuallyDeps = usOptions.build.external?.resources?.map(v => v.pkgName)
+	const depCollection = new DepCollection(exclusions, manuallyDeps || [])
 
 	return {
 		name: 'vite-plugin-us:analyze',
 		enforce: 'pre',
 		apply: 'serve',
 		load(id) {
-			return collectCssDependencies(id, depsRecordList)
+			return depCollection.collectCssDep(id, 'collect')
 		},
 		async transform(code, id) {
-			enableCDN(usOptions, code, id)
+			if (usOptions.build?.external?.autoCDN) {
+				depCollection.collectDep(code, id)
+			}
 		}
 	} as PluginOption
 }
-
-// function enableCDN(usOptions: UsOptions, code: string, id: string) {
-// 	if (usOptions.build?.external?.autoCDN) {
-// 		collectPkgDeps(depsRecordList, code, id)
-// 		parsePkgDeps()
-// 	}
-// }
