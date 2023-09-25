@@ -19,7 +19,7 @@ export function seekPkgMainPath(pkg: PkgCDN, paths: string[]) {
 			regFullPathRules.push(...splicePath({ name }))
 		})
 	})
-	regFullPathRules.push(...splicePath({ pkgName }))
+	regFullPathRules.push(splicePath({ pkgName }))
 
 	const mainField = pkg.main
 	if (mainField) regFullPathRules.push(mainField.replace('.', ''))
@@ -56,17 +56,13 @@ function splicePath(
 		  }
 ) {
 	const splitArr: string[] = []
-	const twoPaths: string[] = []
 
 	const { name, folder, pkgName } = options
 
-	// the order is important, don't change it randomly
 	if (folder) splitArr.push(`/${folder}`)
 	if (pkgName) splitArr.push(`/${pkgName}`)
 	if (name) splitArr.push(pkgName ? `.${name}` : `/${name}`)
 
 	splitArr.push('.js')
-	twoPaths.push(splitArr.join(''))
-
-	return twoPaths
+	return splitArr.join('')
 }

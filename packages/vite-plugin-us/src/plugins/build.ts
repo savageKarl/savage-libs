@@ -12,7 +12,7 @@ import {
 	collectCssDependencies,
 	resourcePath,
 	inlineSvg,
-	removeSvgBundle,
+	removeSvgBundle as removeSvg,
 	injectExternalCssLink,
 	addPrefixForName
 } from '../utils/utils'
@@ -70,7 +70,7 @@ export function build(usOptions: Required<UsOptions>) {
 			return inlineSvg(resovledConfig, code, id)
 		},
 		generateBundle(options, bundle) {
-			return removeSvgBundle(bundle)
+			return removeSvg(bundle)
 		},
 		writeBundle(options, bundle) {
 			const key = Object.keys(bundle)[0]

@@ -1,26 +1,15 @@
 import type { HeadMetaData } from './userscript'
 
-interface ManualCdnResource {
+export interface DepsRecord {
 	/**
 	 * the global variable name of dependencies, if it is a CSS resource, it is not required
 	 *
 	 * @example
 	 * ```
-	 * name: 'Vue'
+	 * globalVariableName: 'Vue'
 	 * ```
 	 */
-	name?: string
-	/**
-	 * imported path
-	 *
-	 * when the code looks like this`import { createApp } from 'vue'`, the path is `vue`
-	 *
-	 * @example
-	 * ```
-	 * path: 'vue'
-	 * ```
-	 */
-	path: string
+	globalVariableName?: string
 	/**
 	 * url of CDN resource
 	 *
@@ -29,7 +18,17 @@ interface ManualCdnResource {
 	 * url: 'https://unpkg.com/vue@3.3.4/dist/vue.global.js'
 	 * ```
 	 */
-	url: string
+	cdnURL: string
+}
+interface ManualCdnResource extends DepsRecord {
+	/** dependencies name
+	 * @example
+	 * ```
+	 * pkgName: 'vue'
+	 * pkgName: 'react'
+	 * ```
+	 */
+	pkgName: string
 }
 
 export type Mode = 'development' | 'production' | 'preview'
@@ -122,11 +121,6 @@ export interface UsOptions {
 	 * @see https://www.tampermonkey.net/documentation.php
 	 */
 	headMetaData: HeadMetaData
-}
-
-export interface DepsRecord {
-	globalVariableName?: string
-	cdnURL: string
 }
 
 export type PkgDepsRecord = Record<
