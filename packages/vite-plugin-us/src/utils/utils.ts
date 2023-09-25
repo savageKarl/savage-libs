@@ -5,7 +5,7 @@ import type { ServerResponse } from 'node:http'
 import type { ResolvedConfig } from 'vite'
 import type { OutputBundle } from 'rollup'
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { UsOptions, Mode, DepsRecord } from '../types/types'
+import type { UsOptions, Mode } from '../types/types'
 
 export const pkg = (() => {
 	let pkg = '{}'
@@ -41,21 +41,6 @@ export function funcToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }
 
-/** NPF, `depsRecordList` */
-export function collectCssDependencies(
-	id: string,
-	depsRecordList?: DepsRecord[]
-) {
-	if (/node_modules/.test(id) && /css$/.test(id)) {
-		if (depsRecordList) {
-			depsRecordList.push({ cdnURL: id })
-			return null
-		} else {
-			return ''
-		}
-	}
-}
-
 export const resourcePath = 'node_modules/.vite/vite-plugin-us.resource.json'
 
 export function unionRegex(arr: RegExp[]) {
@@ -86,7 +71,7 @@ export function inlineSvg(
 }
 
 /** NPF, `bundle` */
-export function removeSvgBundle(bundle: OutputBundle) {
+export function removeSvg(bundle: OutputBundle) {
 	for (const filename in bundle) {
 		if (/\.svg/.test(filename)) Reflect.deleteProperty(bundle, filename)
 	}

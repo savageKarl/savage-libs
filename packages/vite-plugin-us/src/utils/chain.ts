@@ -16,7 +16,7 @@ class ChainNode {
 		return (this.successor = successor)
 	}
 
-	public passRequest(...rest: unknown[]): void {
+	public passRequest<T = unknown>(...rest: unknown[]): T {
 		const result = this.fn(this.next, ...rest)
 
 		if (result === 'nextNode' && this.successor) {
@@ -25,7 +25,7 @@ class ChainNode {
 				: this.successor.passRequest(...rest)
 		}
 
-		return result as void
+		return result as T
 	}
 
 	private next(...rest: unknown[]) {

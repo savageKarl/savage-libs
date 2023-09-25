@@ -2,22 +2,19 @@ import { readFileSync, writeFileSync, unlinkSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
-import { normalizePath } from 'vite'
 import { OutputChunk } from 'rollup'
 
 import { grants } from '../types/userscript'
 import { generateHeadMeta } from '../utils/generateMetadata'
 import {
-	funcToString,
-	collectCssDependencies,
 	resourcePath,
 	inlineSvg,
-	removeSvgBundle as removeSvg,
+	removeSvg,
 	injectExternalCssLink,
 	addPrefixForName
 } from '../utils/utils'
 import type { Grants } from '../types/userscript'
-import type { ResourceRecord, DeepRequired, UsOptions } from '../types/types'
+import type { ResourceRecord, UsOptions } from '../types/types'
 
 export function build(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
@@ -34,8 +31,8 @@ export function build(usOptions: Required<UsOptions>) {
 				resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
 			} catch {}
 
-			cssUrls = resource?.categoryRecord?.css.map(v => v.cdnURL) || []
-			const jsUrls = resource?.categoryRecord?.js.map(v => v.cdnURL) || []
+			cssUrls = resource?.categoryRecord?.css.map(v => v.url) || []
+			const jsUrls = resource?.categoryRecord?.js.map(v => v.url) || []
 
 			const r = usOptions.headMetaData.require
 			usOptions.headMetaData.require = r?.concat(jsUrls)
@@ -50,7 +47,7 @@ export function build(usOptions: Required<UsOptions>) {
 					cssMinify: usOptions.build.cssMinify,
 					rollupOptions: {
 						input: usOptions.entry,
-						external: resource.external,
+						external: resource.externals,
 						output: {
 							extend: true,
 							format: 'iife',
@@ -61,7 +58,10 @@ export function build(usOptions: Required<UsOptions>) {
 			} as UserConfig
 		},
 		load(id) {
-			return collectCssDependencies(id)
+			preventCssDep()
+			function preventCssDep() {
+				if (/node_modules/.test(id) && /css$/.test(id)) return ''
+			}
 		},
 		async configResolved(config) {
 			resovledConfig = config

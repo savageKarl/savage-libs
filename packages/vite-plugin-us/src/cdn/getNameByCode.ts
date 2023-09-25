@@ -148,12 +148,12 @@ function getNameByCode(pkgName: string, code: string) {
 
 	nodeEval.setNextNode(nodeRegex).setNextNode(nodeLast)
 
-	return nodeEval.passRequest()
+	return nodeEval.passRequest<string>()
 }
 
-export async function getGlobalNameFromUrl(pkgName: string, url: string) {
+export async function getGlobalNameByUrl(pkgName: string, url: string) {
 	const code = (await serviceCDN.get(url)).data as string
 	const globalVariableName = getNameByCode(pkgName, code)
 
-	return { pkgName, globalVariableName }
+	return globalVariableName
 }
