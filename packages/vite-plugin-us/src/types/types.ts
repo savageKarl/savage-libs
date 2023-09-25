@@ -1,6 +1,6 @@
 import type { HeadMetaData } from './userscript'
 
-export interface DepsRecord {
+export interface DepRecord {
 	/**
 	 * the global variable name of dependencies, if it is a CSS resource, it is not required
 	 *
@@ -18,9 +18,8 @@ export interface DepsRecord {
 	 * url: 'https://unpkg.com/vue@3.3.4/dist/vue.global.js'
 	 * ```
 	 */
-	cdnURL: string
-}
-interface ManualCdnResource extends DepsRecord {
+	url: string
+
 	/** dependencies name
 	 * @example
 	 * ```
@@ -30,6 +29,8 @@ interface ManualCdnResource extends DepsRecord {
 	 */
 	pkgName: string
 }
+
+type ManualCdnResource = DepRecord
 
 export type Mode = 'development' | 'production' | 'preview'
 
@@ -133,8 +134,8 @@ export type PkgDepsRecord = Record<
 
 export interface ResourceRecord {
 	globalVariableNameRecord: Record<string, string>
-	external: string[]
-	categoryRecord: Record<string, DepsRecord[]>
+	externals: string[]
+	categoryRecord: Record<string, DepRecord[]>
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types

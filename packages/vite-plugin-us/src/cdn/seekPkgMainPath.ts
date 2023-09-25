@@ -11,12 +11,12 @@ export function seekPkgMainPath(pkg: PkgCDN, paths: string[]) {
 	if (field) regFullPathRules.push(field.replace('.', ''))
 
 	regPkgFolderRules.forEach(folder => {
-		regFullPathRules.push(...splicePath({ folder, pkgName }))
+		regFullPathRules.push(splicePath({ folder, pkgName }))
 
 		regPkgFileNameRules.forEach(name => {
-			regFullPathRules.push(...splicePath({ folder, pkgName, name }))
-			regFullPathRules.push(...splicePath({ folder, name }))
-			regFullPathRules.push(...splicePath({ name }))
+			regFullPathRules.push(splicePath({ folder, pkgName, name }))
+			regFullPathRules.push(splicePath({ folder, name }))
+			regFullPathRules.push(splicePath({ name }))
 		})
 	})
 	regFullPathRules.push(splicePath({ pkgName }))
