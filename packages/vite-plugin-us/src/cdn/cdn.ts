@@ -141,36 +141,43 @@ class CDN {
 		paths: string[],
 		version: string
 	) {
-		const { pkg, directoryInfo } = await this.getPkgJsonAndDirectoryInfo(
-			pkgName,
-			version
-		)
+		try {
+			const { pkg, directoryInfo } = await this.getPkgJsonAndDirectoryInfo(
+				pkgName,
+				version
+			)
 
-		const allPaths = this.getPkgPathList(
-			directoryInfo as unknown as PkgPathInfo
-		)
-		const pkgMainFilePath = seekPkgMainPath(pkg as unknown as PkgCDN, allPaths)
+			const allPaths = this.getPkgPathList(
+				directoryInfo as unknown as PkgPathInfo
+			)
+			const pkgMainFilePath = seekPkgMainPath(
+				pkg as unknown as PkgCDN,
+				allPaths
+			)
 
-		paths = [...paths]
-			.map(p => (extname(p) === '' ? pkgMainFilePath : p))
-			.map(p => p.replace(`${pkgName}/`, ''))
-			.map(p => p.replace(/^\//, ''))
+			paths = [...paths]
+				.map(p => (extname(p) === '' ? pkgMainFilePath : p))
+				.map(p => p.replace(`${pkgName}/`, ''))
+				.map(p => p.replace(/^\//, ''))
 
-		paths = this.spliceUrl(pkgName, paths, version)
+			paths = this.spliceUrl(pkgName, paths, version)
 
-		const depsRecords = await Promise.all(
-			paths.map(async v => {
-				const isJsFile = extname(v) === '.js'
-				return {
-					pkgName,
-					url: v,
-					globalVariableName: isJsFile
-						? await getGlobalNameByUrl(pkgName, v)
-						: ''
-				} as DepRecord
-			})
-		)
-		return depsRecords
+			const depsRecords = await Promise.all(
+				paths.map(async v => {
+					const isJsFile = extname(v) === '.js'
+					return {
+						pkgName,
+						url: v,
+						globalVariableName: isJsFile
+							? await getGlobalNameByUrl(pkgName, v)
+							: undefined
+					} as DepRecord
+				})
+			)
+			return depsRecords
+		} catch (e) {
+			console.log(e.config.url)
+		}
 	}
 
 	public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
@@ -188,7 +195,7 @@ class CDN {
 			)
 		)
 
-		res.forEach(v => depsRecords.push(...v))
+		res.forEach(v => v && depsRecords.push(...v))
 		return depsRecords
 	}
 }

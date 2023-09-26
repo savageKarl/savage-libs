@@ -53,6 +53,13 @@ const bootcdn: ItemCDN = {
 }
 
 // not support json and svg
+const baomitu: ItemCDN = {
+	// https://cdn.baomitu.com/
+	name: 'baomitu',
+	url: 'https://lib.baomitu.com'
+}
+
+// not support json and svg
 const staticfile: ItemCDN = {
 	// https://staticfile.org
 	name: 'staticfile',
@@ -66,5 +73,6 @@ export const usedCdnList = [
 	npmmirror,
 	bytedance,
 	bootcdn,
+	baomitu,
 	staticfile
 ]

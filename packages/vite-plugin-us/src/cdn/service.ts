@@ -13,5 +13,5 @@ export const serviceCDN = axios.create({
 
 serviceCDN.interceptors.response.use(
 	response => response,
-	err => Promise.resolve(err)
+	err => Promise.reject(err)
 )
