@@ -203,17 +203,18 @@ export type PkgPathInfo = NpmmirrorPkgPathInfo & JsdelivrPkgPathInfo
 
 export interface ItemCDN {
 	name: string
+	homePage: string
 	url: string
 	/**
 	 * @defaultValue `within`
 	 */
-	range?: 'domestic' | 'foreign'
+	range: 'domestic' | 'foreign'
 	/**
 	 * if the path is `/xxx.js`, CDN will automatically provide `/xxx.min.js`
 	 *
 	 * @defaultValue `true`
 	 */
-	provideMinify?: boolean
+	provideMinify: boolean
 	/**
 	 * If it is `true`, CDN will provide a path like `https://xxx/name@version/xxx.js`,
 	 *
@@ -221,7 +222,7 @@ export interface ItemCDN {
 	 *
 	 * @defaultValue `false`
 	 */
-	useAt?: boolean
+	useAt: boolean
 	/**
 	 * If it is `true`, CDN will provide a path like `https://xxx/name/version/files/xxx.js`,
 	 *
@@ -229,16 +230,23 @@ export interface ItemCDN {
 	 *
 	 * @defaultValue `false`
 	 */
-	addFilesFolder?: boolean
+	addFilesFolder: boolean
 	/**
 	 * if the path is `/dist/xxx.js`, CDN will automatically remove dist path and
 	 * it will become `/xxx.js`
 	 * @defaultValue `true`
 	 */
-	removeDistPath?: boolean
+	removeDistPath: boolean
 
 	/**
 	 * if is the leading CDN
 	 */
-	isLeading?: boolean
+	leading?: boolean
+
+	supportSvgAndJson: boolean
+}
+
+export interface LeadingCdnRecord {
+	domestic: ItemCDN | undefined
+	foreign: ItemCDN | undefined
 }

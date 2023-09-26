@@ -1,67 +1,99 @@
 import { ItemCDN } from '../types/types'
 
 const jsdelivr: ItemCDN = {
-	// https://www.jsdelivr.com
+	homePage: 'https://www.jsdelivr.com',
 	name: 'jsdelivr',
 	url: 'https://cdn.jsdelivr.net/npm',
 	useAt: true,
 	range: 'foreign',
-	isLeading: true,
-	removeDistPath: false
+	leading: true,
+	removeDistPath: false,
+	addFilesFolder: false,
+	supportSvgAndJson: true,
+	provideMinify: true
 }
 
 const unpkg: ItemCDN = {
-	// https://unpkg.com
+	homePage: 'https://unpkg.com',
 	name: 'unpkg',
 	url: 'https://unpkg.com',
 	useAt: true,
 	range: 'foreign',
 	provideMinify: false,
-	removeDistPath: false
+	removeDistPath: false,
+	addFilesFolder: false,
+	supportSvgAndJson: true
 }
 
-// not support json and svg
 const cloudflare: ItemCDN = {
-	// https://cdnjs.com
+	homePage: 'https://cdnjs.com',
 	name: 'cloudflare',
 	url: ' https://cdnjs.cloudflare.com/ajax/libs',
-	range: 'foreign'
+	range: 'foreign',
+	useAt: false,
+	addFilesFolder: false,
+	removeDistPath: true,
+	provideMinify: true,
+	supportSvgAndJson: false
 }
 
 const npmmirror: ItemCDN = {
-	// https://cnpmweb.vercel.app
+	homePage: 'https://npmmirror.com/',
 	name: 'npmmirror',
 	url: 'https://registry.npmmirror.com',
 	addFilesFolder: true,
 	provideMinify: false,
-	isLeading: true,
-	removeDistPath: false
+	leading: true,
+	removeDistPath: false,
+	useAt: false,
+	range: 'domestic',
+	supportSvgAndJson: true
 }
 
-// not support json and svg
 const bytedance: ItemCDN = {
-	// https://cdn.bytedance.com
+	homePage: 'https://cdn.bytedance.com',
+	range: 'domestic',
+	provideMinify: true,
+	removeDistPath: true,
+	addFilesFolder: false,
+	supportSvgAndJson: false,
+	useAt: false,
 	name: 'bytedance',
 	url: 'https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M'
 }
 
-// not support json and svg
 const bootcdn: ItemCDN = {
-	// https://www.bootcdn.cn
+	homePage: 'https://www.bootcdn.cn',
+	range: 'domestic',
+	provideMinify: true,
+	removeDistPath: true,
+	addFilesFolder: false,
+	supportSvgAndJson: false,
+	useAt: false,
 	name: 'bootcdn',
 	url: 'https://cdn.bootcdn.net/ajax'
 }
 
-// not support json and svg
 const baomitu: ItemCDN = {
-	// https://cdn.baomitu.com/
+	homePage: 'https://cdn.baomitu.com/',
+	range: 'domestic',
+	provideMinify: true,
+	removeDistPath: true,
+	addFilesFolder: false,
+	supportSvgAndJson: false,
+	useAt: false,
 	name: 'baomitu',
 	url: 'https://lib.baomitu.com'
 }
 
-// not support json and svg
 const staticfile: ItemCDN = {
-	// https://staticfile.org
+	homePage: 'https://staticfile.org',
+	range: 'domestic',
+	provideMinify: true,
+	removeDistPath: true,
+	addFilesFolder: false,
+	supportSvgAndJson: false,
+	useAt: false,
 	name: 'staticfile',
 	url: 'https://cdn.staticfile.org'
 }
