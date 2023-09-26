@@ -76,7 +76,7 @@ class CDN {
 		return this.fastest
 	}
 
-	public spliceUrl(pkgName: string, paths: string[], version: string) {
+	private spliceUrl(pkgName: string, paths: string[], version: string) {
 		const urls: string[] = []
 		paths.forEach(p => {
 			const splitPath: string[] = []
@@ -97,7 +97,7 @@ class CDN {
 		return urls
 	}
 
-	public async getPkgJsonAndDirectoryInfo(pkgName: string, version: string) {
+	private async getPkgJsonAndDirectoryInfo(pkgName: string, version: string) {
 		const fastestCDN = await this.getFastest(pkgName, version)
 		const range = fastestCDN.range
 
@@ -127,13 +127,69 @@ class CDN {
 		}
 	}
 
-	public getPkgPathList(directoryInfo: PkgPathInfo) {
+	private getPkgPathList(directoryInfo: PkgPathInfo) {
 		const strategy = {
 			foreign: parseJsDelivrPathInfo,
 			domestic: parseNpmmirrorPathInfo
 		}
 
 		return strategy[this.fastest.range](directoryInfo)
+	}
+
+	private async getUrlForDep(
+		pkgName: string,
+		paths: string[],
+		version: string
+	) {
+		const { pkg, directoryInfo } = await this.getPkgJsonAndDirectoryInfo(
+			pkgName,
+			version
+		)
+
+		const allPaths = this.getPkgPathList(
+			directoryInfo as unknown as PkgPathInfo
+		)
+		const pkgMainFilePath = seekPkgMainPath(pkg as unknown as PkgCDN, allPaths)
+
+		paths = [...paths]
+			.map(p => (extname(p) === '' ? pkgMainFilePath : p))
+			.map(p => p.replace(`${pkgName}/`, ''))
+			.map(p => p.replace(/^\//, ''))
+
+		paths = this.spliceUrl(pkgName, paths, version)
+
+		const depsRecords = await Promise.all(
+			paths.map(async v => {
+				const isJsFile = extname(v) === '.js'
+				return {
+					pkgName,
+					url: v,
+					globalVariableName: isJsFile
+						? await getGlobalNameByUrl(pkgName, v)
+						: ''
+				} as DepRecord
+			})
+		)
+		return depsRecords
+	}
+
+	public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
+		const depsRecords: DepRecord[] = []
+		const pkgNames = Object.keys(pkgDepsRecord)
+
+		const res = await Promise.all(
+			pkgNames.map(
+				async pkgName =>
+					await this.getUrlForDep(
+						pkgName,
+						pkgDepsRecord[pkgName].paths,
+						pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
+					)
+			)
+		)
+
+		res.forEach(v => depsRecords.push(...v))
+		return depsRecords
 	}
 }
 
@@ -175,56 +231,4 @@ function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
 	}
 
 	return paths
-}
-
-async function getCdnUrlForDep(
-	pkgName: string,
-	paths: string[],
-	version: string
-) {
-	const { pkg, directoryInfo } = await cdn.getPkgJsonAndDirectoryInfo(
-		pkgName,
-		version
-	)
-
-	const allPaths = cdn.getPkgPathList(directoryInfo as unknown as PkgPathInfo)
-	const pkgMainFilePath = seekPkgMainPath(pkg as unknown as PkgCDN, allPaths)
-
-	paths = [...paths]
-		.map(p => (extname(p) === '' ? pkgMainFilePath : p))
-		.map(p => p.replace(`${pkgName}/`, ''))
-		.map(p => p.replace(/^\//, ''))
-
-	paths = cdn.spliceUrl(pkgName, paths, version)
-
-	const depsRecords = await Promise.all(
-		paths.map(async v => {
-			const isJsFile = extname(v) === '.js'
-			return {
-				pkgName,
-				url: v,
-				globalVariableName: isJsFile ? await getGlobalNameByUrl(pkgName, v) : ''
-			} as DepRecord
-		})
-	)
-	return depsRecords
-}
-
-export async function getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
-	const depsRecords: DepRecord[] = []
-	const pkgNames = Object.keys(pkgDepsRecord)
-
-	const res = await Promise.all(
-		pkgNames.map(
-			async pkgName =>
-				await getCdnUrlForDep(
-					pkgName,
-					pkgDepsRecord[pkgName].paths,
-					pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
-				)
-		)
-	)
-
-	res.forEach(v => depsRecords.push(...v))
-	return { depsRecords }
 }

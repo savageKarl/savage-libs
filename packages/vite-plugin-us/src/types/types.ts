@@ -9,7 +9,7 @@ export interface DepRecord {
 	 * globalVariableName: 'Vue'
 	 * ```
 	 */
-	globalVariableName?: string
+	globalVariableName: string
 	/**
 	 * url of CDN resource
 	 *

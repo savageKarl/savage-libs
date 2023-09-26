@@ -6,15 +6,16 @@ import { debounce, merge } from 'lodash-es'
 import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
 
 import { resourcePath, pkg } from './utils'
-import { getDepsRecords } from '../cdn/cdn'
+import { cdn } from '../cdn/cdn'
 
 export class DepCollection {
 	private regExclusion: RegExp
 	private manuallyDeps: string[]
+	private manuallyResources: DepRecord[]
 
 	private collectDeps: string[] = []
 
-	private readonly resource = {
+	private readonly resourceRecord = {
 		globalVariableNameRecord: {},
 		externals: [],
 		categoryRecord: {}
@@ -25,9 +26,11 @@ export class DepCollection {
 		this.pkgDeps.join('|').replace(/|$/, '')
 	)
 
-	constructor(exclusions: string[], manuallyDeps: string[]) {
+	constructor(exclusions: string[], manuallyResources: DepRecord[]) {
 		this.regExclusion = new RegExp(exclusions.join('|').replace(/|$/, ''))
-		this.manuallyDeps = manuallyDeps
+		this.manuallyResources = manuallyResources
+
+		this.manuallyDeps = manuallyResources.map(v => v.pkgName)
 	}
 
 	private pushDep(id: string) {
@@ -127,27 +130,34 @@ export class DepCollection {
 	public parsedep = debounce(async () => {
 		const paths = this.removeNodeModulesFromPath()
 		const { pkgDepsRecord } = this.getPkgDepsRecord(paths)
-		const { depsRecords } = await getDepsRecords(pkgDepsRecord)
+		const depsRecords = this.manuallyResources.concat(
+			await cdn.getDepsRecords(pkgDepsRecord)
+		)
 		const { categoryRecord } = this.classifyUrl(depsRecords)
 
 		const globalNames = await this.getVariableNameRecord(depsRecords)
 
-		this.resource.externals = this.resource.externals.concat(
+		this.resourceRecord.externals = this.resourceRecord.externals.concat(
 			this.getExternals(depsRecords)
 		)
-		this.resource.globalVariableNameRecord = merge(
-			this.resource.globalVariableNameRecord,
+		this.resourceRecord.globalVariableNameRecord = merge(
+			this.resourceRecord.globalVariableNameRecord,
 			globalNames
 		)
-		this.resource.categoryRecord = merge(
-			this.resource.categoryRecord,
+		this.resourceRecord.categoryRecord = merge(
+			this.resourceRecord.categoryRecord,
 			categoryRecord
 		)
 
-		await writeFile(resourcePath, JSON.stringify(this.resource, null, 4), {
-			encoding: 'utf-8'
-		})
+		await writeFile(
+			resourcePath,
+			JSON.stringify(this.resourceRecord, null, 4),
+			{
+				encoding: 'utf-8'
+			}
+		)
 
 		this.collectDeps = []
+		this.manuallyResources = []
 	}, 1500)
 }

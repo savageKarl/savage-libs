@@ -6,8 +6,10 @@ import { DepCollection } from '../utils/depCollection'
 
 export function analyze(usOptions: Required<UsOptions>) {
 	const exclusions = usOptions.build.external?.exclusions as string[]
-	const manuallyDeps = usOptions.build.external?.resources?.map(v => v.pkgName)
-	const depCollection = new DepCollection(exclusions, manuallyDeps || [])
+	const depCollection = new DepCollection(
+		exclusions,
+		usOptions.build.external?.resources || []
+	)
 
 	return {
 		name: 'vite-plugin-us:analyze',
