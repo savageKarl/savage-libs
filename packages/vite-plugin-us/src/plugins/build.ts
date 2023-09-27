@@ -11,7 +11,8 @@ import {
 	inlineSvg,
 	removeSvg,
 	injectExternalCssLink,
-	addPrefixForName
+	addPrefixForName,
+	minifyCode
 } from '../utils/utils'
 import type { Grants } from '../types/userscript'
 import type { ResourceRecord, UsOptions } from '../types/types'
@@ -72,7 +73,7 @@ export function build(usOptions: Required<UsOptions>) {
 		generateBundle(options, bundle) {
 			return removeSvg(bundle)
 		},
-		writeBundle(options, bundle) {
+		async writeBundle(options, bundle) {
 			const key = Object.keys(bundle)[0]
 			const mainBundle = bundle[key] as OutputChunk
 			const code = usOptions?.generate?.bundle?.(mainBundle.code) as string
@@ -94,9 +95,13 @@ export function build(usOptions: Required<UsOptions>) {
 				'production'
 			) as string
 
-			const fullCodeList: string[] = []
+			const fullCodeList: string[] = ['']
 
-			fullCodeList.push(injectExternalCssLink(cssUrls))
+			fullCodeList.push(
+				usOptions.build.minify
+					? await minifyCode(injectExternalCssLink(cssUrls), 'js')
+					: injectExternalCssLink(cssUrls)
+			)
 
 			fullCodeList.unshift(metaDataStr)
 			fullCodeList.push(code)

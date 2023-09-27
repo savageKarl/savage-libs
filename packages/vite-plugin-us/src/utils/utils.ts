@@ -144,3 +144,12 @@ export async function fnToDataUrl<T>(fn: (args: T) => unknown, args: T) {
 		)
 	)
 }
+
+export async function minifyCode(code: string, ext: 'js' | 'css') {
+	return await transform({
+		minify: true,
+		code,
+		filename: 'temp.js',
+		loader: ext
+	})
+}
