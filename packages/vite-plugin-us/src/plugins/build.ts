@@ -59,7 +59,7 @@ export function build(usOptions: Required<UsOptions>) {
 			} as UserConfig
 		},
 		load(id) {
-			preventCssDep()
+			return preventCssDep()
 			function preventCssDep() {
 				if (/node_modules/.test(id) && /css$/.test(id)) return ''
 			}

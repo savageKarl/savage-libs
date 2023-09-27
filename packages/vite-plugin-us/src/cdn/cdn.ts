@@ -84,22 +84,33 @@ class CDN {
 
 	private async getAvailableCdn(urlsRecord: Record<string, string[]>) {
 		const cdnKeys = Object.keys(urlsRecord)
-		const result = await Promise.allSettled(
-			cdnKeys.map(k => {
-				return serviceCDN.get(urlsRecord[k][0])
-			})
-		)
 
 		const availableCdnRecord: Record<string, string[]> = {}
-		result.forEach(v => {
-			if (v.status === 'fulfilled') {
-				const cdnKey = cdnKeys.filter(
-					k => urlsRecord[k][0] === v.value.config.url
-				)[0]
 
-				availableCdnRecord[cdnKey] = urlsRecord[cdnKey]
+		const results = cdnKeys.map(async key => {
+			const requests = urlsRecord[key].map(p => serviceCDN.get(p))
+			const res = await Promise.allSettled(requests)
+
+			const status = res.every(v => {
+				const regErrorContent = /404: Not Found/g
+
+				const isFulfilled = v.status === 'fulfilled'
+				const isCorrectContent = (v: string) => !regErrorContent.test(v)
+				return isFulfilled && isCorrectContent(v.value.data)
+			})
+
+			return {
+				name: key,
+				status
 			}
 		})
+
+		;(await Promise.all(results))
+			.filter(v => v.status)
+			.forEach(v => {
+				availableCdnRecord[v.name] = urlsRecord[v.name]
+			})
+
 		return { availableCdnRecord }
 	}
 
@@ -180,6 +191,7 @@ class CDN {
 		paths = [...paths]
 			.map(p => (isJsFile(p) ? pkgMainFilePath : p))
 			.map(p => p.replace(new RegExp(`${pkgName}/|^/`, 'g'), ''))
+			.filter(p => p !== '')
 
 		const { urlsRecord } = this.spliceUrl(pkgName, paths, version)
 		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
