@@ -5,7 +5,7 @@ import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk } from 'rollup'
 
 import { grants } from '../types/userscript'
-import { generateHeadMeta } from '../utils/generateMetadata'
+import { Metadata } from '../utils/metadata'
 import {
 	resourcePath,
 	inlineSvg,
@@ -87,8 +87,10 @@ export function build(usOptions: Required<UsOptions>) {
 
 			addPrefixForName(usOptions, 'production')
 
-			const metaData = usOptions?.generate?.headMetaData?.(
-				generateHeadMeta(usOptions.headMetaData),
+			const metadata = new Metadata(usOptions.headMetaData)
+
+			const metaDataStr = usOptions?.generate?.headMetaData?.(
+				metadata.generate(),
 				'production'
 			) as string
 
@@ -96,7 +98,7 @@ export function build(usOptions: Required<UsOptions>) {
 
 			fullCodeList.push(injectExternalCssLink(cssUrls))
 
-			fullCodeList.unshift(metaData)
+			fullCodeList.unshift(metaDataStr)
 			fullCodeList.push(code)
 
 			const path = resolve(

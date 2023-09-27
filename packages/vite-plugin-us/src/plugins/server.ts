@@ -7,7 +7,7 @@ import type { Grants } from '../types/userscript'
 import type { UsOptions } from '../types/types'
 
 import { grants } from '../types/userscript'
-import { generateHeadMeta } from '../utils/generateMetadata'
+import { Metadata } from '../utils/metadata'
 import {
 	existFile,
 	setResHeader,
@@ -42,8 +42,10 @@ export function serve(usOptions: Required<UsOptions>) {
 
 			const installPath = 'vite-plugin-us.user.js'
 			usOptions.headMetaData.grant = grants as unknown as Grants[]
+			const metadata = new Metadata(usOptions.headMetaData)
+
 			const newMetaData = usOptions.generate.headMetaData?.(
-				generateHeadMeta(usOptions.headMetaData),
+				metadata.generate(),
 				'development'
 			) as string
 			const { host, port } = usOptions.server
