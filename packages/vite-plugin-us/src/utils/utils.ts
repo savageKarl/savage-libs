@@ -2,10 +2,12 @@ import { resolve } from 'node:path'
 import { readFileSync, statSync } from 'node:fs'
 import type { ServerResponse } from 'node:http'
 
-import type { ResolvedConfig } from 'vite'
+import { transformWithEsbuild } from 'vite'
+
+import type { ResolvedConfig, EsbuildTransformOptions } from 'vite'
 import type { OutputBundle } from 'rollup'
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { UsOptions, Mode } from '../types/types'
+import type { UsOptions, Mode, Transform } from '../types/types'
 
 export const pkg = (() => {
 	let pkg = '{}'
@@ -37,7 +39,7 @@ export function rmValueFromArr(arr: string[], values: string[]) {
 	return [...arr].filter(v => !values.includes(v))
 }
 
-export function funcToString<T>(fn: (args: T) => unknown, args: T) {
+export function fnToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }
 
@@ -78,7 +80,7 @@ export function removeSvg(bundle: OutputBundle) {
 }
 
 export function injectExternalCssLink(links: string[]) {
-	return funcToString(function (links: string[]) {
+	return fnToString(function (links: string[]) {
 		window.addEventListener('DOMContentLoaded', () => {
 			links.forEach(v => {
 				const link = document.createElement('link')
@@ -104,4 +106,41 @@ export function camelCaseToHyphen(name: string) {
 
 export function padEndWithSpace(str: string, maxLength: number) {
 	return str.padEnd(maxLength, ' ')
+}
+
+export async function transform(
+	{ minify, code, filename, loader }: Transform,
+	transformOptions?: EsbuildTransformOptions
+) {
+	return (
+		await transformWithEsbuild(
+			code,
+			filename,
+			Object.assign(
+				{
+					minify,
+					loader,
+					sourcemap: false,
+					legalComments: 'none'
+				},
+				transformOptions
+			)
+		)
+	).code
+}
+
+export async function fnToDataUrl<T>(fn: (args: T) => unknown, args: T) {
+	return (
+		'data:application/javascript,' +
+		encodeURIComponent(
+			(
+				await transform({
+					minify: true,
+					loader: 'js',
+					filename: 'temp.js',
+					code: fnToString(fn, args)
+				})
+			).trimEnd()
+		)
+	)
 }

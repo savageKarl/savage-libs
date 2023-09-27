@@ -11,7 +11,7 @@ import { Metadata } from '../utils/metadata'
 import {
 	existFile,
 	setResHeader,
-	funcToString,
+	fnToString,
 	addPrefixForName
 } from '../utils/utils'
 
@@ -92,7 +92,7 @@ export function serve(usOptions: Required<UsOptions>) {
 				return res.end(
 					[
 						newMetaData,
-						funcToString((scriptType: ScriptType) => {
+						fnToString((scriptType: ScriptType) => {
 							scriptType.linkScriptList.reverse().forEach(src => {
 								const script = document.createElement('script')
 								script.type = 'module'
@@ -114,7 +114,7 @@ export function serve(usOptions: Required<UsOptions>) {
 						}, scriptType),
 
 						usOptions.autoAddGrant
-							? funcToString((gmApiList: string[]) => {
+							? fnToString((gmApiList: string[]) => {
 									// @ts-ignore
 									gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
 									// @ts-ignore
