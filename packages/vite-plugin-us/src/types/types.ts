@@ -257,3 +257,30 @@ export interface Transform {
 	filename: string
 	loader: 'js' | 'css'
 }
+
+export type SpliceSeekPathOptions =
+	| {
+			folder: string
+			pkgName?: string
+			name: string
+	  }
+	| {
+			folder: string
+			pkgName: string
+			name?: string
+	  }
+	| {
+			folder?: string
+			pkgName: string
+			name: string
+	  }
+	| {
+			folder?: string
+			pkgName: string
+			name?: string
+	  }
+	| {
+			folder?: string
+			pkgName?: string
+			name: string
+	  }

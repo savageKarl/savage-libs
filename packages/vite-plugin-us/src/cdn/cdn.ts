@@ -11,7 +11,7 @@ import {
 	LeadingCdnRecord
 } from '../types/types'
 
-import { seekPkgMainPath } from './seekPkgMainPath'
+import { seekCdnPath } from './seekCdnPath'
 import { usedCdnList } from './useCdn'
 import { serviceCDN } from './service'
 import { getGlobalNameByUrl } from './getNameByCode'
@@ -173,7 +173,7 @@ class CDN {
 		const allPaths = this.getPkgPathList(
 			directoryInfo as unknown as PkgPathInfo
 		)
-		const pkgMainFilePath = seekPkgMainPath(pkg as unknown as PkgCDN, allPaths)
+		const pkgMainFilePath = seekCdnPath.seek(pkg as unknown as PkgCDN, allPaths)
 
 		const isJsFile = (path: string) => extname(path) === ''
 
