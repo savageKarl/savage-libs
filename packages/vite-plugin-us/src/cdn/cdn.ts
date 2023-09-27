@@ -7,7 +7,8 @@ import {
 	PkgPathInfo,
 	PkgCDN,
 	ItemCDN,
-	DepRecord
+	DepRecord,
+	LeadingCdnRecord
 } from '../types/types'
 
 import { seekPkgMainPath } from './seekPkgMainPath'
@@ -16,105 +17,128 @@ import { serviceCDN } from './service'
 import { getGlobalNameByUrl } from './getNameByCode'
 
 class CDN {
-	private list: Required<ItemCDN>[] = []
-	private leadingForignCDN = {} as Required<ItemCDN>
-	private leadingDomesticCDN = {} as Required<ItemCDN>
-	private fastest = {} as Required<ItemCDN>
+	private list: ItemCDN[] = []
+	private leadingCdnRecord = {} as LeadingCdnRecord
+	private range: 'domestic' | 'foreign' = 'domestic'
 
 	public listGet() {
 		return this.list
 	}
 
-	public leadingForignCDNGet() {
-		return this.leadingForignCDN
+	public leadingCdnRecordGet() {
+		return this.leadingCdnRecord
 	}
 
-	public leadingDomesticCDNGet() {
-		return this.leadingDomesticCDN
-	}
-
-	public fastestGet() {
-		return this.fastest
-	}
-
-	public use(options: ItemCDN | ItemCDN[]) {
-		const list = (
-			Array.isArray(options) ? options : [options]
-		) as Required<ItemCDN>[]
-
-		list.forEach((v, i, arr) => {
-			const defaultOptions = {
-				range: 'domestic',
-				provideMinify: true,
-				useAt: false,
-				addFilesFolder: false,
-				removeDistPath: true,
-				isLeading: false
-			} as Required<ItemCDN>
-
-			arr[i] = v = Object.assign(defaultOptions, v)
-			if (v.isLeading) {
-				if (v.range === 'domestic') this.leadingDomesticCDN = v
-				if (v.range === 'foreign') this.leadingForignCDN = v
-			}
+	public use(useCdnList: ItemCDN[]) {
+		useCdnList.forEach(v => {
+			if (v.leading) this.leadingCdnRecord[v.range] = v
 		})
-		this.list.push(...(list as Required<ItemCDN>[]))
+		this.list.push(...(useCdnList as ItemCDN[]))
 	}
 
-	private async getFastest(pkgName: string, version: string) {
-		const urls: string[] = []
-		this.list.forEach(item => {
-			this.fastest = item
-			urls.push(...this.spliceUrl(pkgName, [''], version))
-		})
+	private async getCurrentRange() {
+		const { domestic, foreign } = this.leadingCdnRecord
 
-		const winner = await Promise.race(urls.map(url => serviceCDN.get(url)))
+		if (domestic && foreign) {
+			const winner = await Promise.race([
+				serviceCDN.get(domestic.homePage),
+				serviceCDN.get(foreign.homePage)
+			])
 
-		this.fastest = this.list.filter(v =>
-			new RegExp(v.url).test(winner.config.url as string)
-		)[0]
-		return this.fastest
+			return (this.range = [domestic, foreign].filter(
+				v => v.homePage === winner.config.url
+			)[0].range)
+		} else {
+			console.error('must be set demostic and foreign leading CDN')
+		}
 	}
 
 	private spliceUrl(pkgName: string, paths: string[], version: string) {
-		const urls: string[] = []
-		paths.forEach(p => {
-			const splitPath: string[] = []
+		const urlsRecord: Record<string, string[]> = {}
 
-			splitPath.push(`${this.fastest.url}/${pkgName}`)
-			splitPath.push(this.fastest.useAt ? '@' : '/')
-			splitPath.push(`${version}/`)
-			if (this.fastest.addFilesFolder) splitPath.push('files/')
-			if (this.fastest.removeDistPath) p = p.replace('dist/', '')
-			if (this.fastest.provideMinify) {
-				splitPath.push(p.replace(/(\.css|\.js)/, '.min$1'))
-			} else {
-				splitPath.push(p)
-			}
+		this.list.forEach(v => {
+			const urls: string[] = []
 
-			urls.push(splitPath.join(''))
+			paths.forEach(p => {
+				const splitPath: string[] = []
+
+				splitPath.push(`${v.url}/${pkgName}`)
+				splitPath.push(v.useAt ? '@' : '/')
+				splitPath.push(`${version}/`)
+				if (v.addFilesFolder) splitPath.push('files/')
+				if (v.removeDistPath) p = p.replace('dist/', '')
+				if (v.provideMinify) {
+					splitPath.push(p.replace(/(\.css|\.js)/, '.min$1'))
+				} else {
+					splitPath.push(p)
+				}
+
+				urls.push(splitPath.join(''))
+			})
+
+			urlsRecord[v.name] = urls
 		})
-		return urls
+
+		return { urlsRecord }
+	}
+
+	private async getAvailableCdn(urlsRecord: Record<string, string[]>) {
+		const cdnKeys = Object.keys(urlsRecord)
+		const result = await Promise.allSettled(
+			cdnKeys.map(k => {
+				return serviceCDN.get(urlsRecord[k][0])
+			})
+		)
+
+		const availableCdnRecord: Record<string, string[]> = {}
+		result.forEach(v => {
+			if (v.status === 'fulfilled') {
+				const cdnKey = cdnKeys.filter(
+					k => urlsRecord[k][0] === v.value.config.url
+				)[0]
+
+				availableCdnRecord[cdnKey] = urlsRecord[cdnKey]
+			}
+		})
+		return { availableCdnRecord }
+	}
+
+	private async getFastestCdn(availableCdnRecord: Record<string, string[]>) {
+		const cdnKeys = Object.keys(availableCdnRecord)
+
+		const winner = await Promise.race(
+			cdnKeys.map(k => serviceCDN.get(availableCdnRecord[k][0]))
+		)
+
+		const key = cdnKeys.filter(
+			k => availableCdnRecord[k][0] === winner.config.url
+		)[0]
+
+		const urls = availableCdnRecord[key]
+
+		return { urls }
 	}
 
 	private async getPkgJsonAndDirectoryInfo(pkgName: string, version: string) {
-		const fastestCDN = await this.getFastest(pkgName, version)
-		const range = fastestCDN.range
-
+		await this.getCurrentRange()
 		const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm'
-
-		const isDomestic = range === 'domestic'
 
 		let pkgJsonUrl = ''
 		let filesDirectoryUrl = ''
 
-		if (isDomestic) {
-			pkgJsonUrl = `${this.leadingDomesticCDN.url}/${pkgName}/${version}/files/package.json`
-			filesDirectoryUrl = `${this.leadingDomesticCDN.url}/${pkgName}/${version}/files?meta`
-		} else {
-			pkgJsonUrl = `${this.leadingForignCDN.url}/${pkgName}@${version}/package.json`
-			filesDirectoryUrl = `${jsdelivrDirectoryOrigin}/${pkgName}@${version}`
+		const { domestic, foreign } = this.leadingCdnRecord
+		const strategy = {
+			domestic() {
+				pkgJsonUrl = `${domestic?.url}/${pkgName}/${version}/files/package.json`
+				filesDirectoryUrl = `${domestic?.url}/${pkgName}/${version}/files?meta`
+			},
+			foreign() {
+				pkgJsonUrl = `${foreign?.url}/${pkgName}@${version}/package.json`
+				filesDirectoryUrl = `${jsdelivrDirectoryOrigin}/${pkgName}@${version}`
+			}
 		}
+
+		strategy[this.range]()
 
 		const [pkgRes, directoryInfoRes] = await Promise.all([
 			serviceCDN.get(pkgJsonUrl),
@@ -133,7 +157,7 @@ class CDN {
 			domestic: parseNpmmirrorPathInfo
 		}
 
-		return strategy[this.fastest.range](directoryInfo)
+		return strategy[this.range](directoryInfo)
 	}
 
 	private async getUrlForDep(
@@ -141,43 +165,39 @@ class CDN {
 		paths: string[],
 		version: string
 	) {
-		try {
-			const { pkg, directoryInfo } = await this.getPkgJsonAndDirectoryInfo(
-				pkgName,
-				version
-			)
+		const { pkg, directoryInfo } = await this.getPkgJsonAndDirectoryInfo(
+			pkgName,
+			version
+		)
 
-			const allPaths = this.getPkgPathList(
-				directoryInfo as unknown as PkgPathInfo
-			)
-			const pkgMainFilePath = seekPkgMainPath(
-				pkg as unknown as PkgCDN,
-				allPaths
-			)
+		const allPaths = this.getPkgPathList(
+			directoryInfo as unknown as PkgPathInfo
+		)
+		const pkgMainFilePath = seekPkgMainPath(pkg as unknown as PkgCDN, allPaths)
 
-			paths = [...paths]
-				.map(p => (extname(p) === '' ? pkgMainFilePath : p))
-				.map(p => p.replace(`${pkgName}/`, ''))
-				.map(p => p.replace(/^\//, ''))
+		const isJsFile = (path: string) => extname(path) === ''
 
-			paths = this.spliceUrl(pkgName, paths, version)
+		paths = [...paths]
+			.map(p => (isJsFile(p) ? pkgMainFilePath : p))
+			.map(p => p.replace(new RegExp(`${pkgName}/|^/`, 'g'), ''))
 
-			const depsRecords = await Promise.all(
-				paths.map(async v => {
-					const isJsFile = extname(v) === '.js'
-					return {
-						pkgName,
-						url: v,
-						globalVariableName: isJsFile
-							? await getGlobalNameByUrl(pkgName, v)
-							: undefined
-					} as DepRecord
-				})
-			)
-			return depsRecords
-		} catch (e) {
-			console.log(e.config.url)
-		}
+		const { urlsRecord } = this.spliceUrl(pkgName, paths, version)
+		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
+		const { urls } = await this.getFastestCdn(availableCdnRecord)
+
+		const depsRecords = await Promise.all(
+			urls.map(async v => {
+				const isJsFile = extname(v) === '.js'
+				return {
+					pkgName,
+					url: v,
+					globalVariableName: isJsFile
+						? await getGlobalNameByUrl(pkgName, v)
+						: undefined
+				} as DepRecord
+			})
+		)
+		return depsRecords
 	}
 
 	public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
