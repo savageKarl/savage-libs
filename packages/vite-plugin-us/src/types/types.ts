@@ -242,3 +242,10 @@ export interface ItemCDN {
 	 */
 	isLeading?: boolean
 }
+
+export interface Transform {
+	minify: boolean
+	code: string
+	filename: string
+	loader: 'js' | 'css'
+}
