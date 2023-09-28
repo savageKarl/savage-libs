@@ -22,7 +22,7 @@ export function analyze(usOptions: Required<UsOptions>) {
 		async transform(code, id) {
 			if (usOptions.build?.external?.autoCDN) {
 				depCollection.collectDep(code, id)
-				depCollection.parsedep()
+				await depCollection.resovleDep()
 			}
 		}
 	} as PluginOption

@@ -7,6 +7,7 @@ import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
 
 import { resourcePath, pkg } from './constants'
 import { cdn } from '../cdn/cdn'
+import { logger } from './logger'
 
 export class DepCollection {
 	private regExclusion: RegExp
@@ -137,7 +138,9 @@ export class DepCollection {
 		return { categoryRecord }
 	}
 
-	public parsedep = debounce(async () => {
+	public resovleDep = debounce(async () => {
+		logger.info('Collecting dependencies for automated CDN...', { time: true })
+
 		const paths = this.removeNodeModulesFromPath()
 		const { pkgDepsRecord } = this.getPkgDepsRecord(paths)
 		const depsRecords = this.manuallyResources.concat(
@@ -169,5 +172,14 @@ export class DepCollection {
 
 		this.collectDeps = []
 		this.manuallyResources = []
-	}, 1500)
+
+		logger.info('Dependencies used for automated CDNs are resolved.', {
+			time: true
+		})
+		console.table(
+			(categoryRecord.js || ([] as DepRecord[])).filter(
+				v => extname(v.url) === '.js'
+			)
+		)
+	}, 100)
 }
