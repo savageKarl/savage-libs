@@ -129,20 +129,8 @@ export async function transform(
 	).code
 }
 
-export async function fnToDataUrl<T>(fn: (args: T) => unknown, args: T) {
-	return (
-		'data:application/javascript,' +
-		encodeURIComponent(
-			(
-				await transform({
-					minify: true,
-					loader: 'js',
-					filename: 'temp.js',
-					code: fnToString(fn, args)
-				})
-			).trimEnd()
-		)
-	)
+export function generateJsDataUrlByCode(code: string) {
+	return 'data:application/javascript,' + encodeURIComponent(code)
 }
 
 export async function minifyCode(code: string, ext: 'js' | 'css') {

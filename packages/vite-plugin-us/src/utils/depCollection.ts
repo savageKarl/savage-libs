@@ -105,20 +105,30 @@ export class DepCollection {
 		return { pkgDepsRecord }
 	}
 
-	async getVariableNameRecord(depsRecords: DepRecord[]) {
+	private async getVariableNameRecord(depsRecords: DepRecord[]) {
 		const names = depsRecords
 			.filter(v => extname(v.url) === '.js')
 			.map(v => ({ [v.pkgName]: v.globalVariableName }))
-			.reduce((preValue, curValue) => Object.assign(preValue, curValue), {})
+			.reduce(
+				(preValue, curValue) => Object.assign(preValue, curValue),
+				{} as Record<string, string>
+			)
 
 		return names
 	}
 
+	private getExtByUrl(url: string) {
+		let ext = extname(url).replace('.', '')
+
+		if (/data:application\/javascript/.test(url)) ext = 'js'
+
+		return ext
+	}
+
 	private classifyUrl(depRecords: DepRecord[]) {
 		const categoryRecord: Record<string, DepRecord[]> = {}
-
 		depRecords.forEach(v => {
-			const ext = extname(v.url).replace('.', '') || 'js'
+			const ext = this.getExtByUrl(v.url)
 			categoryRecord[ext]
 				? categoryRecord[ext]?.push(v)
 				: (categoryRecord[ext] = [v])

@@ -1,5 +1,8 @@
 import { extname } from 'node:path'
 
+import { cloneDeep } from 'lodash-es'
+import MagicString from 'magic-string'
+
 import {
 	PkgDepsRecord,
 	JsdelivrPkgPathInfo,
@@ -15,6 +18,8 @@ import { seekCdnPath } from './seekCdnPath'
 import { usedCdnList } from './useCdn'
 import { serviceCDN } from './service'
 import { getGlobalNameByUrl } from './getNameByCode'
+
+import { generateJsDataUrlByCode } from '../utils/utils'
 
 class CDN {
 	private list: ItemCDN[] = []
@@ -212,6 +217,28 @@ class CDN {
 		return depsRecords
 	}
 
+	private async addDataUrl(depsRecords: DepRecord[]) {
+		const handledDepsRecords: DepRecord[] = []
+
+		for (const v of depsRecords) {
+			handledDepsRecords.push(v)
+
+			const isJsFile = extname(v.url) === '.js'
+			if (isJsFile) {
+				const s = new MagicString(
+					`window['${v.globalVariableName}']=${v.globalVariableName}`
+				)
+
+				handledDepsRecords.push(
+					Object.assign(cloneDeep(v), {
+						url: generateJsDataUrlByCode(s.toString())
+					})
+				)
+			}
+		}
+		return handledDepsRecords
+	}
+
 	public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
 		const depsRecords: DepRecord[] = []
 		const pkgNames = Object.keys(pkgDepsRecord)
@@ -228,7 +255,7 @@ class CDN {
 		)
 
 		res.forEach(v => v && depsRecords.push(...v))
-		return depsRecords
+		return await this.addDataUrl(depsRecords)
 	}
 }
 
