@@ -15,6 +15,8 @@ import {
 	addPrefixForName
 } from '../utils/utils'
 
+export const devPath = 'vite-plugin-us.user.js'
+
 export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
@@ -23,24 +25,12 @@ export function serve(usOptions: Required<UsOptions>) {
 		name: 'vite-plugin-us:serve',
 		enforce: 'post',
 		apply: 'serve',
-		config() {
-			const { host, port } = usOptions.server
-			return {
-				server: {
-					open: false,
-					cors: true,
-					host,
-					port
-				}
-			} as UserConfig
-		},
 		async configResolved(config) {
 			resovledConfig = config
 		},
 		async configureServer(server) {
 			addPrefixForName(usOptions, 'development')
 
-			const installPath = 'vite-plugin-us.user.js'
 			usOptions.headMetaData.grant = grants as unknown as Grants[]
 			const metadata = new Metadata(usOptions.headMetaData)
 
@@ -52,7 +42,7 @@ export function serve(usOptions: Required<UsOptions>) {
 			currentOrigin = `http://${host as string}:${port as number}`
 
 			server.middlewares.use(async (req, res, next) => {
-				if (!new RegExp(installPath).test(req.url as string)) return next()
+				if (!new RegExp(devPath).test(req.url as string)) return next()
 
 				setResHeader(res, {
 					'access-control-allow-origin': '*',
@@ -135,10 +125,8 @@ export function serve(usOptions: Required<UsOptions>) {
 				cacheMetaData = (await fs.readFile(cachePath)).toString('utf-8')
 			}
 
-			let firstOpen = true
-			if (firstOpen || cacheMetaData !== newMetaData) {
-				firstOpen = false
-				const url = `${currentOrigin}/${installPath}`
+			if (cacheMetaData !== newMetaData) {
+				const url = currentOrigin
 				Promise.all([open(url), fs.writeFile(cachePath, newMetaData)])
 			}
 		},

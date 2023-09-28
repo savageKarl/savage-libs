@@ -141,3 +141,19 @@ export async function minifyCode(code: string, ext: 'js' | 'css') {
 		loader: ext
 	})
 }
+
+export const htmlTempalte = `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vite-plugin-us</title>
+</head>
+
+<body>
+<script>__code__</script>
+</body>
+
+</html>`
