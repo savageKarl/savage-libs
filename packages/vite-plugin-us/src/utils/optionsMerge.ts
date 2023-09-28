@@ -2,7 +2,7 @@ import getPort from 'get-port'
 
 import { merge } from 'lodash-es'
 
-import { pkg } from './utils'
+import { pkg } from './constants'
 import { UsOptions } from '../types/types'
 
 type TargetType = string | Record<string, string> | undefined

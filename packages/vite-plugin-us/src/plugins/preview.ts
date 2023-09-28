@@ -5,14 +5,13 @@ import open from 'open'
 import type { PluginOption, ResolvedConfig } from 'vite'
 import type { UsOptions } from '../types/types'
 import { setResHeader } from '../utils/utils'
-
-export const previewPath = 'vite-plugin-us.preview.user.js'
+import { previewPath, pluginName } from '../utils/constants'
 
 export function preview(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 
 	return {
-		name: 'vite-plugin-us:preview',
+		name: `${pluginName}:preview`,
 		enforce: 'post',
 		apply: 'serve',
 		configResolved(config) {

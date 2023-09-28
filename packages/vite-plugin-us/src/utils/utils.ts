@@ -1,4 +1,3 @@
-import { resolve } from 'node:path'
 import { readFileSync, statSync } from 'node:fs'
 import type { ServerResponse } from 'node:http'
 
@@ -6,16 +5,7 @@ import { transformWithEsbuild } from 'vite'
 
 import type { ResolvedConfig, EsbuildTransformOptions } from 'vite'
 import type { OutputBundle } from 'rollup'
-import type { IPackageJson } from '@ts-type/package-dts'
 import type { UsOptions, Mode, Transform } from '../types/types'
-
-export const pkg = (() => {
-	let pkg = '{}'
-	try {
-		pkg = readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
-	} catch {}
-	return JSON.parse(pkg) as IPackageJson
-})()
 
 export const existFile = (path: string) => {
 	try {
@@ -42,8 +32,6 @@ export function rmValueFromArr(arr: string[], values: string[]) {
 export function fnToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }
-
-export const resourcePath = 'node_modules/.vite/vite-plugin-us.resource.json'
 
 export function unionRegex(arr: RegExp[]) {
 	return new RegExp(
@@ -141,19 +129,3 @@ export async function minifyCode(code: string, ext: 'js' | 'css') {
 		loader: ext
 	})
 }
-
-export const htmlTempalte = `
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vite-plugin-us</title>
-</head>
-
-<body>
-<script>__code__</script>
-</body>
-
-</html>`

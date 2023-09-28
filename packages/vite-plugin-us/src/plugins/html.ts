@@ -7,13 +7,17 @@ import type {
 
 import type { UsOptions } from '../types/types'
 
-import { devPath } from './server'
-import { previewPath } from './preview'
-import { fnToString, htmlTempalte } from '../utils/utils'
+import {
+	devPath,
+	previewPath,
+	htmlTempalte,
+	pluginName
+} from '../utils/constants'
+import { fnToString } from '../utils/utils'
 
 export function html(usOptions: Required<UsOptions>) {
 	return {
-		name: 'vite-plugin-us:html',
+		name: `${pluginName}:html`,
 		enforce: 'post',
 		apply: 'serve',
 		config() {

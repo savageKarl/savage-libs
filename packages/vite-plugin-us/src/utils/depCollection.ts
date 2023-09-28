@@ -5,7 +5,7 @@ import { debounce, merge } from 'lodash-es'
 
 import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
 
-import { resourcePath, pkg } from './utils'
+import { resourcePath, pkg } from './constants'
 import { cdn } from '../cdn/cdn'
 
 export class DepCollection {

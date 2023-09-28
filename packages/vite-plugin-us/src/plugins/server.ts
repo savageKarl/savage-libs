@@ -1,12 +1,11 @@
 import fs from 'node:fs/promises'
 
-import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
+import type { PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
 import type { Grants } from '../types/userscript'
 import type { UsOptions } from '../types/types'
 
-import { grants } from '../types/userscript'
 import { Metadata } from '../utils/metadata'
 import {
 	existFile,
@@ -14,15 +13,14 @@ import {
 	fnToString,
 	addPrefixForName
 } from '../utils/utils'
-
-export const devPath = 'vite-plugin-us.user.js'
+import { devPath, grants, pluginName } from '../utils/constants'
 
 export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
 
 	return {
-		name: 'vite-plugin-us:serve',
+		name: `${pluginName}:serve`,
 		enforce: 'post',
 		apply: 'serve',
 		async configResolved(config) {

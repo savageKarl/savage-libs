@@ -4,16 +4,15 @@ import { resolve } from 'node:path'
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk } from 'rollup'
 
-import { grants } from '../types/userscript'
 import { Metadata } from '../utils/metadata'
 import {
-	resourcePath,
 	inlineSvg,
 	removeSvg,
 	injectExternalCssLink,
 	addPrefixForName,
 	minifyCode
 } from '../utils/utils'
+import { resourcePath, grants, pluginName } from '../utils/constants'
 import type { Grants } from '../types/userscript'
 import type { ResourceRecord, UsOptions } from '../types/types'
 
@@ -22,7 +21,7 @@ export function build(usOptions: Required<UsOptions>) {
 	let cssUrls: string[]
 
 	return {
-		name: 'vite-plugin-us:build',
+		name: `${pluginName}:build`,
 		enforce: 'post',
 		apply: 'build',
 		config() {
