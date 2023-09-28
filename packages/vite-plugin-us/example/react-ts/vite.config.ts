@@ -1,24 +1,17 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+import react from '@vitejs/plugin-react'
 
 import { us } from '../../src'
 
 export default defineConfig({
 	plugins: [
-		vue(),
-		AutoImport({
-			resolvers: [ElementPlusResolver()]
-		}),
-		Components({
-			resolvers: [ElementPlusResolver()]
-		}),
+		react(),
+
 		us({
-			entry: 'src/main.ts',
+			entry: 'src/main.tsx',
 			headMetaData: {
-				name: 'vue-ts',
+				name: 'react-ts',
 				version: '1',
 				author: 'savage',
 				description: 'developing plugin',
