@@ -53,18 +53,15 @@ class GlobalVariableNameRegex {
 	}
 
 	capitalizeName() {
-		const upperCase = this.pkgName.split('-').reduce((pre, cur) => {
+		const camelCaseName = this.pkgName.split('-').reduce((pre, cur) => {
 			const splitArr = cur.split('')
 			splitArr[0] = splitArr[0].toUpperCase()
 			return pre + splitArr.join('')
 		}, '')
 
-		const splitArr = upperCase.split('')
-		splitArr[0] = splitArr[0].toLowerCase()
+		const upperCaseName = this.pkgName.toUpperCase()
 
-		const lowerCase = splitArr.join('')
-
-		return [lowerCase, upperCase]
+		return [camelCaseName, upperCaseName]
 	}
 
 	getModuleType() {
@@ -98,6 +95,9 @@ class GlobalVariableNameRegex {
 		const regNames = this.capitalizeName()
 		regNameWithUmdRules.unshift(`(?<name0>${regNames[0]})` as unknown as RegExp)
 		regNameWithUmdRules.unshift(`(?<name1>${regNames[1]})` as unknown as RegExp)
+		regNameWithUmdRules.unshift(
+			`(?<name2>${this.pkgName})` as unknown as RegExp
+		)
 
 		const matchResult = regNameWithUmd.exec(this.code)
 
@@ -129,17 +129,14 @@ function getNameByCode(pkgName: string, code: string) {
 
 	const nodeEval = chain.turnToNode(() => {
 		const globalVariableNameEval = new GlobalVariableNameEval()
-
 		const name = globalVariableNameEval.getNameByCode(code)
-		if (name) return name
-		return 'nextNode'
+		return name || 'nextNode'
 	})
 
 	const nodeRegex = chain.turnToNode(() => {
 		const globalVariableNameRegex = new GlobalVariableNameRegex(pkgName, code)
 		const name = globalVariableNameRegex.getNameByCode()
-		if (name) return name
-		return 'nextNode'
+		return name || 'nextNode'
 	})
 
 	const nodeLast = chain.turnToNode(() => {
