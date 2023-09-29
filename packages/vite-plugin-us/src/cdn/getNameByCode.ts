@@ -20,6 +20,8 @@ class GlobalVariableNameEval {
 		// @ts-ignore
 		global.window = dom.window
 		global.document = dom.window.document
+		// @ts-ignore
+		global.self = global
 	}
 
 	private getKeys() {
@@ -124,7 +126,7 @@ class GlobalVariableNameRegex {
 	}
 }
 
-function getNameByCode(pkgName: string, code: string) {
+export function getNameByCode(pkgName: string, code: string) {
 	const chain = new Chain()
 
 	const nodeEval = chain.turnToNode(() => {
@@ -145,12 +147,7 @@ function getNameByCode(pkgName: string, code: string) {
 
 	nodeEval.setNextNode(nodeRegex).setNextNode(nodeLast)
 
-	return nodeEval.passRequest<string>()
-}
+	const name = nodeEval.passRequest<string>()
 
-export async function getGlobalNameByUrl(pkgName: string, url: string) {
-	const code = (await serviceCDN.get(url)).data as string
-	const globalVariableName = getNameByCode(pkgName, code)
-
-	return globalVariableName
+	return name
 }

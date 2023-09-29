@@ -9,8 +9,8 @@ export const regUmdRules = [
 ]
 
 export const regNameWithUmdRules = [
-	/function ?\((?<this>\w+?), ?\w+?\)[\s\S]+?\k<this>\.(?<name2>\w+) ?= ?/g,
-	/\.(?<name3>\w+)=((\{\})|(\w+\(\)))/g
+	/function ?\((?<this>\w+?), ?\w+?\)[\s\S]+?\k<this>\.(?<name3>\w+) ?= ?/g,
+	/\.(?<name4>\w+)=((\{\})|(\w+\(\)))/g
 ]
 
 export const regGlobalRules = [/^var (?<name>\w+) ?= ?\(?function ?\(\w+/g]
@@ -26,12 +26,11 @@ export const regNameWithIifeRules = regIifeRules
 export const regPkgFolderRules: string[] = ['dist', 'umd', 'iife', 'js']
 export const regPkgFileNameRules: string[] = [
 	'global.prod',
-	'global',
-	'global.production',
-	'iife',
 	'iife.prod',
-	'iife.production',
+	'iife',
+	'prod',
 	'production',
+	'production.min',
 	'index',
 	'index.full'
 ]

@@ -29,8 +29,8 @@ class SeekCdnPath {
 
 			regPkgFileNameRules.forEach(name => {
 				regFullPathRules.push(this.splicePath({ folder, pkgName, name }))
-				regFullPathRules.push(this.splicePath({ folder, name }))
-				regFullPathRules.push(this.splicePath({ name }))
+				regFullPathRules.push(this.splicePath({ folder, pkgName }))
+				regFullPathRules.push(this.splicePath({ pkgName, name }))
 			})
 		})
 		regFullPathRules.push(this.splicePath({ pkgName }))

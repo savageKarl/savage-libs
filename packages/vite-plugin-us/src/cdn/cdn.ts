@@ -17,7 +17,7 @@ import {
 import { seekCdnPath } from './seekCdnPath'
 import { usedCdnList } from './useCdn'
 import { serviceCDN } from './service'
-import { getGlobalNameByUrl } from './getNameByCode'
+import { getNameByCode } from './getNameByCode'
 
 import { generateJsDataUrlByCode } from '../utils/utils'
 
@@ -72,7 +72,7 @@ class CDN {
 				splitPath.push(`${version}/`)
 				if (v.addFilesFolder) splitPath.push('files/')
 				if (v.removeDistPath) p = p.replace('dist/', '')
-				if (v.provideMinify) {
+				if (v.provideMinify && !/(min\.css|min\.js)/.test(p)) {
 					splitPath.push(p.replace(/(\.css|\.js)/, '.min$1'))
 				} else {
 					splitPath.push(p)
@@ -185,7 +185,6 @@ class CDN {
 			pkgName,
 			version
 		)
-
 		const allPaths = this.getPkgPathList(
 			directoryInfo as unknown as PkgPathInfo
 		)
@@ -198,22 +197,35 @@ class CDN {
 			.map(p => p.replace(new RegExp(`${pkgName}/|^/`, 'g'), ''))
 			.filter(p => p !== '')
 
+		paths = [...new Set(paths)]
+
 		const { urlsRecord } = this.spliceUrl(pkgName, paths, version)
 		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
 		const { urls } = await this.getFastestCdn(availableCdnRecord)
 
-		const depsRecords = await Promise.all(
-			urls.map(async v => {
-				const isJsFile = extname(v) === '.js'
-				return {
-					pkgName,
-					url: v,
-					globalVariableName: isJsFile
-						? await getGlobalNameByUrl(pkgName, v)
-						: undefined
-				} as DepRecord
-			})
+		const codeRecord = (
+			await Promise.all(
+				urls.map(async url => {
+					return {
+						url,
+						code: (await serviceCDN.get(url)).data as string
+					}
+				})
+			)
+		).reduce(
+			(preV, curV) => Object.assign(preV, { [curV.url]: curV.code }),
+			{} as Record<string, string>
 		)
+		const depsRecords = urls.map(v => {
+			const isJsFile = extname(v) === '.js'
+			return {
+				pkgName,
+				url: v,
+				globalVariableName: isJsFile
+					? getNameByCode(pkgName, codeRecord[v])
+					: undefined
+			} as DepRecord
+		})
 		return depsRecords
 	}
 
@@ -225,9 +237,8 @@ class CDN {
 
 			const isJsFile = extname(v.url) === '.js'
 			if (isJsFile) {
-				const s = new MagicString(
-					`window['${v.globalVariableName}']=${v.globalVariableName}`
-				)
+				const name = v.globalVariableName
+				const s = new MagicString(`if(${name}){window['${name}']=${name}}`)
 
 				handledDepsRecords.push(
 					Object.assign(cloneDeep(v), {

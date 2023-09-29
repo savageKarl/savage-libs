@@ -79,6 +79,6 @@ async function redirect(path: string) {
 	if (window.parent === window) {
 		location.href = `/${path}`
 		await sleep(500)
-		return window.close()
+		// return window.close()
 	}
 }

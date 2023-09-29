@@ -23,12 +23,10 @@ export class DepCollection {
 	} as ResourceRecord
 
 	private readonly pkgDeps = Object.keys(pkg.dependencies ?? {})
-	private readonly regPkgDep = new RegExp(
-		this.pkgDeps.join('|').replace(/|$/, '')
-	)
+	private readonly regPkgDep = new RegExp(this.pkgDeps.join('|'))
 
 	constructor(exclusions: string[], manuallyResources: DepRecord[]) {
-		this.regExclusion = new RegExp(exclusions.join('|').replace(/|$/, ''))
+		this.regExclusion = new RegExp(exclusions.join('|'))
 		this.manuallyResources = manuallyResources
 
 		this.manuallyDeps = manuallyResources.map(v => v.pkgName)
@@ -53,7 +51,7 @@ export class DepCollection {
 
 		if (!isLocal || !isFile || !isOriginalFile) return false
 
-		const regPkg = /import[\s\d\w{},]+(?<quote>'|")(?<path>[^.].+?)\k<quote>/g
+		const regPkg = /import[\s\d\w{},]+(?<quote>'|")(?<path>[^./].+?)\k<quote>/g
 
 		const matchAllResult = [...code.matchAll(regPkg)]
 
@@ -89,11 +87,23 @@ export class DepCollection {
 		return external
 	}
 
+	private getPkgNameByPath(path: string) {
+		let pkgNmae: string
+		const splitArr = path.split('/')
+		if (/^@/.test(path)) {
+			pkgNmae = [splitArr[0], splitArr[1]].join('/')
+		} else {
+			pkgNmae = splitArr[0]
+		}
+
+		return pkgNmae
+	}
+
 	private getPkgDepsRecord(paths: string[]) {
 		const pkgDepsRecord: PkgDepsRecord = {}
 
 		paths.forEach(v => {
-			const pkgname = this.regPkgDep.exec(v)?.[0] as string
+			const pkgname = this.getPkgNameByPath(v)
 
 			if (!pkgDepsRecord[pkgname])
 				pkgDepsRecord[pkgname] = { paths: [], version: '' }
@@ -176,10 +186,8 @@ export class DepCollection {
 		logger.info('Dependencies used for automated CDNs are resolved.', {
 			time: true
 		})
-		console.table(
-			(categoryRecord.js || ([] as DepRecord[])).filter(
-				v => extname(v.url) === '.js'
-			)
-		)
+		if (categoryRecord.js) {
+			console.table(categoryRecord.js.filter(v => extname(v.url) === '.js'))
+		}
 	}, 100)
 }

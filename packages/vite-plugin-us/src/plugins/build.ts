@@ -31,8 +31,8 @@ export function build(usOptions: Required<UsOptions>) {
 				resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
 			} catch {}
 
-			cssUrls = resource?.categoryRecord?.css.map(v => v.url) || []
-			const jsUrls = resource?.categoryRecord?.js.map(v => v.url) || []
+			cssUrls = resource?.categoryRecord?.css?.map(v => v.url) || []
+			const jsUrls = resource?.categoryRecord?.js?.map(v => v.url) || []
 
 			const r = usOptions.headMetaData.require
 			usOptions.headMetaData.require = r?.concat(jsUrls)
@@ -77,7 +77,7 @@ export function build(usOptions: Required<UsOptions>) {
 			const mainBundle = bundle[key] as OutputChunk
 			const code = usOptions?.generate?.bundle?.(mainBundle.code) as string
 
-			const regex = new RegExp(grants.join('|').replace('|$', ''), 'g')
+			const regex = new RegExp(grants.join('|'), 'g')
 			const matchRes = [...code.matchAll(regex)]
 			const collectedGrant = matchRes.map(v => v[0])
 
