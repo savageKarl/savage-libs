@@ -206,7 +206,7 @@ export interface ItemCDN {
 	homePage: string
 	url: string
 	/**
-	 * @defaultValue `within`
+	 * @defaultValue `domestic`
 	 */
 	range: 'domestic' | 'foreign'
 	/**
