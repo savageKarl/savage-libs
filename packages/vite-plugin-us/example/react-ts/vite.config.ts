@@ -7,7 +7,6 @@ import { us } from '../../src'
 export default defineConfig({
 	plugins: [
 		react(),
-
 		us({
 			entry: 'src/main.tsx',
 			headMetaData: {
@@ -15,7 +14,7 @@ export default defineConfig({
 				version: '1',
 				author: 'savage',
 				description: 'developing plugin',
-				include: ['http://localhost:5500/packages/vite-plugin-us/index.html'],
+				include: ['http://localhost:5501/packages/vite-plugin-us/index.html'],
 				match: ['https://translate.google.com/*'],
 				// runAt: '',
 				runAt: 'document_start',
