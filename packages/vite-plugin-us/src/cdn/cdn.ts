@@ -216,6 +216,7 @@ class CDN {
 			(preV, curV) => Object.assign(preV, { [curV.url]: curV.code }),
 			{} as Record<string, string>
 		)
+
 		const depsRecords = urls.map(v => {
 			const isJsFile = extname(v) === '.js'
 			return {

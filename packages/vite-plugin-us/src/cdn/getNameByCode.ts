@@ -93,13 +93,13 @@ class GlobalVariableNameRegex {
 	}
 
 	getNameFromUmdModule() {
-		const regNameWithUmd = unionRegex(regNameWithUmdRules)
 		const regNames = this.capitalizeName()
-		regNameWithUmdRules.unshift(`(?<name0>${regNames[0]})` as unknown as RegExp)
-		regNameWithUmdRules.unshift(`(?<name1>${regNames[1]})` as unknown as RegExp)
-		regNameWithUmdRules.unshift(
-			`(?<name2>${this.pkgName})` as unknown as RegExp
-		)
+		const regNameRules = [
+			`(?<name0>${regNames[0]})` as unknown as RegExp,
+			`(?<name1>${regNames[1]})` as unknown as RegExp,
+			...regNameWithUmdRules
+		]
+		const regNameWithUmd = unionRegex(regNameRules)
 
 		const matchResult = regNameWithUmd.exec(this.code)
 
