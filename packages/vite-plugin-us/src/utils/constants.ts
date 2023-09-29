@@ -16,8 +16,9 @@ export const pkg = (() => {
 })()
 
 export const resourcePath = 'node_modules/.vite/vite-plugin-us.resource.json'
-export const previewPath = 'vite-plugin-us.preview.user.js'
-export const devPath = 'vite-plugin-us.user.js'
+export const devPath = `${pluginName}.dev.user.js`
+export const previewPath = `${pluginName}.preview.user.js`
+export const prodPath = `${pluginName}.prod.user.js`
 
 export const htmlTempalte = `
 <!DOCTYPE html>

@@ -1,6 +1,12 @@
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs'
 import { resolve } from 'node:path'
 
+import http from 'node:http'
+
+import connect from 'connect'
+import getPort from 'get-port'
+import open from 'open'
+
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk } from 'rollup'
 
@@ -15,6 +21,7 @@ import {
 import { resourcePath, grants, pluginName } from '../utils/constants'
 import type { Grants } from '../types/userscript'
 import type { ResourceRecord, UsOptions } from '../types/types'
+import { bundleMiddware, redirectMiddleware } from '../utils/middleware'
 
 export function build(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
@@ -115,6 +122,19 @@ export function build(usOptions: Required<UsOptions>) {
 
 			writeFileSync(path, fullCodeList.join('\n'))
 			unlinkSync(resolve(options.dir as string, key))
+		},
+		async closeBundle() {
+			if (!usOptions.build.open) return
+
+			const port = await getPort()
+			const app = connect()
+
+			app.use(redirectMiddleware('prod'))
+			app.use(bundleMiddware(resovledConfig, usOptions))
+
+			const server = http.createServer(app).listen(port)
+			const url = `http://localhost:${port}`
+			open(url)
 		}
 	} as PluginOption
 }

@@ -22,6 +22,7 @@ const defaultOpts: Required<UsOptions> = {
 		host: 'localhost'
 	},
 	build: {
+		open: true,
 		minify: true,
 		cssMinify: true,
 		external: {

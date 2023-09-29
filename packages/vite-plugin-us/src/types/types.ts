@@ -62,7 +62,7 @@ export interface UsOptions {
 		 */
 		port?: number
 
-		/** auto open browser
+		/** auto open browser in development mode
 		 * @defaultValue `true`
 		 */
 		open?: boolean
@@ -75,6 +75,10 @@ export interface UsOptions {
 	 * build options for production mode
 	 */
 	build?: {
+		/** auto open browser in production mode
+		 * @defaultValue `true`
+		 */
+		open?: boolean
 		/**
 		 * minify js in production mode
 		 */
