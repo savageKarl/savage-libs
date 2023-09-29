@@ -88,7 +88,7 @@ export interface UsOptions {
 			/**
 			 * automatically load package dependencies using CDN
 			 *
-			 * if value is `false`, `exclude` will not work
+			 * if value is `false`, `exclusions` and `resources` will not work
 			 *
 			 * @defaultValue `true`
 			 */
