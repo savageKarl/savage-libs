@@ -21,13 +21,23 @@ import { getNameByCode } from './getNameByCode'
 
 import { generateJsDataUrlByCode } from '../utils/utils'
 
+import { logger } from '../utils/logger'
+
+type UrlsRecord = Record<
+	string,
+	{
+		pkgName: string
+		url: string
+	}[]
+>
+
 class CDN {
-	private list: ItemCDN[] = []
+	private usedCDNs: ItemCDN[] = []
 	private leadingCdnRecord = {} as LeadingCdnRecord
 	private range: 'domestic' | 'foreign' = 'domestic'
 
 	public listGet() {
-		return this.list
+		return this.usedCDNs
 	}
 
 	public leadingCdnRecordGet() {
@@ -38,7 +48,7 @@ class CDN {
 		useCdnList.forEach(v => {
 			if (v.leading) this.leadingCdnRecord[v.range] = v
 		})
-		this.list.push(...(useCdnList as ItemCDN[]))
+		this.usedCDNs.push(...(useCdnList as ItemCDN[]))
 	}
 
 	private async getCurrentRange() {
@@ -59,12 +69,10 @@ class CDN {
 	}
 
 	private spliceUrl(pkgName: string, paths: string[], version: string) {
-		const urlsRecord: Record<string, string[]> = {}
+		const urlsRecord: UrlsRecord = {}
 
-		this.list.forEach(v => {
-			const urls: string[] = []
-
-			paths.forEach(p => {
+		this.usedCDNs.forEach(v => {
+			urlsRecord[v.name] = paths.map(p => {
 				const splitPath: string[] = []
 
 				splitPath.push(`${v.url}/${pkgName}`)
@@ -78,39 +86,45 @@ class CDN {
 					splitPath.push(p)
 				}
 
-				urls.push(splitPath.join(''))
+				return {
+					pkgName,
+					url: splitPath.join('')
+				}
 			})
-
-			urlsRecord[v.name] = urls
 		})
 
 		return { urlsRecord }
 	}
 
-	private async getAvailableCdn(urlsRecord: Record<string, string[]>) {
+	private async getAvailableCdn(urlsRecord: UrlsRecord) {
+		logger.info('Getting available CDNs...')
+
 		const cdnKeys = Object.keys(urlsRecord)
 
-		const availableCdnRecord: Record<string, string[]> = {}
+		const availableCdnRecord: UrlsRecord = {}
 
-		const results = cdnKeys.map(async key => {
-			const requests = urlsRecord[key].map(p => serviceCDN.get(p))
-			const res = await Promise.allSettled(requests)
+		;(
+			await Promise.all(
+				cdnKeys.map(async key => {
+					const res = await Promise.allSettled(
+						urlsRecord[key].map(p => serviceCDN.get(p.url))
+					)
 
-			const status = res.every(v => {
-				const regErrorContent = /404: Not Found/g
+					const status = res.every(v => {
+						const regErrorContent = /404: Not Found/g
 
-				const isFulfilled = v.status === 'fulfilled'
-				const isCorrectContent = (v: string) => !regErrorContent.test(v)
-				return isFulfilled && isCorrectContent(v.value.data)
-			})
+						const isFulfilled = v.status === 'fulfilled'
+						const isCorrectContent = (v: string) => !regErrorContent.test(v)
+						return isFulfilled && isCorrectContent(v.value.data)
+					})
 
-			return {
-				name: key,
-				status
-			}
-		})
-
-		;(await Promise.all(results))
+					return {
+						name: key,
+						status
+					}
+				})
+			)
+		)
 			.filter(v => v.status)
 			.forEach(v => {
 				availableCdnRecord[v.name] = urlsRecord[v.name]
@@ -119,20 +133,22 @@ class CDN {
 		return { availableCdnRecord }
 	}
 
-	private async getFastestCdn(availableCdnRecord: Record<string, string[]>) {
+	private async getFastestCdn(availableCdnRecord: UrlsRecord) {
+		logger.info('Getting the fastest CDNs')
+
 		const cdnKeys = Object.keys(availableCdnRecord)
 
 		const winner = await Promise.race(
-			cdnKeys.map(k => serviceCDN.get(availableCdnRecord[k][0]))
+			cdnKeys.map(k => serviceCDN.get(availableCdnRecord[k][0].url))
 		)
 
 		const key = cdnKeys.filter(
-			k => availableCdnRecord[k][0] === winner.config.url
+			k => availableCdnRecord[k][0].url === winner.config.url
 		)[0]
 
-		const urls = availableCdnRecord[key]
+		const urlRecords = availableCdnRecord[key]
 
-		return { urls }
+		return { urlRecords }
 	}
 
 	private async getPkgJsonAndDirectoryInfo(pkgName: string, version: string) {
@@ -194,43 +210,19 @@ class CDN {
 
 		paths = [...paths]
 			.map(p => (isJsFile(p) ? pkgMainFilePath : p))
-			.map(p => p.replace(new RegExp(`${pkgName}/|^/`, 'g'), ''))
 			.filter(p => p !== '')
+			.map(p => p.replace(new RegExp(`${pkgName}/|^/`, 'g'), ''))
 
 		paths = [...new Set(paths)]
 
 		const { urlsRecord } = this.spliceUrl(pkgName, paths, version)
-		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
-		const { urls } = await this.getFastestCdn(availableCdnRecord)
 
-		const codeRecord = (
-			await Promise.all(
-				urls.map(async url => {
-					return {
-						url,
-						code: (await serviceCDN.get(url)).data as string
-					}
-				})
-			)
-		).reduce(
-			(preV, curV) => Object.assign(preV, { [curV.url]: curV.code }),
-			{} as Record<string, string>
-		)
-
-		const depsRecords = urls.map(v => {
-			const isJsFile = extname(v) === '.js'
-			return {
-				pkgName,
-				url: v,
-				globalVariableName: isJsFile
-					? getNameByCode(pkgName, codeRecord[v])
-					: undefined
-			} as DepRecord
-		})
-		return depsRecords
+		return urlsRecord
 	}
 
 	private async addDataUrl(depsRecords: DepRecord[]) {
+		logger.info('Adding data URL')
+
 		const handledDepsRecords: DepRecord[] = []
 
 		for (const v of depsRecords) {
@@ -252,21 +244,54 @@ class CDN {
 	}
 
 	public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
-		const depsRecords: DepRecord[] = []
 		const pkgNames = Object.keys(pkgDepsRecord)
 
-		const res = await Promise.all(
-			pkgNames.map(
-				async pkgName =>
-					await this.getUrlForDep(
-						pkgName,
-						pkgDepsRecord[pkgName].paths,
-						pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
-					)
+		const urlsRecord = (
+			await Promise.all(
+				pkgNames.map(
+					async pkgName =>
+						await this.getUrlForDep(
+							pkgName,
+							pkgDepsRecord[pkgName].paths,
+							pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
+						)
+				)
 			)
-		)
+		).reduce((preV, curV) => {
+			Object.keys(preV).forEach(k => {
+				preV[k] = [...preV[k], ...curV[k]]
+			})
+			return preV
+		})
 
-		res.forEach(v => v && depsRecords.push(...v))
+		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
+		const { urlRecords } = await this.getFastestCdn(availableCdnRecord)
+
+		const codeRecord = (
+			await Promise.all(
+				urlRecords.map(async v => {
+					return {
+						[v.url]: (await serviceCDN.get(v.url)).data as string
+					}
+				})
+			)
+		).reduce((preV, curV) => Object.assign(preV, curV))
+
+		if (Object.keys(codeRecord).length > 0) {
+			logger.info('Getting global variable names...')
+		}
+
+		const depsRecords = urlRecords.map(v => {
+			const isJsFile = extname(v.url) === '.js'
+			return {
+				pkgName: v.pkgName,
+				url: v.url,
+				globalVariableName: isJsFile
+					? getNameByCode(v.pkgName, codeRecord[v.url])
+					: undefined
+			} as DepRecord
+		})
+
 		return await this.addDataUrl(depsRecords)
 	}
 }

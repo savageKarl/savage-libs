@@ -1,7 +1,6 @@
 import jsdom from 'jsdom'
 
 import { Chain } from '../utils/chain'
-import { serviceCDN } from './service'
 
 import { unionRegex } from '../utils/utils'
 import {

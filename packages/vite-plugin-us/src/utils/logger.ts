@@ -23,6 +23,8 @@ function createLogger(tag: string) {
 		logRecord[k as LogKeys] = (msg: Msg, options?: LogOptions) => {
 			const strs = []
 
+			options = Object.assign({ time: true }, options)
+
 			if (options?.time) strs.push(pc.white(new Date().toLocaleTimeString()))
 			strs.push(pc.bold(pc.blue(`[${tag}]`)))
 			strs.push(pc[v as PcKeys](msg))
