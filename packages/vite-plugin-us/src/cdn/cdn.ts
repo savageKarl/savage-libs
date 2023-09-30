@@ -97,7 +97,9 @@ class CDN {
 	}
 
 	private async getAvailableCdn(urlsRecord: UrlsRecord) {
-		logger.info('Getting available CDNs...')
+		if (Object.keys(urlsRecord).length > 0) {
+			logger.info('Getting available CDNs...')
+		}
 
 		const cdnKeys = Object.keys(urlsRecord)
 
@@ -134,7 +136,9 @@ class CDN {
 	}
 
 	private async getFastestCdn(availableCdnRecord: UrlsRecord) {
-		logger.info('Getting the fastest CDNs')
+		if (Object.keys(availableCdnRecord).length > 0) {
+			logger.info('Getting the fastest CDNs')
+		}
 
 		const cdnKeys = Object.keys(availableCdnRecord)
 
@@ -216,7 +220,6 @@ class CDN {
 		paths = [...new Set(paths)]
 
 		const { urlsRecord } = this.spliceUrl(pkgName, paths, version)
-
 		return urlsRecord
 	}
 
@@ -245,7 +248,6 @@ class CDN {
 
 	public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
 		const pkgNames = Object.keys(pkgDepsRecord)
-
 		const urlsRecord = (
 			await Promise.all(
 				pkgNames.map(
@@ -258,11 +260,11 @@ class CDN {
 				)
 			)
 		).reduce((preV, curV) => {
-			Object.keys(preV).forEach(k => {
-				preV[k] = [...preV[k], ...curV[k]]
+			Object.keys(curV).forEach(k => {
+				preV[k] = (preV[k] || []).concat(curV[k])
 			})
 			return preV
-		})
+		}, {})
 
 		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
 		const { urlRecords } = await this.getFastestCdn(availableCdnRecord)

@@ -26,7 +26,9 @@ export class DepCollection {
 	private readonly regPkgDep = new RegExp(this.pkgDeps.join('|'))
 
 	constructor(exclusions: string[], manuallyResources: DepRecord[]) {
-		this.regExclusion = new RegExp(exclusions.join('|'))
+		this.regExclusion = new RegExp(
+			exclusions.map(v => `^${v}($|/)`).join('|') || ' '
+		)
 		this.manuallyResources = manuallyResources
 
 		this.manuallyDeps = manuallyResources.map(v => v.pkgName)
@@ -149,8 +151,7 @@ export class DepCollection {
 	}
 
 	public resovleDep = debounce(async () => {
-		logger.info('Collecting dependencies for automated CDN...', { time: true })
-
+		logger.info('Collecting dependencies for automated CDN...')
 		const paths = this.removeNodeModulesFromPath()
 		const { pkgDepsRecord } = this.getPkgDepsRecord(paths)
 		const depsRecords = this.manuallyResources.concat(
