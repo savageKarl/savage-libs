@@ -38,7 +38,7 @@ const cloudflare: ItemCDN = {
 }
 
 const npmmirror: ItemCDN = {
-	homePage: 'https://npmmirror.com/',
+	homePage: 'https://npmmirror.com',
 	name: 'npmmirror',
 	url: 'https://registry.npmmirror.com',
 	addFilesFolder: true,
@@ -75,7 +75,7 @@ const bootcdn: ItemCDN = {
 }
 
 const baomitu: ItemCDN = {
-	homePage: 'https://cdn.baomitu.com/',
+	homePage: 'https://cdn.baomitu.com',
 	range: 'domestic',
 	provideMinify: true,
 	removeDistPath: true,
