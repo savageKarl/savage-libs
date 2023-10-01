@@ -1,4 +1,5 @@
 import jsdom from 'jsdom'
+import { debounce } from 'lodash-es'
 
 import { Chain } from '../utils/chain'
 
@@ -13,6 +14,12 @@ import {
 } from './regexRules'
 
 class GlobalVariableNameEval {
+	private windowKeys: string[] = []
+	private globalKeys: string[] = []
+
+	private windowNameKeys: string[] = []
+	private globalNameKeys: string[] = []
+
 	constructor() {
 		const { JSDOM } = jsdom
 		const dom = new JSDOM(`<!DOCTYPE html><p>Hello world</p>`)
@@ -30,17 +37,43 @@ class GlobalVariableNameEval {
 		}
 	}
 
-	getNameByCode(code: string) {
+	private saveKeys() {
+		const { windowKeys, globalKeys } = this.getKeys()
+		this.windowKeys = windowKeys
+		this.globalKeys = globalKeys
+	}
+
+	private getNameKey() {
+		const { windowKeys, globalKeys } = this.getKeys()
+		const windowKeyName = windowKeys.filter(
+			v => !this.windowKeys.includes(v)
+		)[0]
+
+		const globalKeyName = globalKeys.filter(
+			v => !this.globalKeys.includes(v)
+		)[0]
+
+		this.globalNameKeys.push(globalKeyName)
+		this.windowNameKeys.push(windowKeyName)
+		this.resetKey()
+
+		return { windowKeyName, globalKeyName }
+	}
+
+	private resetKey = debounce(() => {
+		this.windowNameKeys.forEach(v => Reflect.deleteProperty(global.window, v))
+		this.globalNameKeys.forEach(v => Reflect.deleteProperty(global, v))
+	}, 1000)
+
+	public getNameByCode(code: string) {
+		this.saveKeys()
 		// eslint-disable-next-line no-eval
 		const _eval = eval
-		const { windowKeys, globalKeys } = this.getKeys()
 		_eval(code)
-		const { windowKeys: windowKeysNew, globalKeys: globalKeysNew } =
-			this.getKeys()
 
-		const windowKeyName = windowKeysNew.filter(v => !windowKeys.includes(v))[0]
-		const globalKeyName = globalKeysNew.filter(v => !globalKeys.includes(v))[0]
-		return windowKeyName || globalKeyName || ''
+		const { globalKeyName, windowKeyName } = this.getNameKey()
+
+		return globalKeyName || windowKeyName || ''
 	}
 }
 

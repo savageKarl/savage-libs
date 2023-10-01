@@ -53,7 +53,8 @@ export class DepCollection {
 
 		if (!isLocal || !isFile || !isOriginalFile) return false
 
-		const regPkg = /import[\s\d\w{},]+(?<quote>'|")(?<path>[^./].+?)\k<quote>/g
+		const regPkg =
+			/\bimport[\s\d\w{},]+(?<quote>'|")(?<path>[^./].+?)\k<quote>/g
 
 		const matchAllResult = [...code.matchAll(regPkg)]
 
@@ -184,11 +185,12 @@ export class DepCollection {
 		this.collectDeps = []
 		this.manuallyResources = []
 
-		logger.info('Dependencies used for automated CDNs are resolved.', {
-			time: true
-		})
+		logger.info('Dependencies used for automated CDNs are resolved.')
 		if (categoryRecord.js) {
 			console.table(categoryRecord.js.filter(v => extname(v.url) === '.js'))
+		}
+		if (categoryRecord.css) {
+			console.table(categoryRecord.css)
 		}
 	}, 100)
 }

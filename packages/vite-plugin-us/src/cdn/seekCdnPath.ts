@@ -19,11 +19,8 @@ class SeekCdnPath {
 	seek(pkg: PkgCDN, paths: string[]) {
 		const pkgName = pkg.name
 		const regFullPathRules: string[] = []
-		const field = pkg.unpkg || pkg.jsdelivr
 
 		// the order is important, don't change it randomly
-		if (field) regFullPathRules.push(field.replace('.', ''))
-
 		regPkgFolderRules.forEach(folder => {
 			regFullPathRules.push(this.splicePath({ folder, pkgName }))
 
@@ -35,6 +32,9 @@ class SeekCdnPath {
 		})
 		regFullPathRules.push(this.splicePath({ pkgName }))
 
+		const cdnField = pkg.unpkg || pkg.jsdelivr
+
+		if (cdnField) regFullPathRules.push(`/${cdnField}`)
 		const mainField = pkg.main
 		if (mainField) regFullPathRules.push(mainField.replace('.', ''))
 

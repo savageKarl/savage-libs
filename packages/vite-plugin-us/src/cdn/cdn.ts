@@ -1,5 +1,7 @@
 import { extname } from 'node:path'
+import type { AxiosResponse } from 'axios'
 
+import pc from 'picocolors'
 import { cloneDeep } from 'lodash-es'
 import MagicString from 'magic-string'
 
@@ -34,7 +36,7 @@ type UrlsRecord = Record<
 class CDN {
 	private usedCDNs: ItemCDN[] = []
 	private leadingCdnRecord = {} as LeadingCdnRecord
-	private range: 'domestic' | 'foreign' = 'domestic'
+	private range: 'domestic' | 'foreign' = 'foreign'
 
 	public listGet() {
 		return this.usedCDNs
@@ -51,22 +53,39 @@ class CDN {
 		this.usedCDNs.push(...(useCdnList as ItemCDN[]))
 	}
 
-	private async getCurrentRange() {
-		const { domestic, foreign } = this.leadingCdnRecord
+	// private async getCurrentRange() {
+	// 	logger.error('getCurrentRange')
+	// 	const { domestic, foreign } = this.leadingCdnRecord
 
-		if (domestic && foreign) {
-			const winner = await Promise.race([
-				serviceCDN.get(domestic.homePage),
-				serviceCDN.get(foreign.homePage)
-			])
+	// 	try {
+	// 		if (domestic && foreign) {
+	// 			const winner = (
+	// 				await Promise.allSettled([
+	// 					serviceCDN.get(domestic.homePage),
+	// 					serviceCDN.get(foreign.homePage)
+	// 				])
+	// 			)
+	// 				.filter(v => v.status === 'fulfilled')
+	// 				.reduce((preV, curV) => {
+	// 					if (preV.status === 'fulfilled' && curV.status === 'fulfilled') {
+	// 						const preVTime = preV.value.time - preV.value.config.time
+	// 						const CurVTime = curV.value.time - curV.value.config.time
 
-			return (this.range = [domestic, foreign].filter(
-				v => v.homePage === winner.config.url
-			)[0].range)
-		} else {
-			console.error('must be set demostic and foreign leading CDN')
-		}
-	}
+	// 						return preVTime - CurVTime > 0 ? curV : preV
+	// 					}
+	// 					return preV
+	// 				})
+	// 			console.log(winner)
+	// 			// return (this.range = [domestic, foreign].filter(
+	// 			// 	v => v.homePage === winner.config.url
+	// 			// )[0].range)
+	// 		} else {
+	// 			console.error('must be set demostic and foreign leading CDN')
+	// 		}
+	// 	} catch (e) {
+	// 		console.error(e)
+	// 	}
+	// }
 
 	private spliceUrl(pkgName: string, paths: string[], version: string) {
 		const urlsRecord: UrlsRecord = {}
@@ -99,6 +118,7 @@ class CDN {
 	private async getAvailableCdn(urlsRecord: UrlsRecord) {
 		if (Object.keys(urlsRecord).length > 0) {
 			logger.info('Getting available CDNs...')
+			logger.info(JSON.stringify(urlsRecord, null, 4))
 		}
 
 		const cdnKeys = Object.keys(urlsRecord)
@@ -156,7 +176,6 @@ class CDN {
 	}
 
 	private async getPkgJsonAndDirectoryInfo(pkgName: string, version: string) {
-		await this.getCurrentRange()
 		const jsdelivrDirectoryOrigin = 'https://data.jsdelivr.com/v1/packages/npm'
 
 		let pkgJsonUrl = ''
@@ -208,12 +227,23 @@ class CDN {
 		const allPaths = this.getPkgPathList(
 			directoryInfo as unknown as PkgPathInfo
 		)
-		const pkgMainFilePath = seekCdnPath.seek(pkg as unknown as PkgCDN, allPaths)
+		const pkgCdnPath = seekCdnPath.seek(pkg as unknown as PkgCDN, allPaths)
 
 		const isJsFile = (path: string) => extname(path) === ''
 
 		paths = [...paths]
-			.map(p => (isJsFile(p) ? pkgMainFilePath : p))
+			.map(p => {
+				if (isJsFile(p)) {
+					if (pkgCdnPath) return pkgCdnPath
+					else
+						logger.warn(
+							`Unable to find CDN path for dependency ${pc.bold(
+								pkgName
+							)}, skipped!`
+						)
+				}
+				return p
+			})
 			.filter(p => p !== '')
 			.map(p => p.replace(new RegExp(`${pkgName}/|^/`, 'g'), ''))
 
