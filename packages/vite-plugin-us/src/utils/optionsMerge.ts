@@ -2,7 +2,7 @@ import getPort from 'get-port'
 
 import { merge } from 'lodash-es'
 
-import { pkg } from './constants'
+import { pkg, pluginName } from './constants'
 import { UsOptions } from '../types/types'
 
 type TargetType = string | Record<string, string> | undefined
@@ -32,11 +32,11 @@ const defaultOpts: Required<UsOptions> = {
 		}
 	},
 	generate: {
-		headMetaData: metaData => metaData,
-		bundle: code => code
+		modifyMetadata: metaData => metaData,
+		modifyBundle: code => code
 	},
-	headMetaData: {
-		name: pkg.name || 'vite-plugin-us',
+	metaData: {
+		name: pkg.name || pluginName,
 		version: pkg.version || '0.0.1',
 		description: pkg.description || 'welcome use vite-plugin-us',
 		author: takeFieldFromTarget('name', pkg.author as TargetType),

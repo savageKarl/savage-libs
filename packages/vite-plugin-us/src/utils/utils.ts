@@ -67,23 +67,36 @@ export function removeSvg(bundle: OutputBundle) {
 	}
 }
 
-export function injectExternalCssLink(links: string[]) {
-	return fnToString(function (links: string[]) {
+interface InjectCssOptions {
+	links: string[]
+	inline: string
+	minify: boolean
+	pluginName: string
+}
+
+export function injectCss(options: InjectCssOptions) {
+	const code = fnToString((options: InjectCssOptions) => {
 		window.addEventListener('DOMContentLoaded', () => {
-			links.forEach(v => {
+			options.links.forEach(v => {
 				const link = document.createElement('link')
 				link.rel = 'stylesheet'
 				link.href = v
 				document.head.appendChild(link)
 			})
+
+			const style = document.createElement('style')
+			style.dataset.vitePluginId = options.pluginName
+			style.textContent = options.inline
+			document.head.appendChild(style)
 		})
-	}, links)
+	}, options)
+	return options.minify ? minifyCode(code, 'js') : code
 }
 
 /** NPF, `usOptions` */
 export function addPrefixForName(usOptions: UsOptions, mode: Mode) {
-	const name = usOptions.headMetaData.name
-	if (usOptions.prefix) usOptions.headMetaData.name = `${mode}: ${name}`
+	const name = usOptions.metaData.name
+	if (usOptions.prefix) usOptions.metaData.name = `${mode}: ${name}`
 }
 
 export function camelCaseToHyphen(name: string) {

@@ -1,5 +1,4 @@
-import { readFileSync, writeFileSync, unlinkSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { readFileSync } from 'node:fs'
 
 import http from 'node:http'
 
@@ -8,16 +7,10 @@ import getPort from 'get-port'
 import open from 'open'
 
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
-import { OutputChunk } from 'rollup'
+import { OutputChunk, OutputAsset } from 'rollup'
 
 import { Metadata } from '../utils/metadata'
-import {
-	inlineSvg,
-	removeSvg,
-	injectExternalCssLink,
-	addPrefixForName,
-	minifyCode
-} from '../utils/utils'
+import { injectCss, addPrefixForName } from '../utils/utils'
 import { resourcePath, grants, pluginName } from '../utils/constants'
 import type { Grants } from '../types/userscript'
 import type { ResourceRecord, UsOptions } from '../types/types'
@@ -41,23 +34,22 @@ export function build(usOptions: Required<UsOptions>) {
 			cssUrls = resource?.categoryRecord?.css?.map(v => v.url) || []
 			const jsUrls = resource?.categoryRecord?.js?.map(v => v.url) || []
 
-			const r = usOptions.headMetaData.require
-			usOptions.headMetaData.require = r?.concat(jsUrls)
+			const r = usOptions.metaData.require
+			usOptions.metaData.require = r?.concat(jsUrls)
 
 			return {
 				build: {
-					assetsInlineLimit: Number.MAX_SAFE_INTEGER,
-					chunkSizeWarningLimit: Number.MAX_SAFE_INTEGER,
-					assetsDir: './',
-					target: 'esnext',
 					minify: usOptions.build.minify,
 					cssMinify: usOptions.build.cssMinify,
+					lib: {
+						entry: usOptions.entry,
+						fileName: `${usOptions.metaData.name}.user`,
+						name: 'xxxx',
+						formats: ['iife']
+					},
 					rollupOptions: {
-						input: usOptions.entry,
 						external: resource.externals,
 						output: {
-							extend: true,
-							format: 'iife',
 							globals: resource.globalVariableNameRecord
 						}
 					}
@@ -65,6 +57,8 @@ export function build(usOptions: Required<UsOptions>) {
 			} as UserConfig
 		},
 		load(id) {
+			// prevent CSS dependencies dynamically introduced by automatic import plugins,
+			// and then proceed with CDN
 			return preventCssDep()
 			function preventCssDep() {
 				if (/node_modules/.test(id) && /css$/.test(id)) return ''
@@ -74,54 +68,39 @@ export function build(usOptions: Required<UsOptions>) {
 			resovledConfig = config
 		},
 		async transform(code, id) {
-			return inlineSvg(resovledConfig, code, id)
+			// return inlineSvg(resovledConfig, code, id)
 		},
-		generateBundle(options, bundle) {
-			return removeSvg(bundle)
-		},
-		async writeBundle(options, bundle) {
-			const key = Object.keys(bundle)[0]
-			const mainBundle = bundle[key] as OutputChunk
-			const code = usOptions?.generate?.bundle?.(mainBundle.code) as string
+		async generateBundle(options, bundle) {
+			const filename = `${usOptions.metaData.name}.user.iife.js`
+			const chunk = bundle[filename] as OutputChunk
+			chunk.fileName = `${usOptions.metaData.name}.user.js`
 
-			const regex = new RegExp(grants.join('|'), 'g')
-			const matchRes = [...code.matchAll(regex)]
-			const collectedGrant = matchRes.map(v => v[0])
+			const css = bundle['style.css'] as OutputAsset
+			Reflect.deleteProperty(bundle, 'style.css')
 
-			if (usOptions.autoAddGrant) {
-				usOptions.headMetaData.grant = collectedGrant as Grants[]
-			}
-
+			autoAddGrant(usOptions, chunk)
 			addPrefixForName(usOptions, 'production')
 
-			const metadata = new Metadata(usOptions.headMetaData)
+			const metadata = new Metadata(usOptions.metaData)
 
-			const metaDataStr = usOptions?.generate?.headMetaData?.(
+			const metaDataStr = usOptions?.generate?.modifyMetadata?.(
 				metadata.generate(),
 				'production'
 			) as string
 
-			const fullCodeList: string[] = ['']
+			const codes = [
+				metaDataStr,
+				'',
+				await injectCss({
+					links: cssUrls,
+					inline: String(css.source),
+					minify: usOptions.build.cssMinify as boolean,
+					pluginName
+				}),
+				chunk.code
+			]
 
-			fullCodeList.push(
-				usOptions.build.minify
-					? await minifyCode(injectExternalCssLink(cssUrls), 'js')
-					: injectExternalCssLink(cssUrls)
-			)
-
-			fullCodeList.unshift(metaDataStr)
-			fullCodeList.push(code)
-
-			const path = resolve(
-				options.dir as string,
-				`${usOptions.headMetaData.name?.replaceAll(
-					/production|:|\s/g,
-					''
-				)}.user.js`
-			)
-
-			writeFileSync(path, fullCodeList.join('\n'))
-			unlinkSync(resolve(options.dir as string, key))
+			chunk.code = codes.join('\n')
 		},
 		async closeBundle() {
 			if (!usOptions.build.open) return
@@ -137,4 +116,14 @@ export function build(usOptions: Required<UsOptions>) {
 			open(url)
 		}
 	} as PluginOption
+}
+
+/** NPF,`usOptions` */
+function autoAddGrant(usOptions: UsOptions, chunk: OutputChunk) {
+	if (usOptions.autoAddGrant) {
+		const regex = new RegExp(grants.join('|'), 'g')
+		const matchRes = [...chunk.code.matchAll(regex)]
+		const collectedGrant = matchRes.map(v => v[0])
+		usOptions.metaData.grant = collectedGrant as Grants[]
+	}
 }
