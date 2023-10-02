@@ -182,4 +182,4 @@ export interface UserScript {
 	unwrap?: boolean
 }
 
-export type HeadMetaData = Partial<UserScript>
+export type MetaData = Partial<UserScript>

@@ -1,11 +1,11 @@
-import { HeadMetaData } from '../types/userscript'
+import { MetaData } from '../types/userscript'
 
 import { camelCaseToHyphen, padEndWithSpace } from './utils'
 
 export class Metadata {
-	private options: HeadMetaData
+	private options: MetaData
 	private metadataList: string[] = []
-	constructor(options: HeadMetaData) {
+	constructor(options: MetaData) {
 		this.options = options
 	}
 

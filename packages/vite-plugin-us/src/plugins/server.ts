@@ -29,10 +29,10 @@ export function serve(usOptions: Required<UsOptions>) {
 		async configureServer(server) {
 			addPrefixForName(usOptions, 'development')
 
-			usOptions.headMetaData.grant = grants as unknown as Grants[]
-			const metadata = new Metadata(usOptions.headMetaData)
+			usOptions.metaData.grant = grants as unknown as Grants[]
+			const metadata = new Metadata(usOptions.metaData)
 
-			const newMetaData = usOptions.generate.headMetaData?.(
+			const newMetaData = usOptions.generate.modifyMetadata?.(
 				metadata.generate(),
 				'development'
 			) as string

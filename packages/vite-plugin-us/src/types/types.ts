@@ -1,4 +1,4 @@
-import type { HeadMetaData } from './userscript'
+import type { MetaData } from './userscript'
 
 export interface DepRecord {
 	/**
@@ -111,21 +111,21 @@ export interface UsOptions {
 	 * can modify the head metaData and bundle
 	 */
 	generate?: {
-		/** pass in a function to modify head metaData */
-		headMetaData?: (metaData: string, mode: Mode) => string
+		/** pass in a function to modify metaData */
+		modifyMetadata?: (metaData: string, mode: Mode) => string
 		/**
 		 * pass in a function to modify bundle
 		 *
 		 * it will not work, if in development mode
 		 */
-		bundle?: (code: string) => string
+		modifyBundle?: (code: string) => string
 	}
 	/**
 	 * userscript header metadata config.
 	 *
 	 * @see https://www.tampermonkey.net/documentation.php
 	 */
-	headMetaData: HeadMetaData
+	metaData: MetaData
 }
 
 export type PkgDepsRecord = Record<

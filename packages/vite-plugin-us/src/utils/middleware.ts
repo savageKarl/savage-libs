@@ -56,16 +56,14 @@ export function bundleMiddware(
 		})
 		const path = resolve(
 			resovledConfig.build.outDir as string,
-			`${usOptions.headMetaData.name?.replaceAll(
-				/production|:|\s/g,
-				''
-			)}.user.js`
+			`${usOptions.metaData.name?.replace('production: ', '')}.user.js`
 		)
 
 		res.end(readFileSync(path, { encoding: 'utf-8' }))
 		process.exit(0)
 	}
 }
+
 function redirect(path: string) {
 	if (window.parent === window) {
 		location.href = `/${path}`
