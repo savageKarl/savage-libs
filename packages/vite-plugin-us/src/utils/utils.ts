@@ -1,4 +1,5 @@
-import { readFileSync, statSync } from 'node:fs'
+import { readFileSync, statSync, existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import type { ServerResponse } from 'node:http'
 
 import { transformWithEsbuild } from 'vite'
@@ -141,4 +142,24 @@ export async function minifyCode(code: string, ext: 'js' | 'css') {
 		filename: 'temp.js',
 		loader: ext
 	})
+}
+
+export function getViteConfigPath() {
+	let viteConfigPath = ''
+	const viteConfigTsPath = resolve(process.cwd(), 'vite.config.ts')
+	const viteConfigJsPath = resolve(process.cwd(), 'vite.config.js')
+
+	if (existsSync(viteConfigTsPath)) {
+		viteConfigPath = viteConfigTsPath
+	} else {
+		viteConfigPath = viteConfigJsPath
+	}
+	return viteConfigPath
+}
+
+export function hyphenToCamelCase(name: string) {
+	return name
+		.split('-')
+		.map((v, i) => (i > 0 ? v.toUpperCase() : v))
+		.join('')
 }

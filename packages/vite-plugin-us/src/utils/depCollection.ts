@@ -151,7 +151,7 @@ export class DepCollection {
 		return { categoryRecord }
 	}
 
-	public resovleDep = debounce(async () => {
+	public async resovleDep() {
 		logger.info('Collecting dependencies for automated CDN...')
 		const paths = this.removeNodeModulesFromPath()
 		const { pkgDepsRecord } = this.getPkgDepsRecord(paths)
@@ -174,17 +174,6 @@ export class DepCollection {
 			categoryRecord
 		)
 
-		await writeFile(
-			resourcePath,
-			JSON.stringify(this.resourceRecord, null, 4),
-			{
-				encoding: 'utf-8'
-			}
-		)
-
-		this.collectDeps = []
-		this.manuallyResources = []
-
 		logger.info('Dependencies used for automated CDNs are resolved.')
 		if (categoryRecord.js) {
 			console.table(categoryRecord.js.filter(v => extname(v.url) === '.js'))
@@ -192,5 +181,7 @@ export class DepCollection {
 		if (categoryRecord.css) {
 			console.table(categoryRecord.css)
 		}
-	}, 100)
+
+		return this.resourceRecord
+	}
 }

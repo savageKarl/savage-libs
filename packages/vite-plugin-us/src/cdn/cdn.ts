@@ -118,7 +118,7 @@ class CDN {
 	private async getAvailableCdn(urlsRecord: UrlsRecord) {
 		if (Object.keys(urlsRecord).length > 0) {
 			logger.info('Getting available CDNs...')
-			logger.info(JSON.stringify(urlsRecord, null, 4))
+			// logger.info(JSON.stringify(urlsRecord, null, 4))
 		}
 
 		const cdnKeys = Object.keys(urlsRecord)

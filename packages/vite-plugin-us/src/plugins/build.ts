@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs'
-
 import http from 'node:http'
 
 import connect from 'connect'
@@ -8,28 +6,75 @@ import open from 'open'
 
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
 import { OutputChunk, OutputAsset } from 'rollup'
+import { build as inlineBuild, loadConfigFromFile } from 'vite'
 
 import { Metadata } from '../utils/metadata'
-import { injectCss, addPrefixForName } from '../utils/utils'
-import { resourcePath, grants, pluginName } from '../utils/constants'
+import {
+	injectCss,
+	addPrefixForName,
+	getViteConfigPath,
+	hyphenToCamelCase
+} from '../utils/utils'
+import { grants, pluginName, pkg } from '../utils/constants'
 import type { Grants } from '../types/userscript'
-import type { ResourceRecord, UsOptions } from '../types/types'
+import type { UsOptions } from '../types/types'
 import { bundleMiddware, redirectMiddleware } from '../utils/middleware'
+import { analyze, depCollection } from './analyze'
 
 export function build(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let cssUrls: string[]
 
+	const viteConfigPath = getViteConfigPath()
+
 	return {
 		name: `${pluginName}:build`,
 		enforce: 'post',
 		apply: 'build',
-		config() {
-			let resource = {} as ResourceRecord
+		async config() {
+			const configResult = (
+				await loadConfigFromFile(
+					{
+						mode: 'production',
+						command: 'build'
+					},
+					viteConfigPath
+				)
+			)?.config as unknown as ResolvedConfig
 
-			try {
-				resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
-			} catch {}
+			const plugins = configResult.plugins.filter(v => {
+				if (Array.isArray(v)) {
+					return !new RegExp(pluginName).test(v[0].name)
+				}
+				return true
+			})
+
+			const depKeys = Object.keys(pkg.dependencies || {})
+			await inlineBuild({
+				logLevel: 'error',
+				configFile: false,
+				plugins: [...plugins, analyze(usOptions)],
+				build: {
+					write: false,
+					lib: {
+						entry: usOptions.entry,
+						fileName: `${usOptions.metaData.name}.user`,
+						name: 'savage',
+						formats: ['iife']
+					},
+					rollupOptions: {
+						external: depKeys,
+						output: {
+							globals: depKeys.reduce(
+								(preV, curV) => Object.assign(preV, { [curV]: curV }),
+								{}
+							)
+						}
+					}
+				}
+			})
+
+			const resource = await depCollection.resovleDep()
 
 			cssUrls = resource?.categoryRecord?.css?.map(v => v.url) || []
 			const jsUrls = resource?.categoryRecord?.js?.map(v => v.url) || []
@@ -44,7 +89,7 @@ export function build(usOptions: Required<UsOptions>) {
 					lib: {
 						entry: usOptions.entry,
 						fileName: `${usOptions.metaData.name}.user`,
-						name: 'xxxx',
+						name: hyphenToCamelCase(usOptions.metaData.name as string),
 						formats: ['iife']
 					},
 					rollupOptions: {
@@ -66,9 +111,6 @@ export function build(usOptions: Required<UsOptions>) {
 		},
 		async configResolved(config) {
 			resovledConfig = config
-		},
-		async transform(code, id) {
-			// return inlineSvg(resovledConfig, code, id)
 		},
 		async generateBundle(options, bundle) {
 			const filename = `${usOptions.metaData.name}.user.iife.js`
@@ -111,7 +153,7 @@ export function build(usOptions: Required<UsOptions>) {
 			app.use(redirectMiddleware('prod'))
 			app.use(bundleMiddware(resovledConfig, usOptions))
 
-			const server = http.createServer(app).listen(port)
+			http.createServer(app).listen(port)
 			const url = `http://localhost:${port}`
 			open(url)
 		}
