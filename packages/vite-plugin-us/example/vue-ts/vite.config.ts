@@ -9,15 +9,15 @@ import { us } from '../../src'
 export default defineConfig({
 	plugins: [
 		vue(),
-		AutoImport({
-			resolvers: [ElementPlusResolver()]
-		}),
-		Components({
-			resolvers: [ElementPlusResolver()]
-		}),
+		// AutoImport({
+		// 	resolvers: [ElementPlusResolver()]
+		// }),
+		// Components({
+		// 	resolvers: [ElementPlusResolver()]
+		// }),
 		us({
 			entry: 'src/main.ts',
-			headMetaData: {
+			metaData: {
 				name: 'vue-ts',
 				version: '1',
 				author: 'savage',
@@ -38,16 +38,16 @@ export default defineConfig({
 			build: {
 				minify: false,
 				external: {
-					autoCDN: true,
-					exclusions: ['element-plus']
+					autoCDN: true
+					// exclusions: ['element-plus']
 				},
 				cssMinify: false
 			},
 			generate: {
-				headMetaData(code, mode) {
+				modifyMetadata(code, mode) {
 					return code + '\n' + '// hi, there' + mode
 				},
-				bundle(code) {
+				modifyBundle(code) {
 					return code + '\n' + '// hi, there'
 				}
 			}

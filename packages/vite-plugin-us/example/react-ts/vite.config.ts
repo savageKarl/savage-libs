@@ -9,7 +9,7 @@ export default defineConfig({
 		react(),
 		us({
 			entry: 'src/main.tsx',
-			headMetaData: {
+			metaData: {
 				name: 'react-ts',
 				version: '1',
 				author: 'savage',
@@ -28,18 +28,19 @@ export default defineConfig({
 				// open: false
 			},
 			build: {
-				minify: false,
+				open: true,
+				// minify: false,
 				external: {
 					autoCDN: true,
-					exclusions: ['element-plus']
-				},
-				cssMinify: false
+					exclusions: ['react-dom']
+				}
+				// cssMinify: false
 			},
 			generate: {
-				headMetaData(code, mode) {
-					return code + '\n' + '// hi, there' + mode
+				modifyMetadata(code, mode) {
+					return code + '\n' + '// hi, there ' + mode
 				},
-				bundle(code) {
+				modifyBundle(code) {
 					return code + '\n' + '// hi, there'
 				}
 			}
