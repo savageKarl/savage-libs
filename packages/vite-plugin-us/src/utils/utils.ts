@@ -187,3 +187,15 @@ export function removeCommentFromCode(code: string) {
 
 	return code.replace(unionRegex([regSingleLine, regMutiline]), '')
 }
+
+export function getPkgNameByPath(path: string) {
+	let pkgNmae: string
+	const splitArr = path.split('/')
+	if (/^@/.test(path)) {
+		pkgNmae = [splitArr[0], splitArr[1]].join('/')
+	} else {
+		pkgNmae = splitArr[0]
+	}
+
+	return pkgNmae
+}

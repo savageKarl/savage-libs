@@ -6,7 +6,7 @@ import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
 
 import { pkg } from './constants'
 import { cdn } from '../cdn/cdn'
-import { conditionLog, removeCommentFromCode } from './utils'
+import { conditionLog, removeCommentFromCode, getPkgNameByPath } from './utils'
 
 export class DepCollection {
 	private regExclusion: RegExp
@@ -82,23 +82,11 @@ export class DepCollection {
 		return external
 	}
 
-	private getPkgNameByPath(path: string) {
-		let pkgNmae: string
-		const splitArr = path.split('/')
-		if (/^@/.test(path)) {
-			pkgNmae = [splitArr[0], splitArr[1]].join('/')
-		} else {
-			pkgNmae = splitArr[0]
-		}
-
-		return pkgNmae
-	}
-
 	private getPkgDepsRecord(paths: string[]) {
 		const pkgDepsRecord: PkgDepsRecord = {}
 
 		paths.forEach(v => {
-			const pkgname = this.getPkgNameByPath(v)
+			const pkgname = getPkgNameByPath(v)
 
 			if (!pkgDepsRecord[pkgname])
 				pkgDepsRecord[pkgname] = { paths: [], version: '' }
