@@ -7,6 +7,7 @@ import { transformWithEsbuild } from 'vite'
 import type { ResolvedConfig, EsbuildTransformOptions } from 'vite'
 import type { OutputBundle } from 'rollup'
 import type { UsOptions, Mode, Transform } from '../types/types'
+import { logger } from './logger'
 
 export const existFile = (path: string) => {
 	try {
@@ -162,4 +163,23 @@ export function hyphenToCamelCase(name: string) {
 		.split('-')
 		.map((v, i) => (i > 0 ? v.toUpperCase() : v))
 		.join('')
+}
+
+export function conditionLog(
+	target: Record<string, unknown> | unknown[],
+	trueMsg: string,
+	falseMsg?: string
+) {
+	const status = isObjectHasValue(target)
+
+	if (status) logger.info(trueMsg)
+	else falseMsg && logger.info(falseMsg)
+
+	return status
+}
+
+export function isObjectHasValue(target: Record<string, unknown> | unknown[]) {
+	const keysLength = Object.keys(target).length
+
+	return keysLength > 0
 }

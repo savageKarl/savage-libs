@@ -1,13 +1,12 @@
 import { extname } from 'node:path'
-import { writeFile } from 'node:fs/promises'
 
-import { debounce, merge } from 'lodash-es'
+import { merge } from 'lodash-es'
 
 import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
 
-import { resourcePath, pkg } from './constants'
+import { pkg } from './constants'
 import { cdn } from '../cdn/cdn'
-import { logger } from './logger'
+import { conditionLog } from './utils'
 
 export class DepCollection {
 	private regExclusion: RegExp
@@ -15,12 +14,6 @@ export class DepCollection {
 	private manuallyResources: DepRecord[]
 
 	private collectDeps: string[] = []
-
-	private readonly resourceRecord = {
-		globalVariableNameRecord: {},
-		externals: [],
-		categoryRecord: {}
-	} as ResourceRecord
 
 	private readonly pkgDeps = Object.keys(pkg.dependencies ?? {})
 	private readonly regPkgDep = new RegExp(this.pkgDeps.join('|'))
@@ -60,15 +53,15 @@ export class DepCollection {
 
 		matchAllResult.forEach(v => {
 			const importPath = v.groups?.path as string
-
 			const isInPkg = this.regPkgDep.test(importPath)
 			const isNotExclude = !this.regExclusion.test(importPath)
 			const isCssFile = extname(importPath) === '.css'
 			const isJsFile = extname(importPath) === ''
+			const isCssOrJsFile = isCssFile || isJsFile
 			const isNotManualy = !this.manuallyDeps.includes(importPath)
 
 			if (isInPkg) {
-				if (isCssFile || (isJsFile && isNotExclude && isNotManualy)) {
+				if (isCssOrJsFile && isNotExclude && isNotManualy) {
 					return this.pushDep(importPath)
 				}
 			}
@@ -152,29 +145,49 @@ export class DepCollection {
 	}
 
 	public async resovleDep() {
-		logger.info('Collecting dependencies for automated CDN...')
+		const resourceRecord = {
+			globalVariableNameRecord: {},
+			externals: [],
+			categoryRecord: {}
+		} as ResourceRecord
+
 		const paths = this.removeNodeModulesFromPath()
+
+		conditionLog(
+			paths,
+			'Collecting dependencies for automated CDN...',
+			'No dependencies need to be collected, skipped!'
+		)
+
 		const { pkgDepsRecord } = this.getPkgDepsRecord(paths)
 		const depsRecords = this.manuallyResources.concat(
 			await cdn.getDepsRecords(pkgDepsRecord)
 		)
-		const { categoryRecord } = this.classifyUrl(depsRecords)
 
+		if (
+			!conditionLog(
+				depsRecords,
+				'Dependencies used for automated CDNs are resolved.'
+			)
+		) {
+			return resourceRecord
+		}
+
+		const { categoryRecord } = this.classifyUrl(depsRecords)
 		const globalNames = await this.getVariableNameRecord(depsRecords)
 
-		this.resourceRecord.externals = this.resourceRecord.externals.concat(
+		resourceRecord.externals = resourceRecord.externals.concat(
 			this.getExternals(depsRecords)
 		)
-		this.resourceRecord.globalVariableNameRecord = merge(
-			this.resourceRecord.globalVariableNameRecord,
+		resourceRecord.globalVariableNameRecord = merge(
+			resourceRecord.globalVariableNameRecord,
 			globalNames
 		)
-		this.resourceRecord.categoryRecord = merge(
-			this.resourceRecord.categoryRecord,
+		resourceRecord.categoryRecord = merge(
+			resourceRecord.categoryRecord,
 			categoryRecord
 		)
 
-		logger.info('Dependencies used for automated CDNs are resolved.')
 		if (categoryRecord.js) {
 			console.table(categoryRecord.js.filter(v => extname(v.url) === '.js'))
 		}
@@ -182,6 +195,6 @@ export class DepCollection {
 			console.table(categoryRecord.css)
 		}
 
-		return this.resourceRecord
+		return resourceRecord
 	}
 }

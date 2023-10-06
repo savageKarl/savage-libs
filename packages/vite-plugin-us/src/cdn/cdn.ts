@@ -21,7 +21,11 @@ import { usedCdnList } from './useCdn'
 import { serviceCDN } from './service'
 import { getNameByCode } from './getNameByCode'
 
-import { generateJsDataUrlByCode } from '../utils/utils'
+import {
+	generateJsDataUrlByCode,
+	conditionLog,
+	isObjectHasValue
+} from '../utils/utils'
 
 import { logger } from '../utils/logger'
 
@@ -116,11 +120,6 @@ class CDN {
 	}
 
 	private async getAvailableCdn(urlsRecord: UrlsRecord) {
-		if (Object.keys(urlsRecord).length > 0) {
-			logger.info('Getting available CDNs...')
-			// logger.info(JSON.stringify(urlsRecord, null, 4))
-		}
-
 		const cdnKeys = Object.keys(urlsRecord)
 
 		const availableCdnRecord: UrlsRecord = {}
@@ -156,10 +155,6 @@ class CDN {
 	}
 
 	private async getFastestCdn(availableCdnRecord: UrlsRecord) {
-		if (Object.keys(availableCdnRecord).length > 0) {
-			logger.info('Getting the fastest CDNs')
-		}
-
 		const cdnKeys = Object.keys(availableCdnRecord)
 
 		const winner = await Promise.race(
@@ -254,8 +249,6 @@ class CDN {
 	}
 
 	private async addDataUrl(depsRecords: DepRecord[]) {
-		logger.info('Adding data URL')
-
 		const handledDepsRecords: DepRecord[] = []
 
 		for (const v of depsRecords) {
@@ -278,6 +271,9 @@ class CDN {
 
 	public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
 		const pkgNames = Object.keys(pkgDepsRecord)
+
+		if (!isObjectHasValue(pkgDepsRecord)) return [] as DepRecord[]
+
 		const urlsRecord = (
 			await Promise.all(
 				pkgNames.map(
@@ -296,7 +292,12 @@ class CDN {
 			return preV
 		}, {})
 
+		conditionLog(urlsRecord, 'Getting available CDNs...')
+
 		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
+
+		conditionLog(availableCdnRecord, 'Getting the fastest CDNs')
+
 		const { urlRecords } = await this.getFastestCdn(availableCdnRecord)
 
 		const codeRecord = (
@@ -309,9 +310,7 @@ class CDN {
 			)
 		).reduce((preV, curV) => Object.assign(preV, curV))
 
-		if (Object.keys(codeRecord).length > 0) {
-			logger.info('Getting global variable names...')
-		}
+		conditionLog(codeRecord, 'Getting global variable names...')
 
 		const depsRecords = urlRecords.map(v => {
 			const isJsFile = extname(v.url) === '.js'
@@ -323,6 +322,8 @@ class CDN {
 					: undefined
 			} as DepRecord
 		})
+
+		conditionLog(depsRecords, 'Adding data URL')
 
 		return await this.addDataUrl(depsRecords)
 	}
