@@ -292,11 +292,11 @@ class CDN {
 			return preV
 		}, {})
 
-		conditionLog(urlsRecord, 'Getting available CDNs...')
+		conditionLog(urlsRecord, 'Getting the available CDNs...')
 
 		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
 
-		conditionLog(availableCdnRecord, 'Getting the fastest CDNs')
+		conditionLog(availableCdnRecord, 'Getting the fastest CDNs...')
 
 		const { urlRecords } = await this.getFastestCdn(availableCdnRecord)
 
@@ -310,7 +310,7 @@ class CDN {
 			)
 		).reduce((preV, curV) => Object.assign(preV, curV))
 
-		conditionLog(codeRecord, 'Getting global variable names...')
+		conditionLog(codeRecord, 'Getting the global variable names...')
 
 		const depsRecords = urlRecords.map(v => {
 			const isJsFile = extname(v.url) === '.js'
@@ -323,7 +323,7 @@ class CDN {
 			} as DepRecord
 		})
 
-		conditionLog(depsRecords, 'Adding data URL')
+		conditionLog(depsRecords, 'Adding the data URL...')
 
 		return await this.addDataUrl(depsRecords)
 	}

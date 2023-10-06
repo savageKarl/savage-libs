@@ -25,55 +25,12 @@ export function build(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let cssUrls: string[]
 
-	const viteConfigPath = getViteConfigPath()
-
 	return {
 		name: `${pluginName}:build`,
 		enforce: 'post',
 		apply: 'build',
 		async config() {
-			const configResult = (
-				await loadConfigFromFile(
-					{
-						mode: 'production',
-						command: 'build'
-					},
-					viteConfigPath
-				)
-			)?.config as unknown as ResolvedConfig
-
-			const plugins = configResult.plugins.filter(v => {
-				if (Array.isArray(v)) {
-					return !new RegExp(pluginName).test(v[0].name)
-				}
-				return true
-			})
-
-			const depKeys = Object.keys(pkg.dependencies || {})
-			await inlineBuild({
-				logLevel: 'error',
-				configFile: false,
-				plugins: [...plugins, analyze(usOptions)],
-				build: {
-					write: false,
-					lib: {
-						entry: usOptions.entry,
-						fileName: `${usOptions.metaData.name}.user`,
-						name: 'savage',
-						formats: ['iife']
-					},
-					rollupOptions: {
-						external: depKeys,
-						output: {
-							globals: depKeys.reduce(
-								(preV, curV) => Object.assign(preV, { [curV]: curV }),
-								{}
-							)
-						}
-					}
-				}
-			})
-
+			await analyzeDep(usOptions)
 			const resource = await depCollection.resovleDep()
 
 			cssUrls = resource?.categoryRecord?.css?.map(v => v.url) || []
@@ -168,4 +125,57 @@ function autoAddGrant(usOptions: UsOptions, chunk: OutputChunk) {
 		const collectedGrant = matchRes.map(v => v[0])
 		usOptions.metaData.grant = collectedGrant as Grants[]
 	}
+}
+
+async function getPluginsByViteConfig() {
+	const viteConfigPath = getViteConfigPath()
+
+	const configResult = (
+		await loadConfigFromFile(
+			{
+				mode: 'production',
+				command: 'build'
+			},
+			viteConfigPath
+		)
+	)?.config as unknown as ResolvedConfig
+
+	const plugins = configResult.plugins.filter(v => {
+		if (Array.isArray(v)) {
+			return !new RegExp(pluginName).test(v[0].name)
+		}
+		return true
+	})
+
+	return { plugins }
+}
+
+async function analyzeDep(usOptions: Required<UsOptions>) {
+	const depKeys = Object.keys(pkg.dependencies || {})
+
+	const { plugins } = await getPluginsByViteConfig()
+
+	await inlineBuild({
+		logLevel: 'error',
+		configFile: false,
+		plugins: [...plugins, analyze(usOptions)],
+		build: {
+			write: false,
+			lib: {
+				entry: usOptions.entry,
+				fileName: `${usOptions.metaData.name}.user`,
+				name: 'savage',
+				formats: ['iife']
+			},
+			rollupOptions: {
+				external: depKeys,
+				output: {
+					globals: depKeys.reduce(
+						(preV, curV) => Object.assign(preV, { [curV]: curV }),
+						{}
+					)
+				}
+			}
+		}
+	})
 }
