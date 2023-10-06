@@ -37,10 +37,7 @@ export function fnToString<T>(fn: (args: T) => unknown, args: T) {
 
 export function unionRegex(arr: RegExp[]) {
 	return new RegExp(
-		arr
-			.map(r => String(r).replace(/\/|g/g, ''))
-			.join('|')
-			.replace(/|$/, '')
+		arr.map(r => String(r).replace(/^\/|\/$|g$/g, '')).join('|')
 	)
 }
 
@@ -182,4 +179,11 @@ export function isObjectHasValue(target: Record<string, unknown> | unknown[]) {
 	const keysLength = Object.keys(target).length
 
 	return keysLength > 0
+}
+
+export function removeCommentFromCode(code: string) {
+	const regSingleLine = /\/\/\s+[\s\S]+?\n/
+	const regMutiline = /\/\*[\s\S]+?\*\//
+
+	return code.replace(unionRegex([regSingleLine, regMutiline]), '')
 }

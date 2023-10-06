@@ -6,7 +6,7 @@ import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
 
 import { pkg } from './constants'
 import { cdn } from '../cdn/cdn'
-import { conditionLog } from './utils'
+import { conditionLog, removeCommentFromCode } from './utils'
 
 export class DepCollection {
 	private regExclusion: RegExp
@@ -46,10 +46,9 @@ export class DepCollection {
 
 		if (!isLocal || !isFile || !isOriginalFile) return false
 
-		const regPkg =
-			/\bimport[\s\d\w{},]+(?<quote>'|")(?<path>[^./].+?)\k<quote>/g
+		const regPkg = /import[\s\d\w{},]+(?<quote>'|")(?<path>[^./].+?)\k<quote>/g
 
-		const matchAllResult = [...code.matchAll(regPkg)]
+		const matchAllResult = [...removeCommentFromCode(code).matchAll(regPkg)]
 
 		matchAllResult.forEach(v => {
 			const importPath = v.groups?.path as string
@@ -152,7 +151,6 @@ export class DepCollection {
 		} as ResourceRecord
 
 		const paths = this.removeNodeModulesFromPath()
-
 		conditionLog(
 			paths,
 			'Collecting dependencies for automated CDN...',
