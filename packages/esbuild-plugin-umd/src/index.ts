@@ -7,6 +7,8 @@ import { pluginName } from './constants'
 import { wrap } from './utils'
 
 export function umd(options: UmdOptions) {
+	options = Object.assign({ external: [], globalVariableName: {} }, options)
+
 	return {
 		name: pluginName,
 		setup(build) {
@@ -27,7 +29,9 @@ export function umd(options: UmdOptions) {
 				})
 
 				jsFile?.forEach(v => {
-					writeFile(v.path, wrap(options, v.text), { encoding: 'utf-8' })
+					writeFile(v.path, wrap(options as Required<UmdOptions>, v.text), {
+						encoding: 'utf-8'
+					})
 				})
 			})
 		}

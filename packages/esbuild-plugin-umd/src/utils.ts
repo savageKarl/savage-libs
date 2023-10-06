@@ -1,6 +1,6 @@
 import type { UmdOptions } from './types'
 
-let umdOptions: UmdOptions
+let umdOptions: Required<UmdOptions>
 
 function getPkgNameByPath(path: string) {
 	let pkgNmae: string
@@ -29,41 +29,48 @@ function getDepString(tempalte: string) {
 }
 
 function getVariableNameString(tempalte: string) {
-	return getListString(Object.keys(umdOptions.globalVariableName), tempalte)
+	return getListString(
+		Object.keys(umdOptions.globalVariableName).map(
+			v => umdOptions.globalVariableName[v]
+		),
+		tempalte
+	)
 }
 
-export function wrap(options: UmdOptions, code: string) {
+export function wrap(options: Required<UmdOptions>, code: string) {
 	umdOptions = options
 
 	const reg = /module\.exports\s?= ?([\w()]+)/
 
-	code = code.replace(reg, 'Object.assgin(exports, $1)')
+	code = code.replace(reg, 'Object.assign(exports, $1)')
 
 	const template = `
-  (function (global, factory) {
+	var _require = (()=>{ try { return require } catch {} })()
+
+  ;(function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, ${getDepString(
 			`require('[name]')`
 		)}) :
-    typeof define === 'function' && define.amd ? define(${
+    typeof define === 'function' && define.amd ? define('${
 			options.libraryName
-		},['exports', ${getDepString(`'[name]'`)}], factory) :
+		}',['exports', ${getDepString(`'[name]'`)}], factory) :
     (global = global || self, factory(global.${
 			options.libraryName
 		} = {}, ${getVariableNameString('global.[name]')}));
-  }(this, (function (exports, ${getVariableNameString('')}) { 'use strict';
+  }(this, (function (exports, ${getVariableNameString(
+		'[name]'
+	)}) { 'use strict';
 
-
-  var module = module = { exports: {} }
+  var globalRecord = ${JSON.stringify(options.globalVariableName)}
 
   var getPkgNameByPath = ${getPkgNameByPath.toString()}
 
-  var require = require || ${require.toString()}
-
-  var globalRecord = ${options.globalVariableName}
+  var require = _require || ${require.toString()}
+		debugger
 
   ${code}
 
-  }`
+  })))`
 
 	return template
 }
