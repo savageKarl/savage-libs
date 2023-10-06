@@ -1,0 +1,32 @@
+{
+	"name": "esbuild-plugin-umd",
+	"version": "0.0.0",
+	"description": "A Esbuild plugin for build UMD module",
+	"miniprogram": "dist",
+	"main": "index.js",
+	"module": "dist/esbuild-plugin-umd.esm-bundler.js",
+	"types": "dist/esbuild-plugin-umd.d.ts",
+	"files": [
+		"index.js",
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/esbuild-plugin-umd.esm-bundler.js",
+			"require": "./index.js"
+		}
+	},
+	"buildOptions": {
+		"formats": [
+			"esm-bundler",
+			"cjs"
+		]
+	},
+	"type": "module",
+	"scripts": {},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {},
+	"dependencies": {}
+}
