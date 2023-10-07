@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 const require = createRequire(import.meta.url)
 const packages = resolve(fileURLToPath(import.meta.url), '../../packages')
 
-export function getFolder(path: string) {
+export function getFolderByPath(path: string) {
 	const folders: string[] = []
 	fs.readdirSync(path).forEach(f => {
 		if (fs.statSync(`${path}/${f}`).isDirectory()) {

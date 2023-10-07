@@ -1,9 +1,0 @@
-{
-  "execMap": {
-    "js": "rollup -c "
-  },
-  "ext": "*",
-  "watch": [
-    "./src"
-  ]
-}

@@ -7,7 +7,7 @@ import fs from 'fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { targets, getFolder } from '../scripts/utils.js'
+import { targets, getFolderByPath } from '../scripts/utils.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const packages = resolve(__dirname, '..', 'packages')
@@ -48,7 +48,7 @@ function generateSidebarConfig() {
 			]
 		}
 
-		const folders = getFolder(resolve(__dirname, t))
+		const folders = getFolderByPath(resolve(__dirname, t))
 		folders.forEach(folder => {
 			const type: ISidebarItem = {
 				text: folder,

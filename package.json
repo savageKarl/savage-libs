@@ -45,6 +45,11 @@
 			"path": "node_modules/cz-conventional-changelog"
 		}
 	},
+	"lint-staged": {
+		"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+			"prettier --write"
+		]
+	},
 	"devDependencies": {
 		"@babel/parser": "^7.22.15",
 		"@changesets/cli": "2.26.2",
