@@ -1,39 +1,11 @@
 import picocolors from 'picocolors'
 import { Colors } from 'picocolors/types'
 
-interface StylesLogInstance {
-	(...args: unknown[]): string
-	isColorSupported: boolean
-	reset: this
-	bold: this
-	dim: this
-	italic: this
-	underline: this
-	inverse: this
-	hidden: this
-	strikethrough: this
-	black: this
-	red: this
-	green: this
-	yellow: this
-	blue: this
-	magenta: this
-	cyan: this
-	white: this
-	gray: this
-	bgBlack: this
-	bgRed: this
-	bgGreen: this
-	bgYellow: this
-	bgBlue: this
-	bgMagenta: this
-	bgCyan: this
-	bgWhite: this
-}
+import type { StylesLogInstance } from './types'
 
 const colorFnStack = new Set<string>()
 
-const colorFns = Object.keys(picocolors).filter(
+const colorFnKeys = Object.keys(picocolors).filter(
 	key =>
 		typeof picocolors[key as keyof Colors] === 'function' &&
 		key !== 'createColors'
@@ -51,7 +23,7 @@ function createColors(enabled?: boolean) {
 
 			injectColorFn.apply(this)
 			function injectColorFn() {
-				colorFns.forEach(v => {
+				colorFnKeys.forEach(v => {
 					// @ts-ignore
 					this[v] = (...input: string[]) => {
 						const str = [...colorFnStack].reverse().reduce((preV, curV) => {
@@ -73,7 +45,7 @@ function createColors(enabled?: boolean) {
 
 	const handler = {
 		get(obj: StylesLog, prop: keyof StylesLog) {
-			if (typeof prop === 'string' && colorFns.includes(prop)) {
+			if (typeof prop === 'string' && colorFnKeys.includes(prop)) {
 				colorFnStack.add(prop)
 			}
 			return obj[prop]

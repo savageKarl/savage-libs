@@ -1,0 +1,32 @@
+{
+	"name": "styles-log",
+	"version": "0.0.1",
+	"description": "",
+	"miniprogram": "dist",
+	"main": "index.js",
+	"module": "dist/styles-log.esm-bundler.js",
+	"types": "dist/styles-log.d.ts",
+	"files": [
+		"index.js",
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/styles-log.esm-bundler.js",
+			"require": "./index.js"
+		}
+	},
+	"buildOptions": {
+		"name": "savageUtils",
+		"formats": [
+			"esm-bundler",
+			"cjs"
+		]
+	},
+	"type": "module",
+	"scripts": {},
+	"keywords": [],
+	"author": "",
+	"devDependencies": {},
+	"dependencies": {}
+}
