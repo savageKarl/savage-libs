@@ -7,7 +7,13 @@ import type { Options as TsupOptions } from 'tsup'
 import type { IPackageJson } from '@ts-type/package-dts'
 
 import type { BuildOptions } from './types'
-import { packagesRoot, fuzzyMatchPkgName, require, pkgNames } from './utils'
+import {
+	packagesRoot,
+	fuzzyMatchPkgName,
+	require,
+	pkgNames,
+	getChangedPkgNames
+} from './utils'
 
 const argv = minimist(process.argv.slice(2))
 
@@ -17,8 +23,6 @@ const all = argv.all || argv.a
 
 const tasks: (() => Promise<void>)[] = []
 
-const changedPkgNames = [] as string[]
-
 const resolvedPkgNames = resolveTargetPkgNames()
 
 function resolveTargetPkgNames() {
@@ -26,7 +30,7 @@ function resolveTargetPkgNames() {
 
 	if (targetPkgNames.length) return fuzzyMatchPkgName(targetPkgNames)
 
-	return changedPkgNames
+	return getChangedPkgNames()
 }
 
 resolvedPkgNames.forEach(name => {

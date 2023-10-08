@@ -1,9 +1,9 @@
-// @ts-check
 import fs from 'node:fs'
-import chalk from 'chalk'
 import { createRequire } from 'node:module'
-import { cpus } from 'node:os'
 import { resolve } from 'node:path'
+
+import pico from 'picocolors'
+import spawn from 'cross-spawn'
 
 export const require = createRequire(import.meta.url)
 export const packagesRoot = resolve('packages')
@@ -29,62 +29,29 @@ export const pkgNames = fs.readdirSync(packagesRoot).filter(f => {
 	return true
 })
 
+export function getChangedPkgNames() {
+	const result = spawn.sync('git', ['status', '-s'])
+	const stdout = result.stdout.toString()
+
+	const matchs = [...stdout.matchAll(/\bpackages\/(?<pkgName>[\w-]+)\//g)]
+	const pkgNames = [...new Set(matchs.map(v => v.groups?.pkgName))]
+	return pkgNames as string[]
+}
+
 export function fuzzyMatchPkgName(partialPkgNames: string[]) {
-	return pkgNames.filter(name => {
+	const matchResult = pkgNames.filter(name => {
 		return partialPkgNames.some(v => name.match(v))
 	})
-}
 
-export function fuzzyMatchTarget(
-	partialTargets: string[],
-	includeAllMatching: boolean
-) {
-	const matched: string[] = []
-	partialTargets.forEach(partialTarget => {
-		for (const target of pkgNames) {
-			if (target.match(partialTarget)) {
-				matched.push(target)
-				if (!includeAllMatching) {
-					break
-				}
-			}
-		}
-	})
-	if (matched.length) {
-		return matched
-	} else {
-		console.error(
-			`  ${chalk.bgRed.white(' ERROR ')} ${chalk.red(
-				`Target ${chalk.underline(partialTargets)} not found!`
-			)}`
-		)
-		console.log()
+	if (matchResult.length) return matchResult
 
-		process.exit(1)
-	}
-}
+	console.error(
+		`  ${pico.bgRed(pico.white(' ERROR '))} ${pico.red(
+			`Target pkgName ${pico.underline(
+				JSON.stringify(partialPkgNames)
+			)} not found!`
+		)}`
+	)
 
-export async function runParallel(
-	source: any,
-	iteratorFn: (...args: any) => void
-) {
-	const maxConcurrency = cpus().length
-	const ret: Promise<any>[] = []
-	const executing: Promise<any>[] = []
-	for (const item of source) {
-		const p = Promise.resolve().then(() => iteratorFn(item, source))
-		ret.push(p)
-
-		if (maxConcurrency <= source.length) {
-			const e: Promise<any> = p.then(() => {
-				const e2 = executing.splice(executing.indexOf(e), 1)
-				return e2
-			})
-			executing.push(e)
-			if (executing.length >= maxConcurrency) {
-				await Promise.race(executing)
-			}
-		}
-	}
-	return Promise.all(ret)
+	process.exit(1)
 }
