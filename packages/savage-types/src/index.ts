@@ -8,15 +8,15 @@
 ::: code-group
 
 ```[npm]
-npm i savage-data-types
+npm i savage-types
 ```
 
 ```[pnpm]
-pnpm add savage-data-types
+pnpm add savage-types
 ```
 
 ```[yarn]
-yarn add savage-data-types
+yarn add savage-types
 ```
 :::
 

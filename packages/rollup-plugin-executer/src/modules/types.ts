@@ -1,5 +1,5 @@
 import type { PluginHooks } from 'rollup'
-import { dataTypes } from 'savage-data-types'
+import { dataTypes } from 'savage-types'
 import type { Options as DelOptionsRaw } from 'del'
 
 export type executeOptions = {

@@ -32,7 +32,7 @@
 	"dependencies": {
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0",
-		"savage-data-types": "workspace:^",
+		"savage-types": "workspace:^",
 		"savage-utils": "workspace:^1.0.45"
 	},
 	"devDependencies": {

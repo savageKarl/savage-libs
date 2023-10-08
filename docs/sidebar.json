@@ -1,8 +1,8 @@
 {
-	"/savage-data-types/": {
-		"base": "/savage-data-types/",
+	"/savage-types/": {
+		"base": "/savage-types/",
 		"items": [
-			{ "text": "savage-data-types", "link": "modules" },
+			{ "text": "savage-types", "link": "modules" },
 			{
 				"text": "functions",
 				"items": [
@@ -16,10 +16,10 @@
 			}
 		]
 	},
-	"/savage-electron-ipc/": {
-		"base": "/savage-electron-ipc/",
+	"/elec-ipc/": {
+		"base": "/elec-ipc/",
 		"items": [
-			{ "text": "savage-electron-ipc", "link": "modules" },
+			{ "text": "elec-ipc", "link": "modules" },
 			{
 				"text": "functions",
 				"items": [

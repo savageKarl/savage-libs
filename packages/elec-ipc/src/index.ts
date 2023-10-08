@@ -1,7 +1,7 @@
 /**
  * @packageDocumentation
 
-`savage-electron-ipc` is a module that makes communication between different processes easier and more convenient, out of the box!
+`elec-ipc` is a module that makes communication between different processes easier and more convenient, out of the box!
 
 * **[中文文档](https://github.com/savage181855/npm-electron-ipc/blob/main/readme_zh.md)**
 
@@ -20,7 +20,7 @@
 ```typescript
 import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import path from 'path'
-import { send, addToChannel } from 'savage-electron-ipc'
+import { send, addToChannel } from 'elec-ipc'
 
 function createWindow() {
 	const mainWindow = new BrowserWindow({
@@ -50,7 +50,7 @@ function createWindow() {
 > preload.ts (Preload Script)
 
 ```typescript
-import { receive } from "savage-electron-ipc";
+import { receive } from "elec-ipc";
 
 receive("msg", (e, arg) => {
   console.log(arg);
@@ -65,7 +65,7 @@ receive("msg", (e, arg) => {
 ```typescript
 import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import path from "path";
-import { addToChannel, receive } from "savage-electron-ipc";
+import { addToChannel, receive } from "elec-ipc";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -89,7 +89,7 @@ function createWindow() {
 > preload.ts (Preload Script)
 
 ```typescript
-import { send } from "savage-electron-ipc";
+import { send } from "elec-ipc";
 
 send("msg", "hello");
 ```
@@ -101,7 +101,7 @@ send("msg", "hello");
 ```typescript
 import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import path from "path";
-import { addToChannel, receive } from "savage-electron-ipc";
+import { addToChannel, receive } from "elec-ipc";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -128,7 +128,7 @@ function createWindow() {
 > preload.ts (Preload Script)
 
 ```typescript
-import { send } from "savage-electron-ipc";
+import { send } from "elec-ipc";
 
 send("msg", "hello");
 ```
@@ -136,7 +136,7 @@ send("msg", "hello");
 > preload2.ts (Preload Script)
 
 ```typescript
-import { receive } from "savage-electron-ipc";
+import { receive } from "elec-ipc";
 
 ireceive("msg", (e, v) => {
   console.log(v); // 'hello'

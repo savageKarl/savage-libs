@@ -1,7 +1,7 @@
 {
-	"name": "savage-data-types",
-	"version": "1.0.13",
-	"description": "一个用于判断js变量类型的库",
+	"name": "elec-ipc",
+	"version": "0.0.15",
+	"description": "一个用于electron的通信库",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
@@ -24,6 +24,16 @@
 		"minify": true
 	},
 	"type": "module",
+	"keywords": [
+		"electron-ipc",
+		"electrion",
+		"ipc",
+		"ipc-electron",
+		"electron-publish",
+		"electron-subscribe",
+		"electron ipc",
+		"ipc electron"
+	],
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
@@ -41,19 +51,8 @@
 			"path": "node_modules/cz-conventional-changelog"
 		}
 	},
-	"author": {
-		"name": "savage",
-		"email": "2443005004@qq.com",
-		"url": "https://github.com/savage181855/"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/savage181855/data-types"
-	},
-	"homepage": "https://github.com/savage181855/data-types",
-	"bugs": {
-		"url": "https://github.com/savage181855/data-types",
-		"email": "2443005004@qq.com"
-	},
-	"license": "GPL-3.0"
+	"license": "GPL-3.0",
+	"dependencies": {
+		"electron": "^25.0.1"
+	}
 }

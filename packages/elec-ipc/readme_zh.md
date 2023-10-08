@@ -17,7 +17,7 @@
 ```typescript
 import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import path from "path";
-import ipc from "savage-electron-ipc";
+import ipc from "elec-ipc";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -47,7 +47,7 @@ function createWindow() {
 > preload.ts (Preload Script)
 
 ```typescript
-import ipc from "savage-electron-ipc";
+import ipc from "elec-ipc";
 
 ipc.renderFromMain("滴滴滴", (e, arg) => {
   console.log(arg);
@@ -62,7 +62,7 @@ ipc.renderFromMain("滴滴滴", (e, arg) => {
 ```typescript
 import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import path from "path";
-import ipc from "savage-electron-ipc";
+import ipc from "elec-ipc";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -86,7 +86,7 @@ function createWindow() {
 > preload.ts (Preload Script)
 
 ```typescript
-import ipc from "savage-electron-ipc";
+import ipc from "elec-ipc";
 
 ipc.send("msg", "hello");
 ```
@@ -98,7 +98,7 @@ ipc.send("msg", "hello");
 ```typescript
 import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import path from "path";
-import ipc from "savage-electron-ipc";
+import ipc from "elec-ipc";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -125,7 +125,7 @@ function createWindow() {
 > preload.ts (Preload Script)
 
 ```typescript
-import ipc from "savage-electron-ipc";
+import ipc from "elec-ipc";
 
 ipc.send("msg", "hello");
 ```
@@ -133,13 +133,10 @@ ipc.send("msg", "hello");
 > preload2.ts (Preload Script)
 
 ```typescript
-import ipc from "savage-electron-ipc";
+import ipc from "elec-ipc";
 
 ipc.receive("msg", (e, v) => {
   console.log(v); // 'hello'
   return "how dare you!";
 });
 ```
-
-
-

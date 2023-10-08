@@ -1,4 +1,4 @@
-import { dataTypes } from 'savage-data-types'
+import { dataTypes } from 'savage-types'
 
 import { deepCopy } from './copy'
 

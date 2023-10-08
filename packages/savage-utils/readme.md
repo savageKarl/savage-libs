@@ -1,5 +1,5 @@
 # savage-utils
 
-`savage-utils`只是一个简单的工具库
+`savage-utils` for collecting common utils function
 
 # [Documentation](https://savage181855.github.io/savage-libs/savage-utils/modules)

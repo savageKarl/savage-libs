@@ -35,6 +35,6 @@
 	},
 	"license": "GPL-3.0",
 	"dependencies": {
-		"savage-data-types": "workspace:*"
+		"savage-types": "workspace:*"
 	}
 }

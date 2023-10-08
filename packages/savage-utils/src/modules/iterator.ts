@@ -1,4 +1,4 @@
-import { dataTypes } from 'savage-data-types'
+import { dataTypes } from 'savage-types'
 
 /**
  * 迭代器模式：内部迭代器，由函数内部控制自动进行迭代

@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 
 import { deepCopy, deepCompare } from 'savage-utils'
-import { dataTypes } from 'savage-data-types'
+import { dataTypes } from 'savage-types'
 
 import type {
 	DepsType,
