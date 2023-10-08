@@ -20,6 +20,7 @@
 			"esm",
 			"cjs"
 		],
+		"external": "dependencies",
 		"dts": true,
 		"minify": true
 	},
@@ -27,6 +28,7 @@
 	"scripts": {},
 	"keywords": [],
 	"author": "",
-	"devDependencies": {},
-	"dependencies": {}
+	"dependencies": {
+		"picocolors": "1.0.0"
+	}
 }

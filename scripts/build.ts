@@ -77,6 +77,10 @@ async function createConfig(pkgName: string) {
 		watch,
 		clean: true,
 		esbuildPlugins: plugins,
+		external:
+			external === 'dependencies'
+				? Object.keys(pkg.dependencies || {})
+				: external,
 		...rest
 	} as TsupOptions
 }
