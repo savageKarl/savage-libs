@@ -8,7 +8,6 @@ import type { IPackageJson } from '@ts-type/package-dts'
 
 import type { BuildOptions } from './types'
 import { packagesRoot, fuzzyMatchPkgName, require, pkgNames } from './utils'
-import umd from 'esbuild-plugin-umd'
 
 const argv = minimist(process.argv.slice(2))
 
@@ -30,7 +29,7 @@ function resolveTargetPkgNames() {
 	return changedPkgNames
 }
 
-resolvedPkgNames.forEach(async name => {
+resolvedPkgNames.forEach(name => {
 	tasks.push(async () => build(await createConfig(name)))
 })
 
@@ -51,6 +50,21 @@ async function createConfig(pkgName: string) {
 	const path = resolve(packagesRoot, pkgName, entryFile).replace(/\\/g, '/')
 	const outDir = resolve(packagesRoot, pkgName, 'dist').replace(/\\/g, '/')
 
+	const plugins =
+		pkgName !== 'esbuild-plugin-umd'
+			? [
+					// @ts-ignore
+					(await import('esbuild-plugin-umd')).umd({
+						libraryName,
+						external:
+							external === 'dependencies'
+								? Object.keys(pkg.dependencies || {})
+								: external,
+						globalVariableName
+					})
+			  ]
+			: []
+
 	return {
 		entry: [path],
 		minify: watch ? false : minify,
@@ -58,16 +72,7 @@ async function createConfig(pkgName: string) {
 		outDir,
 		watch,
 		clean: true,
-		esbuildPlugins: [
-			umd({
-				libraryName,
-				external:
-					external === 'dependencies'
-						? Object.keys(pkg.dependencies || {})
-						: external,
-				globalVariableName
-			})
-		],
+		esbuildPlugins: plugins,
 		...rest
 	} as TsupOptions
 }
