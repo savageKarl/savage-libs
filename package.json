@@ -3,16 +3,6 @@
 	"version": "0.0.0",
 	"description": "monorepo",
 	"private": true,
-	"main": "dist/index.cjs",
-	"module": "./dist/index.mjs",
-	"files": [
-		"dist/index.cjs",
-		"dist/index.mjs",
-		"dist/main.d.ts",
-		"dist/index.cjs.map",
-		"dist/index.mjs.map"
-	],
-	"types": "./dist/main.d.ts",
 	"type": "module",
 	"publishConfig": {
 		"access": "public",
@@ -21,9 +11,8 @@
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/savage181855",
 	"scripts": {
-		"dev": "ts-node --esm scripts/dev.ts",
-		"build": "ts-node --esm scripts/build.ts",
-		"build-dts": "rimraf temp && tsc -p tsconfig.build.json && rollup -c rollup.dts.config.js",
+		"dev": "tsx scripts/build.ts -w",
+		"build": "tsx scripts/build.ts",
 		"check": "tsc --incremental --noEmit",
 		"lint": "eslint --cache --ext .ts packages/*/{src,__tests__}/**.ts",
 		"format": "prettier --write --cache \"**/*.[tj]s?(x)\"",
@@ -119,6 +108,7 @@
 		"savage-utils": "^1.0.45",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.6.2",
+		"tsx": "3.13.0",
 		"typescript": "^5.2.2",
 		"vite": "4.4.9",
 		"vitepress": "1.0.0-rc.10",
@@ -127,6 +117,7 @@
 		"vue-tsc": "1.8.11"
 	},
 	"dependencies": {
+		"esbuild-plugin-umd": "workspace:*",
 		"savage-data-types": "workspace:*"
 	}
 }

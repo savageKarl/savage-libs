@@ -3,25 +3,25 @@
 	"version": "0.0.1",
 	"description": "",
 	"miniprogram": "dist",
-	"main": "index.js",
-	"module": "dist/styles-log.esm-bundler.js",
-	"types": "dist/styles-log.d.ts",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
-		"index.js",
 		"dist"
 	],
 	"exports": {
 		".": {
-			"import": "./dist/styles-log.esm-bundler.js",
-			"require": "./index.js"
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
 		}
 	},
 	"buildOptions": {
-		"name": "savageUtils",
-		"formats": [
-			"esm-bundler",
+		"format": [
+			"esm",
 			"cjs"
-		]
+		],
+		"dts": true,
+		"minify": true
 	},
 	"type": "module",
 	"scripts": {},

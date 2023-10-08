@@ -3,13 +3,27 @@
 	"version": "0.0.15",
 	"description": "一个用于electron的通信库",
 	"miniprogram": "dist",
-	"main": "index.js",
-	"module": "dist/electron-ipc.esm-bundler.js",
-	"types": "dist/electron-ipc.d.ts",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
-		"index.js",
 		"dist"
 	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
 	"keywords": [
 		"electron-ipc",
 		"electrion",

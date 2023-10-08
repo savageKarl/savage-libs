@@ -3,13 +3,27 @@
 	"version": "1.0.13",
 	"description": "一个用于判断js变量类型的库",
 	"miniprogram": "dist",
-	"main": "index.js",
-	"module": "dist/data-types.esm-bundler.js",
-	"types": "dist/data-types.d.ts",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
-		"index.js",
 		"dist"
 	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"

@@ -2,7 +2,27 @@
 	"name": "savage-react-store",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
 	"scripts": {
 		"test": "vitest"
 	},

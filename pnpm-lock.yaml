@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      esbuild-plugin-umd:
+        specifier: workspace:*
+        version: link:packages/esbuild-plugin-umd
       savage-data-types:
         specifier: workspace:*
         version: link:packages/savage-data-types
@@ -216,6 +219,9 @@ importers:
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
+      tsx:
+        specifier: 3.13.0
+        version: 3.13.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -267,6 +273,8 @@ importers:
       electron:
         specifier: ^25.0.1
         version: 25.8.0
+
+  packages/esbuild-plugin-umd: {}
 
   packages/npm-utils: {}
 
@@ -343,6 +351,8 @@ importers:
       savage-data-types:
         specifier: workspace:*
         version: link:../savage-data-types
+
+  packages/styles-log: {}
 
   packages/typedoc-markdown:
     dependencies:
@@ -5697,6 +5707,12 @@ packages:
       get-intrinsic: 1.2.1
     dev: true
 
+  /get-tsconfig@4.7.2:
+    resolution: {integrity: sha512-wuMsz4leaj5hbGgg4IvDU0bqJagpftG5l5cXIAvo8uZrqn0NJqwtfupTN00VnkQJPcIRrxYrm1Ue24btpCha2A==}
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+    dev: true
+
   /git-raw-commits@2.0.11:
     resolution: {integrity: sha512-VnctFhw+xfj8Va1xtfEqCUD2XDrbAPSJx+hSrE5K7fGdjZruW7XV+QOrN7LF/RJyvspRiD2I0asWsxFp0ya26A==}
     engines: {node: '>=10'}
@@ -8509,6 +8525,10 @@ packages:
       global-dirs: 0.1.1
     dev: true
 
+  /resolve-pkg-maps@1.0.0:
+    resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
+    dev: true
+
   /resolve.exports@2.0.2:
     resolution: {integrity: sha512-X2UW6Nw3n/aMgDVy+0rSqgHlv39WZAlZrXCdnbyEiKm17DSqHX4MmQMaST3FbeWR5FTuRcUwYAziZajji0Y7mg==}
     engines: {node: '>=10'}
@@ -9502,6 +9522,17 @@ packages:
     dependencies:
       tslib: 1.14.1
       typescript: 5.2.2
+    dev: true
+
+  /tsx@3.13.0:
+    resolution: {integrity: sha512-rjmRpTu3as/5fjNq/kOkOtihgLxuIz6pbKdj9xwP4J5jOLkBxw/rjN5ANw+KyrrOXV5uB7HC8+SrrSJxT65y+A==}
+    hasBin: true
+    dependencies:
+      esbuild: 0.18.20
+      get-tsconfig: 4.7.2
+      source-map-support: 0.5.21
+    optionalDependencies:
+      fsevents: 2.3.3
     dev: true
 
   /tty-table@4.2.1:

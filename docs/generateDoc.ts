@@ -7,13 +7,13 @@ import fs from 'fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { targets, getFolderByPath } from '../scripts/utils.js'
+import { pkgNames, getFolderByPath } from '../scripts/utils.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const packages = resolve(__dirname, '..', 'packages')
 
 async function main() {
-	await buildAll(targets)
+	await buildAll(pkgNames)
 	generateSidebarConfig()
 }
 
@@ -36,7 +36,7 @@ interface ISidebarItem {
 function generateSidebarConfig() {
 	const sidebarConfig: SideBarConfig = {}
 
-	targets.forEach(t => {
+	pkgNames.forEach(t => {
 		const base = `/${t}/`
 		sidebarConfig[base] = {
 			base: `/${t}/`,

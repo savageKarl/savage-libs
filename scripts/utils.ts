@@ -4,10 +4,9 @@ import chalk from 'chalk'
 import { createRequire } from 'node:module'
 import { cpus } from 'node:os'
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 
-const require = createRequire(import.meta.url)
-const packages = resolve(fileURLToPath(import.meta.url), '../../packages')
+export const require = createRequire(import.meta.url)
+export const packagesRoot = resolve('packages')
 
 export function getFolderByPath(path: string) {
 	const folders: string[] = []
@@ -21,16 +20,20 @@ export function getFolderByPath(path: string) {
 }
 
 /** sub package name of packages path */
-export const targets = fs.readdirSync(packages).filter(f => {
-	if (!fs.statSync(`${packages}/${f}`).isDirectory()) {
-		return false
-	}
-	const pkg = require(`${packages}/${f}/package.json`)
-	if (pkg.private && !pkg.buildOptions) {
-		return false
-	}
+export const pkgNames = fs.readdirSync(packagesRoot).filter(f => {
+	if (!fs.statSync(`${packagesRoot}/${f}`).isDirectory()) return false
+
+	const pkg = require(`${packagesRoot}/${f}/package.json`)
+	if (pkg.private && !pkg.buildOptions) return false
+
 	return true
 })
+
+export function fuzzyMatchPkgName(partialPkgNames: string[]) {
+	return pkgNames.filter(name => {
+		return partialPkgNames.some(v => name.match(v))
+	})
+}
 
 export function fuzzyMatchTarget(
 	partialTargets: string[],
@@ -38,7 +41,7 @@ export function fuzzyMatchTarget(
 ) {
 	const matched: string[] = []
 	partialTargets.forEach(partialTarget => {
-		for (const target of targets) {
+		for (const target of pkgNames) {
 			if (target.match(partialTarget)) {
 				matched.push(target)
 				if (!includeAllMatching) {
