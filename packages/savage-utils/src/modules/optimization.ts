@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Callback = (...args: any) => unknown
+import { Fun, Arg } from '../types'
 
 /**
  *  防抖，防止抖动，将一段时间内的多次触发控制为一次触发
@@ -7,10 +6,10 @@ type Callback = (...args: any) => unknown
  * @param delay - 延迟时间
  * @param immediate - 是否立即调用
  */
-export function debounce(fn: Callback, delay = 1500, immediate = false) {
+export function debounce(fn: Fun, delay = 1500, immediate = false) {
 	let timer: NodeJS.Timeout | null = null
 
-	return function (this: unknown, ...args: unknown[]) {
+	return function (this: unknown, ...args: Arg[]) {
 		if (timer) clearTimeout(timer)
 		if (immediate) {
 			if (!timer) fn.apply(this, args)
@@ -30,13 +29,13 @@ type ThrottleType = 'timer' | 'timestamp'
  * @param immediate - 是否立即调用
  */
 export function throttle(
-	fn: Callback,
+	fn: Fun,
 	delay = 1500,
 	type: ThrottleType = 'timestamp'
 ) {
 	if (type === 'timestamp') {
 		let prevTime = 0
-		return function (this: unknown, ...args: unknown[]) {
+		return function (this: unknown, ...args: Arg[]) {
 			const currentTime = Date.now()
 			if (currentTime - prevTime > delay) {
 				fn.apply(this, args)
@@ -46,7 +45,7 @@ export function throttle(
 	} else {
 		let timer: NodeJS.Timeout | null = null
 
-		return function (this: unknown, ...args: unknown[]) {
+		return function (this: unknown, ...args: Arg[]) {
 			if (!timer) {
 				timer = setTimeout(() => {
 					fn.apply(this, args)

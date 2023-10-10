@@ -19,6 +19,8 @@ import {
 	queueExcution
 } from '../src'
 
+import type { Fun } from '../src/types'
+
 describe('functions', () => {
 	test('get', () => {
 		const object = { a: [{ b: { c: 3 } }] }
@@ -89,9 +91,9 @@ test('copy', () => {
 describe('evenCenter', () => {
 	test('eventCenter', () => {
 		let value = 0
-		const callback = (v: number) => {
+		const callback = ((v: number) => {
 			value = v
-		}
+		}) as Fun
 
 		eventCenter.subscribe('change value', callback)
 		eventCenter.publish('change value', 5)
@@ -108,9 +110,9 @@ describe('evenCenter', () => {
 		expect(obj.a).toEqual('hello')
 
 		let value = 0
-		const callback = (v: number) => {
+		const callback = ((v: number) => {
 			value = v
-		}
+		}) as Fun
 
 		eventCenter.subscribe('change value', callback)
 		eventCenter.publish('change value', 5)
@@ -257,12 +259,12 @@ describe('Chain', () => {
 	test('chain', () => {
 		const chain = new Chain()
 
-		const node1 = chain.turnToNode((next, i: number) => {
+		const node1 = chain.turnToNode((next, i) => {
 			if (i === 1) return i + 1
 			return 'nextNode'
 		})
 
-		const node2 = chain.turnToNode((next, i: number) => {
+		const node2 = chain.turnToNode((next, i) => {
 			if (i === 2) return i + 1
 			return 'nextNode'
 		})
@@ -281,12 +283,12 @@ describe('Chain', () => {
 	test('chainWithNextFn', () => {
 		const chain = new Chain()
 
-		const node1 = chain.turnToNode((next, i: number) => {
+		const node1 = chain.turnToNode((next, i) => {
 			if (i === 1) return next(i + 1)
 			return 'nextNode'
 		})
 
-		const node2 = chain.turnToNode((next, i: number) => {
+		const node2 = chain.turnToNode((next, i) => {
 			if (i === 2 || i === 3) return i + 4
 			return 'nextNode'
 		})

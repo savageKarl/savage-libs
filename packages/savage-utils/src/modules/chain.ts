@@ -1,6 +1,6 @@
-type Fun = (...args: unknown[]) => void
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ChainNodeFun = (next: Fun, ...args: any) => unknown
+import { Fun, Arg } from '../types'
+
+type ChainNodeFun = (next: Fun, ...args: Arg[]) => unknown
 
 class ChainNode {
 	private fn: ChainNodeFun
@@ -14,7 +14,7 @@ class ChainNode {
 		return (this.successor = successor)
 	}
 
-	public passRequest<T = unknown>(...rest: unknown[]): T {
+	public passRequest<T = unknown>(...rest: Arg[]): T {
 		const result = this.fn(this.next.bind(this), ...rest)
 
 		if (result === 'nextNode' && this.successor) {
@@ -24,7 +24,7 @@ class ChainNode {
 		return result as T
 	}
 
-	private next(...rest: unknown[]) {
+	private next(...rest: Arg[]) {
 		return this.successor && this.successor.passRequest(...rest)
 	}
 }

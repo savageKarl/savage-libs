@@ -1,8 +1,7 @@
-// @ts-ignore
-type CallBackFn = (arg: any) => unknown
+import { Fun, Arg } from '../types'
 
 interface SubscribeType {
-	[index: string | symbol]: CallBackFn[]
+	[index: string | symbol]: Fun[]
 }
 
 /**
@@ -11,7 +10,7 @@ interface SubscribeType {
 class EventCenter {
 	private subscribeList: SubscribeType = {}
 	// 储存已发布未订阅的消息
-	private pubAndNoSub: Record<string, unknown> = {}
+	private pubAndNoSub: Record<string, Arg> = {}
 
 	constructor(target: object = {}) {
 		return Object.assign(this, target)
@@ -21,7 +20,7 @@ class EventCenter {
 	 * @param name - msg name of subscribe
 	 * @param fn - callback
 	 */
-	subscribe(name: string, fn: CallBackFn) {
+	subscribe(name: string, fn: Fun) {
 		if (this.pubAndNoSub[name]) {
 			fn(this.pubAndNoSub[name])
 			Reflect.deleteProperty(this.pubAndNoSub, name)
@@ -29,7 +28,7 @@ class EventCenter {
 		this.subscribeList[name]?.push(fn) || (this.subscribeList[name] = [fn])
 	}
 
-	publish(name: string, value: unknown) {
+	publish(name: string, value: Arg) {
 		const fns = this.subscribeList[name]
 		if (!fns || fns.length === 0) {
 			this.pubAndNoSub[name] = value
@@ -38,7 +37,7 @@ class EventCenter {
 		}
 	}
 
-	remove(name: string, fn: CallBackFn) {
+	remove(name: string, fn: Fun) {
 		const fns = this.subscribeList[name]
 
 		if (!fns || fns.length === 0) return
