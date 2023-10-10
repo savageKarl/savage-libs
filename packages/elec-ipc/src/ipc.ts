@@ -7,21 +7,21 @@ import {
 } from 'electron'
 
 /** render process send message to main process  */
-const renderToMain = <T = any>(channel: string, args: any[]) => {
-	return ipcRenderer.invoke(channel, args) as Promise<T>
+const renderToMain = <T = unknown>(channel: string, ...args: unknown[]) => {
+	return ipcRenderer.invoke(channel, ...args) as Promise<T>
 }
 
 /** main process receive message from render process  */
-const mainFromRender = <T = any[]>(
+const mainFromRender = <T = unknown>(
 	channel: string,
-	listener: (event: IpcMainInvokeEvent, args: T) => any
+	listener: (event: IpcMainInvokeEvent, ...args: T[]) => unknown
 ) => {
 	return ipcMain.handle(channel, listener)
 }
 
 /** main process send message to render process  */
-const mainToRender = <T = any[]>(channel: string, args: any[]) => {
-	windowList.forEach(w => w.webContents.send(channel, args))
+const mainToRender = <T = unknown>(channel: string, ...args: unknown[]) => {
+	windowList.forEach(w => w.webContents.send(channel, ...args))
 	return new Promise<T>(resolve => {
 		ipcMain.on('bi-directional', (e, args) => {
 			resolve(args)
@@ -34,9 +34,9 @@ const mainToRender = <T = any[]>(channel: string, args: any[]) => {
  * @param channel - The name of the event.
  * @param listener - The callback function
  */
-const renderFromMain = <T = any[]>(
+const renderFromMain = <T = unknown>(
 	channel: string,
-	listener: (event: IpcRendererEvent, args: T) => void
+	listener: (event: IpcRendererEvent, ...args: T[]) => void
 ) => {
 	ipcRenderer.on(channel, (e, args) => {
 		ipcRenderer.send('bi-directional', listener(e, args))
@@ -46,13 +46,8 @@ const renderFromMain = <T = any[]>(
 // use to have the main process send message to render process
 const windowList: BrowserWindow[] = []
 
-function isBrowserWindow(v: unknown): v is BrowserWindow {
-	return Object.prototype.toString.call(v) === '[object Object]'
-}
-
-function isBrowserWindowArray(v: unknown): v is BrowserWindow[] {
-	return Object.prototype.toString.call(v) === '[object Array]'
-}
+const isInMainProcess = ipcMain
+const isInRenderProcess = ipcRenderer
 
 /**
  * add window to communication channel
@@ -62,8 +57,8 @@ function isBrowserWindowArray(v: unknown): v is BrowserWindow[] {
  *
  */
 export function addToChannel(window: BrowserWindow | BrowserWindow[]) {
-	if (isBrowserWindow(window)) windowList.push(window)
-	if (isBrowserWindowArray(window)) windowList.push(...window)
+	window = Array.isArray(window) ? window : [window]
+	windowList.push(...window)
 }
 
 /**
@@ -82,11 +77,11 @@ export function addToChannel(window: BrowserWindow | BrowserWindow[]) {
  * });
  * ```
  */
-export function send<T = any>(channel: string, ...args: any[]) {
+export function send<T = unknown>(channel: string, ...args: unknown[]) {
 	let p = new Promise<T>(() => null)
 
-	if (ipcMain) p = mainToRender(channel, args)
-	if (ipcRenderer) {
+	if (isInMainProcess) p = mainToRender(channel, args)
+	if (isInRenderProcess) {
 		p = renderToMain(channel, args)
 		renderToMain('forward', [channel, args])
 	}
@@ -100,13 +95,15 @@ export function send<T = any>(channel: string, ...args: any[]) {
  * @param channel - The name of the event.
  * @param listener - The callback function
  */
-export function receive<T = any[]>(
+export function receive<T = unknown[]>(
 	channel: string,
-	listener: (event: IpcMainInvokeEvent | IpcRendererEvent, args: T) => any
+	listener: (event: IpcMainInvokeEvent | IpcRendererEvent, args: T) => unknown
 ) {
-	if (ipcMain) mainFromRender(channel, listener)
-	if (ipcRenderer) renderFromMain(channel, listener)
+	if (isInMainProcess) mainFromRender(channel, listener)
+	if (isInRenderProcess) renderFromMain(channel, listener)
 }
 
 // proxy forward message from render process to render process
-receive<[string, any]>('forward', (e, args) => mainToRender(args[0], args[1]))
+receive<[string, unknown]>('forward', (e, args) =>
+	mainToRender(args[0], args[1])
+)
