@@ -1,6 +1,6 @@
 import getPort from 'get-port'
 
-import { merge } from 'lodash-es'
+import { mergeDeep } from 'savage-utils'
 
 import { pkg, pluginName } from './constants'
 import { UsOptions } from '../types/types'
@@ -47,6 +47,6 @@ const defaultOpts: Required<UsOptions> = {
 getPort({ port: 12345 }).then(n => (defaultOpts.server.port = n))
 
 export function mergeOptions(opts: UsOptions) {
-	const mergedOpts = merge(defaultOpts, opts)
+	const mergedOpts = mergeDeep(defaultOpts, opts)
 	return mergedOpts as Required<UsOptions>
 }

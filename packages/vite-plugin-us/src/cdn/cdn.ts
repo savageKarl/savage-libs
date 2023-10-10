@@ -1,8 +1,7 @@
 import { extname } from 'node:path'
-import type { AxiosResponse } from 'axios'
 
 import pc from 'picocolors'
-import { cloneDeep } from 'lodash-es'
+import { copyDeep } from 'savage-utils'
 import MagicString from 'magic-string'
 
 import {
@@ -260,7 +259,7 @@ class CDN {
 				const s = new MagicString(`if(${name}){window['${name}']=${name}}`)
 
 				handledDepsRecords.push(
-					Object.assign(cloneDeep(v), {
+					Object.assign(copyDeep(v), {
 						url: generateJsDataUrlByCode(s.toString())
 					})
 				)

@@ -1,5 +1,4 @@
 import jsdom from 'jsdom'
-import { debounce } from 'lodash-es'
 
 import { Chain } from '../utils/chain'
 
@@ -60,10 +59,10 @@ class GlobalVariableNameEval {
 		return { windowKeyName, globalKeyName }
 	}
 
-	private resetKey = debounce(() => {
+	private resetKey() {
 		this.windowNameKeys.forEach(v => Reflect.deleteProperty(global.window, v))
 		this.globalNameKeys.forEach(v => Reflect.deleteProperty(global, v))
-	}, 1000)
+	}
 
 	public getNameByCode(code: string) {
 		this.saveKeys()

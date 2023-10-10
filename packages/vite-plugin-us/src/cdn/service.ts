@@ -1,3 +1,6 @@
+import { writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+
 import axios from 'axios'
 
 // @ts-ignore
@@ -22,5 +25,10 @@ serviceCDN.interceptors.response.use(
 		response.time = Date.now()
 		return response
 	},
-	err => Promise.reject(err)
+	err => {
+		// writeFile(resolve('axiosErrorLog.json'), JSON.stringify(err, null, 4), {
+		// 	encoding: 'utf-8'
+		// })
+		return Promise.reject(err)
+	}
 )

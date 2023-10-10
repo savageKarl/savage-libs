@@ -1,7 +1,5 @@
 import { extname } from 'node:path'
 
-import { merge } from 'lodash-es'
-
 import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
 
 import { pkg } from './constants'
@@ -165,14 +163,8 @@ export class DepCollection {
 		resourceRecord.externals = resourceRecord.externals.concat(
 			this.getExternals(depsRecords)
 		)
-		resourceRecord.globalVariableNameRecord = merge(
-			resourceRecord.globalVariableNameRecord,
-			globalNames
-		)
-		resourceRecord.categoryRecord = merge(
-			resourceRecord.categoryRecord,
-			categoryRecord
-		)
+		resourceRecord.globalVariableNameRecord = globalNames
+		resourceRecord.categoryRecord = categoryRecord
 
 		if (categoryRecord.js) {
 			console.table(categoryRecord.js.filter(v => extname(v.url) === '.js'))
