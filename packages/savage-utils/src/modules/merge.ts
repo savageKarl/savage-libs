@@ -24,10 +24,14 @@ class Merge {
 					else {
 						if (!Reflect.has(target, k) || !isObject(source[k as KeyK])) {
 							return (target[k as keyof T] = copyDeep(
-								source[k as KeyK]
+								source[k as KeyK] as K
 							) as unknown as T[KeyT])
 						}
-						this.merge(target[k as keyof T], 'deep', source[k as KeyK])
+						this.merge(
+							target[k as keyof T] as T,
+							'deep',
+							source[k as KeyK] as K
+						)
 					}
 				})
 			}
