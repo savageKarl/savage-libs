@@ -71,7 +71,7 @@
 					{ "text": "debounce", "link": "functions/debounce" },
 					{ "text": "deepCompare", "link": "functions/deepCompare" },
 					{ "text": "deepCopy", "link": "functions/deepCopy" },
-					{ "text": "deepMerge", "link": "functions/deepMerge" },
+					{ "text": "mergeDeep", "link": "functions/mergeDeep" },
 					{ "text": "each", "link": "functions/each" },
 					{ "text": "get", "link": "functions/get" },
 					{ "text": "getSingle", "link": "functions/getSingle" },
@@ -81,7 +81,7 @@
 					},
 					{ "text": "shallowCompare", "link": "functions/shallowCompare" },
 					{ "text": "shallowCopy", "link": "functions/shallowCopy" },
-					{ "text": "shallowMerge", "link": "functions/shallowMerge" },
+					{ "text": "mergeShallow", "link": "functions/mergeShallow" },
 					{ "text": "throttle", "link": "functions/throttle" }
 				]
 			}

@@ -1,5 +1,8 @@
+// @ts-ignore
+type CallBackFn = (arg: any) => unknown
+
 interface SubscribeType {
-	[index: string | symbol]: Array<(...args: any) => unknown>
+	[index: string | symbol]: CallBackFn[]
 }
 
 /**
@@ -8,14 +11,17 @@ interface SubscribeType {
 export class EventCenter {
 	private subscribeList: SubscribeType = {}
 	// 储存已发布未订阅的消息
-	private pubAndNoSub: SubscribeType = {}
+	private pubAndNoSub: Record<string, unknown> = {}
+
+	constructor(target: object = {}) {
+		return Object.assign(this, target)
+	}
 
 	/**
-	 *
 	 * @param name - msg name of subscribe
 	 * @param fn - callback
 	 */
-	subscribe(name: string, fn: (...arg: any) => unknown) {
+	subscribe(name: string, fn: CallBackFn) {
 		if (this.pubAndNoSub[name]) {
 			fn(this.pubAndNoSub[name])
 			Reflect.deleteProperty(this.pubAndNoSub, name)
@@ -23,7 +29,7 @@ export class EventCenter {
 		this.subscribeList[name]?.push(fn) || (this.subscribeList[name] = [fn])
 	}
 
-	publish(name: string, value: any) {
+	publish(name: string, value: unknown) {
 		const fns = this.subscribeList[name]
 		if (!fns || fns.length === 0) {
 			this.pubAndNoSub[name] = value
@@ -32,14 +38,13 @@ export class EventCenter {
 		}
 	}
 
-	remove(name: string, fn: (...args: any) => unknown) {
+	remove(name: string, fn: CallBackFn) {
 		const fns = this.subscribeList[name]
+
 		if (!fns || fns.length === 0) return
 		if (fn) {
 			fns.forEach((_fn, index) => {
-				if (_fn === fn) {
-					this.subscribeList[name].splice(index, 1)
-				}
+				if (_fn === fn) this.subscribeList[name].splice(index, 1)
 			})
 		} else {
 			this.subscribeList[name] = []
@@ -47,17 +52,10 @@ export class EventCenter {
 	}
 }
 
-/** 给对象添加发布订阅的事件中心 */
-// export function installEventCenter(obj: Record<string, any>) {
-// 	const res = Object.assign({}, new EventCenter(), obj)
-// 	return res as EventCenter & typeof obj
-// }
+export const eventCenter = new EventCenter()
 
 /** 给对象添加发布订阅的事件中心 */
-// export function installEventCenter(obj: Record<string, any>) {
-//   console.log(eventCenter)
-//   const cloneObj = deepCopy(eventCenter);
-//   console.log(cloneObj)
-//   for (let k in eventCenter) obj[k] = cloneObj[k as keyof typeof cloneObj];
-//   return obj as EventCenter & typeof obj;
-// }
+export function installEventCenter<T extends object>(target: T) {
+	const evenCenter = new EventCenter(target)
+	return evenCenter as EventCenter & typeof target
+}

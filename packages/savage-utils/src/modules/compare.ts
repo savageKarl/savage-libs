@@ -21,16 +21,14 @@ class Compare {
 		if (len1 !== len2) return false
 
 		for (const key of Object.keys(o1)) {
+			const _key = key as keyof object
+
 			if (type === 'shallow') {
-				if (o1[key as keyof T] !== o2[key as keyof T]) return false
+				if (o1[_key] !== o2[_key]) return false
 			}
 
 			if (type === 'deep') {
-				const result = this.compare(
-					o1[key as keyof T] as any,
-					o2[key as keyof T],
-					'deep'
-				)
+				const result = this.compare(o1[_key] as object, o2[_key], 'deep')
 				if (!result) return result
 			}
 		}
@@ -38,23 +36,17 @@ class Compare {
 		return true
 	}
 
-	/**
-	 * 对象浅比较，只比较第一层数据
-	 *
-	 */
-	shallowCompare = <T extends object, K extends T>(o1: T, o2: K) => {
+	// 对象浅比较，只比较第一层数据
+	compareShallow = <T extends object, K extends T>(o1: T, o2: K) => {
 		return this.compare(o1, o2, 'shallow')
 	}
 
-	/**
-	 * 对象深比较，比较所有层数据，深比较主要的点在于，Object或Array实例的每一个属性，基本类型或者特殊构造器类型是否相同
-	 *
-	 */
-	deepCompare = <T extends object, K extends T>(o1: T, o2: K) => {
+	// 对象深比较，比较所有层数据，深比较主要的点在于，Object或Array实例的每一个属性，基本类型或者特殊构造器类型是否相同
+	compareDeep = <T extends object, K extends T>(o1: T, o2: K) => {
 		return this.compare(o1, o2, 'deep')
 	}
 }
 
-const { shallowCompare, deepCompare } = new Compare()
+const { compareShallow, compareDeep } = new Compare()
 
-export { shallowCompare, deepCompare }
+export { compareShallow, compareDeep }

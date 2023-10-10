@@ -7,25 +7,22 @@
  * const object = { a: [{ b: { c: 3 } }] }
  * console.log(get(object, 'a[0].b.c')) // 3
  * ```
- * @param data
- * @param path
- * @returns
  */
-export function get(data: Record<string, any>, path: string) {
+export function get(data: object, path: string) {
 	const paths = path
 		.replace(/\[(\w+)\]/g, '.$1')
 		.replace(/\["(\w+)"\]/g, '.$1')
 		.replace(/\['(\w+)'\]/g, '.$1')
 		.split('.')
 
-	return paths.reduce((x, y) => x?.[y], data)
+	return paths.reduce((x, y) => x?.[y as keyof object], data)
 }
 
 /** 单例模式 */
 export function getSingle<T = unknown>(fn: () => T) {
 	let res: T
 
-	return function (this: unknown, ...args: any) {
-		return res || (res = fn.apply(this, args))
+	return function (this: unknown, ...args: unknown[]) {
+		return res || (res = fn.apply(this, args as []))
 	}
 }

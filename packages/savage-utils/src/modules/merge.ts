@@ -1,48 +1,53 @@
 import { dataTypes } from 'savage-types'
 
-import { deepCopy } from './copy'
-
-type ObjectKey = keyof object
+import { copyDeep } from './copy'
 
 const { isObject, isArray } = dataTypes
 
 class Merge {
-	private merge(
-		target: object,
+	private merge<T extends object, K extends object>(
+		target: T,
 		type: 'shallow' | 'deep',
-		...sources: object[]
+		...sources: K[]
 	) {
 		if (isArray(sources)) {
 			while (sources.length > 0) {
-				const source = sources.pop() as object
-				if (!isObject(source)) return
+				const source = sources.pop() as K
+				if (!isObject(source)) return target as T & K
 
 				Reflect.ownKeys(source).forEach(k => {
+					type KeyT = keyof T
+					type KeyK = keyof K
+
 					if (type === 'shallow')
-						target[k as ObjectKey] = source[k as ObjectKey]
+						target[k as keyof T] = source[k as KeyK] as unknown as T[KeyT]
 					else {
-						if (!Reflect.has(target, k) || !isObject(source[k as ObjectKey])) {
-							return (target[k as ObjectKey] = deepCopy(source[k as ObjectKey]))
+						if (!Reflect.has(target, k) || !isObject(source[k as KeyK])) {
+							return (target[k as keyof T] = copyDeep(
+								source[k as KeyK]
+							) as unknown as T[KeyT])
 						}
-						this.merge(
-							target[k as ObjectKey] as object,
-							'deep',
-							source[k as ObjectKey]
-						)
+						this.merge(target[k as keyof T], 'deep', source[k as KeyK])
 					}
 				})
 			}
 
-			return target
+			return target as T & K
 		}
-		return target
+		return target as T & K
 	}
 
-	shallowMerge = (target: object, ...sources: object[]) => {
+	mergeShallow = <T extends object, K extends object>(
+		target: T,
+		...sources: K[]
+	) => {
 		return this.merge(target, 'shallow', ...sources)
 	}
 
-	deepMerge = (target: object, ...sources: object[]) => {
+	mergeDeep = <T extends object, K extends object>(
+		target: T,
+		...sources: K[]
+	) => {
 		return this.merge(target, 'deep', ...sources)
 	}
 }
@@ -51,11 +56,11 @@ const {
 	/**
 	 * 浅合并，只会合并第一层数据
 	 */
-	shallowMerge,
+	mergeShallow,
 	/**
 	 * 深合并，递归合并每一层数据
 	 */
-	deepMerge
+	mergeDeep
 } = new Merge()
 
-export { shallowMerge, deepMerge }
+export { mergeShallow, mergeDeep }

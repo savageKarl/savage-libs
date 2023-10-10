@@ -1,4 +1,4 @@
-import { deepMerge } from 'savage-utils'
+import { mergeDeep } from 'savage-utils'
 
 import { ChainNodeFun } from '../types/types'
 
