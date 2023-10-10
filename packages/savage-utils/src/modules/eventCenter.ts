@@ -8,7 +8,7 @@ interface SubscribeType {
 /**
  * 发布订阅模型
  */
-export class EventCenter {
+class EventCenter {
 	private subscribeList: SubscribeType = {}
 	// 储存已发布未订阅的消息
 	private pubAndNoSub: Record<string, unknown> = {}

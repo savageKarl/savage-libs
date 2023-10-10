@@ -13,7 +13,10 @@ import {
 	mergeDeep,
 	debounce,
 	throttle,
-	installEventCenter
+	installEventCenter,
+	Chain,
+	sleep,
+	queueExcution
 } from '../src'
 
 describe('functions', () => {
@@ -202,7 +205,15 @@ test('merge', () => {
 })
 
 describe('optimization', () => {
-	vi.useFakeTimers()
+	beforeEach(() => {
+		// 告诉 vitest 我们使用模拟时间
+		vi.useFakeTimers()
+	})
+
+	afterEach(() => {
+		// 每次测试运行后恢复日期
+		vi.useRealTimers()
+	})
 
 	test('debounce', () => {
 		let value = 0
@@ -240,4 +251,106 @@ describe('optimization', () => {
 		vi.runAllTimers()
 		expect(value).toEqual(10)
 	})
+})
+
+describe('Chain', () => {
+	test('chain', () => {
+		const chain = new Chain()
+
+		const node1 = chain.turnToNode((next, i: number) => {
+			if (i === 1) return i + 1
+			return 'nextNode'
+		})
+
+		const node2 = chain.turnToNode((next, i: number) => {
+			if (i === 2) return i + 1
+			return 'nextNode'
+		})
+
+		const lastNode = chain.turnToNode(() => {
+			return false
+		})
+
+		node1.setNextNode(node2).setNextNode(lastNode)
+
+		expect(node1.passRequest(1)).toEqual(2)
+		expect(node1.passRequest(2)).toEqual(3)
+		expect(node1.passRequest(5)).toEqual(false)
+	})
+
+	test('chainWithNextFn', () => {
+		const chain = new Chain()
+
+		const node1 = chain.turnToNode((next, i: number) => {
+			if (i === 1) return next(i + 1)
+			return 'nextNode'
+		})
+
+		const node2 = chain.turnToNode((next, i: number) => {
+			if (i === 2 || i === 3) return i + 4
+			return 'nextNode'
+		})
+
+		const lastNode = chain.turnToNode(() => {
+			return false
+		})
+
+		node1.setNextNode(node2).setNextNode(lastNode)
+
+		expect(node1.passRequest(1)).toEqual(6)
+		expect(node1.passRequest(3)).toEqual(7)
+		expect(node1.passRequest(5)).toEqual(false)
+	})
+})
+
+test('sleep', async () => {
+	vi.useFakeTimers()
+
+	let startTime = 0
+	let endTime = 0
+
+	setTimeout(async () => {
+		startTime = Date.now()
+		await sleep(3000)
+		endTime = Date.now()
+	}, 0)
+
+	await vi.runAllTimersAsync()
+
+	expect(endTime - startTime).toBeGreaterThanOrEqual(3000)
+})
+
+test('queueExcution', async () => {
+	vi.useFakeTimers()
+	function createTask() {
+		return () => {
+			return new Promise<void>(resolve => setTimeout(resolve, 1000))
+		}
+	}
+
+	const tasks = [1, 2, 3].map(() => createTask())
+
+	let concurrentStart = 0
+	let concurrentEnd = 0
+
+	setTimeout(async () => {
+		concurrentStart = Date.now()
+		await Promise.all(tasks.map(v => v()))
+		concurrentEnd = Date.now()
+	}, 0)
+
+	let queueStart = 0
+	let queueEnd = 0
+
+	setTimeout(async () => {
+		queueStart = Date.now()
+		await queueExcution(tasks)
+		queueEnd = Date.now()
+	}, 0)
+
+	await vi.runAllTimersAsync()
+
+	expect(concurrentEnd - concurrentStart).toBeGreaterThanOrEqual(1000)
+
+	expect(queueEnd - queueStart).toBeGreaterThanOrEqual(3000)
 })

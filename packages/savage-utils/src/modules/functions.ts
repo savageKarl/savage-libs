@@ -26,3 +26,17 @@ export function getSingle<T = unknown>(fn: () => T) {
 		return res || (res = fn.apply(this, args as []))
 	}
 }
+
+export function sleep(delay: number) {
+	return new Promise<void>(resolve => {
+		setTimeout(() => {
+			resolve()
+		}, delay)
+	})
+}
+
+export async function queueExcution(list: (() => Promise<void>)[]) {
+	for (const fn of list) {
+		await fn()
+	}
+}
