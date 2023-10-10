@@ -1,19 +1,19 @@
 import { describe, expect, vi, test } from 'vitest'
 import {
 	get,
-	shallowCompare,
-	deepCompare,
-	shallowCopy,
-	deepCopy,
-	// eventCenter,
+	compareShallow,
+	compareDeep,
+	copyShallow,
+	copyDeep,
+	eventCenter,
 	getSingle,
 	Iterator,
 	each,
-	shallowMerge,
-	deepMerge,
+	mergeShallow,
+	mergeDeep,
 	debounce,
-	throttle
-	// installEventCenter
+	throttle,
+	installEventCenter
 } from '../src'
 
 describe('functions', () => {
@@ -52,45 +52,71 @@ test('compare', () => {
 			bar: 'dog'
 		}
 	}
-	expect(shallowCompare(a, b)).toEqual(true)
-	expect(shallowCompare(a, c)).toEqual(false)
-	expect(deepCompare(a, b)).toEqual(true)
-	expect(deepCompare(a, c)).toEqual(true)
+	expect(compareShallow(a, b)).toEqual(true)
+	expect(compareShallow(a, c)).toEqual(false)
+	expect(compareDeep(a, b)).toEqual(true)
+	expect(compareDeep(a, c)).toEqual(true)
 })
 
 test('copy', () => {
-	const a = {
+	const targetObj = {
 		foo: {
 			bar: 'dog'
 		}
 	}
 
-	const b = shallowCopy(a)
+	const b = copyShallow(targetObj)
 	b.foo.bar = 'cat'
 
-	const c = deepCopy(a)
+	const c = copyDeep(targetObj)
 	c.foo.bar = 'no'
 
-	expect(b).toEqual(a)
-	expect(c).not.toEqual(a)
+	expect(b).toEqual(targetObj)
+	expect(c).not.toEqual(targetObj)
+
+	const targetArr = [targetObj]
+	const copiedArrShallow = copyShallow(targetArr)
+	const copiedArrDeep = copyDeep(targetArr)
+	copiedArrDeep[0].foo = { bar: 'firefly' }
+
+	expect(copiedArrShallow).toEqual(targetArr)
+	expect(copiedArrDeep).not.toEqual(targetArr)
 })
 
-test('eventCenter', () => {
-	let value = 0
-	const callback = (v: any) => {
-		value = v
-	}
+describe('evenCenter', () => {
+	test('eventCenter', () => {
+		let value = 0
+		const callback = (v: number) => {
+			value = v
+		}
 
-	// eventCenter.subscribe('change value', callback)
-	// eventCenter.publish('change value', 5)
+		eventCenter.subscribe('change value', callback)
+		eventCenter.publish('change value', 5)
 
-	// expect(value).toEqual(5)
-	// eventCenter.remove('change value', callback)
-	// eventCenter.publish('change value', 6)
-	// expect(value).toEqual(5)
+		expect(value).toEqual(5)
+		eventCenter.remove('change value', callback)
+		eventCenter.publish('change value', 6)
+		expect(value).toEqual(5)
+	})
 
-	// const o = installEventCenter({ a: 'hello' })
-	// console.log(o)
+	test('installEventCenter', () => {
+		const obj = installEventCenter({ a: 'hello' })
+
+		expect(obj.a).toEqual('hello')
+
+		let value = 0
+		const callback = (v: number) => {
+			value = v
+		}
+
+		eventCenter.subscribe('change value', callback)
+		eventCenter.publish('change value', 5)
+
+		expect(value).toEqual(5)
+		eventCenter.remove('change value', callback)
+		eventCenter.publish('change value', 6)
+		expect(value).toEqual(5)
+	})
 })
 
 describe('Iterator', () => {
@@ -103,35 +129,47 @@ describe('Iterator', () => {
 	const b = ['foo', 'bar', 'dog']
 
 	test('each', () => {
-		const a2 = {
-			foo1: { foo: a },
-			bar1: { bar: a },
-			dog2: { dog: a }
-		}
+		const a2 = {} as typeof a
 
-		const a3: any = {}
+		const a3 = {} as typeof a2
 
-		const b2 = {
-			foo: { 0: b },
-			bar: { 1: b },
-			dog: { 2: b }
-		}
-
-		const b3: any = {}
-
-		each(a, (v, i, o) => {
-			a3[v as keyof typeof b3] = { [i]: o }
+		each(a, (v, i) => {
+			const key = i as keyof typeof a2
+			a2[key] = a[key]
 		})
 
-		each(b, (v, i, o) => {
-			b3[v as keyof typeof b3] = { [i]: o }
+		each(a, (v, i) => {
+			const key = i as keyof typeof a2
+			if (i === 'bar') return false
+			a3[key] = a[key]
 		})
 
-		expect(a3).toEqual(a2)
-		expect(b3).toEqual(b2)
+		expect(a3).toEqual({ foo: 'foo1' })
+		expect(a2).toEqual(a)
+
+		const b2 = [] as typeof b
+		const b3 = [] as typeof b
+
+		each(b, (v, i) => {
+			const key = i as keyof typeof b2
+			// @ts-ignore
+			b2[key] = b[key]
+		})
+
+		expect(b2).toEqual(b)
+
+		each(b, (v, i) => {
+			const key = i as keyof typeof b2
+			if (i === String(2)) return false
+			// @ts-ignore
+			b3[key] = b[key]
+		})
+
+		expect(b3).toEqual(['foo', 'bar'])
 	})
 
 	test('Iterator', () => {
+		const b = ['foo', 'bar', 'dog']
 		const ib = new Iterator(b)
 
 		ib.next()
@@ -150,11 +188,15 @@ test('merge', () => {
 		}
 	}
 
-	const b = shallowMerge({}, a)
-	a.foo.bar = 'cat'
-	expect(b).toEqual(a)
+	const ab = Object.assign(a, { shit: 'shit' })
 
-	const c: any = deepMerge({}, a)
+	const b = mergeShallow({ shit: 'shit' }, a)
+
+	a.foo.bar = 'cat'
+	expect(b).toEqual(ab)
+
+	const c = mergeDeep({}, a)
+
 	c.foo.bar = 'no'
 	expect(c).not.toEqual(a)
 })
