@@ -19,6 +19,12 @@ async function main() {
 
 main()
 
+interface ISidebarItem {
+	text: string
+	link?: string
+	items?: ISidebarItem[]
+}
+
 type SideBarConfig = Record<
 	string,
 	{
@@ -26,12 +32,6 @@ type SideBarConfig = Record<
 		items: ISidebarItem[]
 	}
 >
-
-interface ISidebarItem {
-	text: string
-	link?: string
-	items?: ISidebarItem[]
-}
 
 function generateSidebarConfig() {
 	const sidebarConfig: SideBarConfig = {}
@@ -98,7 +98,7 @@ async function buildAll(targets: string[]) {
 
 	// it must be queued, otherwise the typedoc-plugin-markdown will throw error,
 	// what the hell.
-	let task: () => Promise<any>
+	let task: () => Promise<unknown>
 
 	while (true) {
 		task = tasks.pop() || (() => Promise.resolve(true))
@@ -107,11 +107,11 @@ async function buildAll(targets: string[]) {
 	}
 }
 
-function rootPath(...args: any) {
+function rootPath(...args: string[]) {
 	return resolve(__dirname, '..', ...args)
 }
 
-let outputFolderName = ''
+const outputFolderName = ''
 
 function getFullpath(target: string) {
 	return resolve(packages, target, 'src/index.ts')
@@ -131,7 +131,7 @@ async function generateDoc(target: string) {
 		allReflectionsHaveOwnDocument: true,
 		hideBreadcrumbs: true,
 		disableSources: true
-	} as any)
+	} as object)
 
 	const project = app.convert()
 
@@ -148,7 +148,7 @@ async function generateDoc(target: string) {
 interface IMoudle {
 	kindString: string
 	name: string
-	children: any[]
+	children: { name: string; kindString: string }[]
 }
 
 function removeSrcContent(path: string) {
@@ -180,7 +180,7 @@ function removeSrcPath() {
 }
 
 async function resolveConfig(jsonDir: string) {
-	const result: any = {}
+	const result: Record<string, { items: unknown[]; base?: string }> = {}
 
 	// 读取文档数据结构的 json 文件
 	const buffer = await fs.promises.readFile(jsonDir, 'utf8')
@@ -229,8 +229,8 @@ async function resolveConfig(jsonDir: string) {
 						link: getFunctionPath(name)
 					})
 				}
-			} as any
-			actionsType[item.kindString]()
+			}
+			actionsType[item.kindString as keyof typeof actionsType]()
 		})
 	})
 
