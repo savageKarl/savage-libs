@@ -29,12 +29,7 @@
 		"registry": "https://registry.npmjs.org/"
 	},
 	"scripts": {
-		"dev": "cross-env mode=dev nodemon rollup.config.js",
-		"build": "cross-env mode=pro rollup -c rollup.config.js",
-		"prepush": "npm run build",
-		"push": "npm publish --access public",
-		"lint": "eslint .",
-		"commit": "git-cz"
+		"generate": "tsx src/generate.ts"
 	},
 	"config": {
 		"commitizen": {
@@ -55,5 +50,9 @@
 		"url": "https://github.com/savage181855/data-types",
 		"email": "2443005004@qq.com"
 	},
-	"license": "GPL-3.0"
+	"license": "GPL-3.0",
+	"dependencies": {
+		"axios": "^1.5.0",
+		"cheerio": "1.0.0-rc.12"
+	}
 }

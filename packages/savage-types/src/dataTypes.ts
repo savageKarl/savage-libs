@@ -1,35 +1,18 @@
-import { typeList } from './typeList'
+import * as fns from './fnList'
 
-type TupleToObject<T extends readonly any[], F> = {
-	[K in T[number]]: F
-}
-
-export const dataTypes = (function () {
-	const obj = {} as TupleToObject<typeof typeList, (arg: any) => boolean>
-
-	typeList.forEach(item => {
-		obj[item] = function (v) {
-			const typeStr = Object.prototype.toString.call(v).slice(8, -1)
-			return item.slice(2) === typeStr
-		}
-	})
-
-	return obj
-})()
+export * from './fnList'
 
 /**
  * obtain the string form of the data type
+ * @param upperCase - default `true`
  */
-export const getType = (value: unknown, capitalized = true) => {
+export const typeOf = (value: unknown, upperCase = true) => {
 	const s = Object.prototype.toString.call(value).slice(8, -1)
-	if (capitalized) return s
+	if (upperCase) return s
 
 	return s.toLocaleLowerCase()
 }
 
-/**
- * determine whether the data types are equal
- */
-export const isSameType = (v: unknown, k: unknown) => {
-	return getType(v) === getType(k)
-}
+export const types = Object.assign({ typeOf }, fns)
+
+export default types

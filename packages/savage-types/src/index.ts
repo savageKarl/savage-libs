@@ -1,7 +1,7 @@
 /**
  * @packageDocumentation
  * 
- * A library for determining the type of JavaScript variables. It is simple, convenient, and can be used out of the box. It provides many methods for use.
+ * A library for determining the type of JavaScript variables. It is simple, convenient, and can be used out of the box. It provides many api for use.
  * 
  * ## installtion
 
@@ -24,66 +24,104 @@ yarn add savage-types
 ## how to use
 
 ```typescript
-import { dataTypes } from "@savage181855/data-types";
+import { types } from 'savage-types'
+import {
+	isUndefined,
+	isNull,
+	isString,
+	isArray,
+	isObject,
+	isMap
+} from 'savage-types'
 
-console.log(dataTypes.isUndefined(undefined));
+console.log(types.isUndefined(undefined))
 
-console.log(dataTypes.isNull(null));
+console.log(types.isNull(null))
 
-console.log(dataTypes.isString(""));
+console.log(types.isString(''))
 
-console.log(dataTypes.isNumber("1"));
+console.log(types.isNumber('1'))
 
-console.log(dataTypes.isString(""));
+console.log(types.isString(''))
 
-console.log(dataTypes.isString(""));
+console.log(types.isArray([]))
 
-console.log(dataTypes.isArray([]));
+console.log(types.isObject({}))
 
-console.log(dataTypes.isObject({}));
+console.log(types.isMap(new Map()))
 
-console.log(dataTypes.isMap(new Map()));
+console.log(isUndefined(undefined))
+
+console.log(isNull(null))
+
+console.log(isString(''))
+
+console.log(isNumber('1'))
+
+console.log(isString(''))
+
+console.log(isArray([]))
+
+console.log(isObject({}))
+
+console.log(isMap(new Map()))
+
 ```
 
-## all of api for `dataTypes`
-- isString
-- isNumber
-- isBoolean
+## all of api
+
+- isAggregateError
 - isArray
-- isNull
 - isArrayBuffer
+- isAsyncGenerator
+- isAsyncGeneratorFunction
+- isAsyncIterator
+- isAtomics
 - isBigInt
 - isBigInt64Array
 - isBigUint64Array
+- isBoolean
 - isDataView
 - isDate
 - isError
 - isEvalError
+- isFinalizationRegistry
 - isFloat32Array
 - isFloat64Array
 - isFunction
 - isGenerator
+- isGeneratorFunction
 - isInt16Array
 - isInt32Array
-- isMap
 - isInt8Array
+- isIterator
+- isJSON
+- isMap
+- isMath
+- isNumber
 - isObject
 - isPromise
+- isRangeError
+- isReferenceError
 - isRegExp
 - isSet
+- isSharedArrayBuffer
+- isString
 - isSymbol
 - isSyntaxError
+- isTypedArray
 - isTypeError
 - isUint16Array
 - isUint32Array
 - isUint8Array
 - isUint8ClampedArray
+- isUndefined
 - isURIError
 - isWeakMap
 - isWeakRef
-- isUndefined
-- isArguments
+- isWeakSet
+- isNull
 
- */
+*/
 
 export * from './dataTypes'
