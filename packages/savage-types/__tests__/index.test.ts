@@ -1,6 +1,6 @@
-import { dataTypes } from '../src'
+import { isObject } from '../src'
 
 test('hello', () => {
-	expect(dataTypes.isObject({})).toEqual(true)
+	expect(isObject({})).toEqual(true)
 	expect(1).toBe(1)
 })

@@ -1,7 +1,5 @@
 import { resolve } from 'node:path'
 
-console.log(resolve('packages/vite-plugin-us'))
-
 // console.log(resolve(`packages/${'savage-types'}/src/index.ts`))
 const entries = {
 	'savage-types': resolve('packages/savage-types/src/index.ts'),

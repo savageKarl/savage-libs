@@ -1,5 +1,5 @@
-import { generateHeadMeta } from 'vite-plugin-us/utils/generateMetadata'
-import type { HeadMetaData } from 'vite-plugin-us/types/userscript'
+import { Metadata } from 'vite-plugin-us/utils/metadata'
+import type { MetaData } from 'vite-plugin-us/types/userscript'
 
 const res = `// ==UserScript==
 // @name                           testing
@@ -24,7 +24,7 @@ const res = `// ==UserScript==
 // @run-at                         document_end
 // ==/UserScript==`
 
-const config: HeadMetaData = {
+const config: MetaData = {
 	name: 'testing',
 	namespace: 'https://github.com/savage181855',
 	description: 'this is just a test',
@@ -44,6 +44,7 @@ const config: HeadMetaData = {
 
 describe('metadata', () => {
 	test('generate metadata', () => {
-		expect(generateHeadMeta(config)).toBe(res)
+		const metadata = new Metadata(config)
+		expect(metadata.generate()).toBe(res)
 	})
 })
