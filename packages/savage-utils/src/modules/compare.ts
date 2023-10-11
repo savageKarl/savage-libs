@@ -1,6 +1,4 @@
-import { dataTypes } from 'savage-types'
-
-const { isObject, isNull } = dataTypes
+import { isObject, isNull } from 'savage-types'
 
 class Compare {
 	private compare<T extends object, K extends T>(

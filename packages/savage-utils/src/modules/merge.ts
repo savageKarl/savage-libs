@@ -1,8 +1,6 @@
-import { dataTypes } from 'savage-types'
+import { isObject, isArray } from 'savage-types'
 
 import { copyDeep } from './copy'
-
-const { isObject, isArray } = dataTypes
 
 class Merge {
 	private merge<T extends object, K extends object>(
