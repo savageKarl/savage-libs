@@ -4,6 +4,8 @@ import { UsOptions } from './types/types'
 import { plugins } from './plugins'
 import { mergeOptions } from './utils/optionsMerge'
 
+export type { UsOptions } from './types/types'
+
 export function us(usOptions: UsOptions) {
 	const usOptionsMerged = mergeOptions(usOptions)
 	const usPlugin = {
@@ -22,3 +24,5 @@ export function us(usOptions: UsOptions) {
 
 	return [usPlugin, ...plugins.map(v => v(usOptionsMerged))]
 }
+
+export default us
