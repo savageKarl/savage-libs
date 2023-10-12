@@ -1,7 +1,5 @@
 import { resolve } from 'node:path'
 
-import minimist from 'minimist'
-
 import { build } from 'tsup'
 import type { Options as TsupOptions } from 'tsup'
 import type { IPackageJson } from '@ts-type/package-dts'
@@ -9,36 +7,17 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import type { BuildOptions } from './types'
 import {
 	packagesRoot,
-	fuzzyMatchPkgName,
 	require,
-	pkgNames,
-	getChangedPkgNames
+	getFullpath,
+	resolveCliOption,
+	resolveTargetPkgNames
 } from './utils'
 
-const argv = minimist(process.argv.slice(2))
+const { targetPkgNames, all, watch } = resolveCliOption(process)
 
-const targetPkgNames = (argv.t || argv.target)?.split(',') || []
-const watch = argv.watch || argv.w
-const all = argv.all || argv.a
-
-const tasks: (() => Promise<void>)[] = []
-
-const resolvedPkgNames = resolveTargetPkgNames()
-
-function resolveTargetPkgNames() {
-	if (all) return pkgNames
-
-	if (targetPkgNames.length) return fuzzyMatchPkgName(targetPkgNames)
-
-	return getChangedPkgNames()
-}
-
-resolvedPkgNames.forEach(name => {
-	tasks.push(async () => build(await createConfig(name)))
-})
+const resolvedPkgNames = resolveTargetPkgNames(targetPkgNames, all)
 
 async function createConfig(pkgName: string) {
-	const entryFile = `src/index.ts`
 	const pkgPath = resolve(packagesRoot, pkgName, 'package.json')
 	const pkg = require(pkgPath) as IPackageJson
 	const buildOptions = pkg.buildOptions as BuildOptions
@@ -51,8 +30,11 @@ async function createConfig(pkgName: string) {
 		...rest
 	} = buildOptions
 
-	const path = resolve(packagesRoot, pkgName, entryFile).replace(/\\/g, '/')
-	const outDir = resolve(packagesRoot, pkgName, 'dist').replace(/\\/g, '/')
+	const path = getFullpath(pkgName)
+	const outDir = getFullpath(pkgName, 'dist')
+
+	const _external =
+		external === 'dependencies' ? Object.keys(pkg.dependencies || {}) : external
 
 	const plugins =
 		pkgName !== 'esbuild-plugin-umd'
@@ -60,10 +42,8 @@ async function createConfig(pkgName: string) {
 					// @ts-ignore
 					(await import('esbuild-plugin-umd')).umd({
 						libraryName,
-						external:
-							external === 'dependencies'
-								? Object.keys(pkg.dependencies || {})
-								: external,
+						external: _external,
+
 						globalVariableName
 					})
 			  ]
@@ -77,15 +57,15 @@ async function createConfig(pkgName: string) {
 		watch,
 		clean: true,
 		esbuildPlugins: plugins,
-		external:
-			external === 'dependencies'
-				? Object.keys(pkg.dependencies || {})
-				: external,
+		external: _external,
 		...rest
 	} as TsupOptions
 }
 
-run()
-function run() {
+main()
+function main() {
+	const tasks = resolvedPkgNames.map(
+		name => async () => build(await createConfig(name))
+	)
 	Promise.all(tasks.map(v => v()))
 }
