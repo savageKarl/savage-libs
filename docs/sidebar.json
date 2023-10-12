@@ -1,90 +1,453 @@
 {
-	"/savage-types/": {
-		"base": "/savage-types/",
-		"items": [
-			{ "text": "savage-types", "link": "modules" },
-			{
-				"text": "functions",
-				"items": [
-					{ "text": "getType", "link": "functions/getType" },
-					{ "text": "isSameType", "link": "functions/isSameType" }
-				]
-			},
-			{
-				"text": "variables",
-				"items": [{ "text": "dataTypes", "link": "variables/dataTypes" }]
-			}
-		]
-	},
-	"/elec-ipc/": {
-		"base": "/elec-ipc/",
-		"items": [
-			{ "text": "elec-ipc", "link": "modules" },
-			{
-				"text": "functions",
-				"items": [
-					{ "text": "addToChannel", "link": "functions/addToChannel" },
-					{ "text": "receive", "link": "functions/receive" },
-					{ "text": "send", "link": "functions/send" }
-				]
-			}
-		]
-	},
-	"/rollup-plugin-executer/": {
-		"base": "/rollup-plugin-executer/",
-		"items": [
-			{ "text": "rollup-plugin-executer", "link": "modules" },
-			{
-				"text": "functions",
-				"items": [
-					{ "text": "rollupCommand", "link": "functions/rollupCommand" }
-				]
-			},
-			{
-				"text": "interfaces",
-				"items": [
-					{ "text": "hookOptions", "link": "interfaces/hookOptions" },
-					{ "text": "IContext", "link": "interfaces/IContext" },
-					{ "text": "RunCommand", "link": "interfaces/RunCommand" }
-				]
-			},
-			{
-				"text": "types",
-				"items": [{ "text": "CommandCaller", "link": "types/CommandCaller" }]
-			}
-		]
-	},
-	"/savage-utils/": {
-		"base": "/savage-utils/",
-		"items": [
-			{ "text": "savage-utils", "link": "modules" },
-			{
-				"text": "classes",
-				"items": [
-					{ "text": "EventCenter", "link": "classes/EventCenter" },
-					{ "text": "Iterator", "link": "classes/Iterator" }
-				]
-			},
-			{
-				"text": "functions",
-				"items": [
-					{ "text": "debounce", "link": "functions/debounce" },
-					{ "text": "deepCompare", "link": "functions/deepCompare" },
-					{ "text": "deepCopy", "link": "functions/deepCopy" },
-					{ "text": "mergeDeep", "link": "functions/mergeDeep" },
-					{ "text": "each", "link": "functions/each" },
-					{ "text": "get", "link": "functions/get" },
-					{ "text": "getSingle", "link": "functions/getSingle" },
-					{
-						"text": "parseAreaListData",
-						"link": "functions/parseAreaListData"
-					},
-					{ "text": "shallowCompare", "link": "functions/shallowCompare" },
-					{ "text": "shallowCopy", "link": "functions/shallowCopy" },
-					{ "text": "mergeShallow", "link": "functions/mergeShallow" },
-					{ "text": "throttle", "link": "functions/throttle" }
-				]
-			}
-		]
-	}
+    "/elec-ipc/": {
+        "base": "/elec-ipc/",
+        "items": [
+            {
+                "text": "elec-ipc",
+                "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "addToChannel",
+                        "link": "functions/addToChannel"
+                    },
+                    {
+                        "text": "receive",
+                        "link": "functions/receive"
+                    },
+                    {
+                        "text": "send",
+                        "link": "functions/send"
+                    },
+                    {
+                        "text": "temp",
+                        "link": "functions/temp"
+                    }
+                ]
+            }
+        ]
+    },
+    "/esbuild-plugin-umd/": {
+        "base": "/esbuild-plugin-umd/",
+        "items": [
+            {
+                "text": "esbuild-plugin-umd",
+                "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "umd",
+                        "link": "functions/umd"
+                    }
+                ]
+            }
+        ]
+    },
+    "/rollup-plugin-executer/": {
+        "base": "/rollup-plugin-executer/",
+        "items": [
+            {
+                "text": "rollup-plugin-executer",
+                "link": "modules"
+            }
+        ]
+    },
+    "/savage-react-store/": {
+        "base": "/savage-react-store/",
+        "items": [
+            {
+                "text": "savage-react-store",
+                "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "defineStore",
+                        "link": "functions/defineStore"
+                    }
+                ]
+            }
+        ]
+    },
+    "/savage-types/": {
+        "base": "/savage-types/",
+        "items": [
+            {
+                "text": "savage-types",
+                "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "isAggregateError",
+                        "link": "functions/isAggregateError"
+                    },
+                    {
+                        "text": "isArray",
+                        "link": "functions/isArray"
+                    },
+                    {
+                        "text": "isArrayBuffer",
+                        "link": "functions/isArrayBuffer"
+                    },
+                    {
+                        "text": "isAsyncGenerator",
+                        "link": "functions/isAsyncGenerator"
+                    },
+                    {
+                        "text": "isAsyncGeneratorFunction",
+                        "link": "functions/isAsyncGeneratorFunction"
+                    },
+                    {
+                        "text": "isAsyncIterator",
+                        "link": "functions/isAsyncIterator"
+                    },
+                    {
+                        "text": "isAtomics",
+                        "link": "functions/isAtomics"
+                    },
+                    {
+                        "text": "isBigInt",
+                        "link": "functions/isBigInt"
+                    },
+                    {
+                        "text": "isBigInt64Array",
+                        "link": "functions/isBigInt64Array"
+                    },
+                    {
+                        "text": "isBigUint64Array",
+                        "link": "functions/isBigUint64Array"
+                    },
+                    {
+                        "text": "isBoolean",
+                        "link": "functions/isBoolean"
+                    },
+                    {
+                        "text": "isDataView",
+                        "link": "functions/isDataView"
+                    },
+                    {
+                        "text": "isDate",
+                        "link": "functions/isDate"
+                    },
+                    {
+                        "text": "isError",
+                        "link": "functions/isError"
+                    },
+                    {
+                        "text": "isEvalError",
+                        "link": "functions/isEvalError"
+                    },
+                    {
+                        "text": "isFinalizationRegistry",
+                        "link": "functions/isFinalizationRegistry"
+                    },
+                    {
+                        "text": "isFloat32Array",
+                        "link": "functions/isFloat32Array"
+                    },
+                    {
+                        "text": "isFloat64Array",
+                        "link": "functions/isFloat64Array"
+                    },
+                    {
+                        "text": "isFunction",
+                        "link": "functions/isFunction"
+                    },
+                    {
+                        "text": "isGenerator",
+                        "link": "functions/isGenerator"
+                    },
+                    {
+                        "text": "isGeneratorFunction",
+                        "link": "functions/isGeneratorFunction"
+                    },
+                    {
+                        "text": "isInt16Array",
+                        "link": "functions/isInt16Array"
+                    },
+                    {
+                        "text": "isInt32Array",
+                        "link": "functions/isInt32Array"
+                    },
+                    {
+                        "text": "isInt8Array",
+                        "link": "functions/isInt8Array"
+                    },
+                    {
+                        "text": "isIterator",
+                        "link": "functions/isIterator"
+                    },
+                    {
+                        "text": "isJSON",
+                        "link": "functions/isJSON"
+                    },
+                    {
+                        "text": "isMap",
+                        "link": "functions/isMap"
+                    },
+                    {
+                        "text": "isMath",
+                        "link": "functions/isMath"
+                    },
+                    {
+                        "text": "isNull",
+                        "link": "functions/isNull"
+                    },
+                    {
+                        "text": "isNumber",
+                        "link": "functions/isNumber"
+                    },
+                    {
+                        "text": "isObject",
+                        "link": "functions/isObject"
+                    },
+                    {
+                        "text": "isPromise",
+                        "link": "functions/isPromise"
+                    },
+                    {
+                        "text": "isRangeError",
+                        "link": "functions/isRangeError"
+                    },
+                    {
+                        "text": "isReferenceError",
+                        "link": "functions/isReferenceError"
+                    },
+                    {
+                        "text": "isRegExp",
+                        "link": "functions/isRegExp"
+                    },
+                    {
+                        "text": "isSet",
+                        "link": "functions/isSet"
+                    },
+                    {
+                        "text": "isSharedArrayBuffer",
+                        "link": "functions/isSharedArrayBuffer"
+                    },
+                    {
+                        "text": "isString",
+                        "link": "functions/isString"
+                    },
+                    {
+                        "text": "isSymbol",
+                        "link": "functions/isSymbol"
+                    },
+                    {
+                        "text": "isSyntaxError",
+                        "link": "functions/isSyntaxError"
+                    },
+                    {
+                        "text": "isTypedArray",
+                        "link": "functions/isTypedArray"
+                    },
+                    {
+                        "text": "isTypeError",
+                        "link": "functions/isTypeError"
+                    },
+                    {
+                        "text": "isUint16Array",
+                        "link": "functions/isUint16Array"
+                    },
+                    {
+                        "text": "isUint32Array",
+                        "link": "functions/isUint32Array"
+                    },
+                    {
+                        "text": "isUint8Array",
+                        "link": "functions/isUint8Array"
+                    },
+                    {
+                        "text": "isUint8ClampedArray",
+                        "link": "functions/isUint8ClampedArray"
+                    },
+                    {
+                        "text": "isUndefined",
+                        "link": "functions/isUndefined"
+                    },
+                    {
+                        "text": "isURIError",
+                        "link": "functions/isURIError"
+                    },
+                    {
+                        "text": "isWeakMap",
+                        "link": "functions/isWeakMap"
+                    },
+                    {
+                        "text": "isWeakRef",
+                        "link": "functions/isWeakRef"
+                    },
+                    {
+                        "text": "isWeakSet",
+                        "link": "functions/isWeakSet"
+                    },
+                    {
+                        "text": "typeOf",
+                        "link": "functions/typeOf"
+                    }
+                ]
+            },
+            {
+                "text": "variables",
+                "items": [
+                    {
+                        "text": "types",
+                        "link": "variables/types"
+                    }
+                ]
+            }
+        ]
+    },
+    "/savage-utils/": {
+        "base": "/savage-utils/",
+        "items": [
+            {
+                "text": "savage-utils",
+                "link": "modules"
+            },
+            {
+                "text": "classes",
+                "items": [
+                    {
+                        "text": "Chain",
+                        "link": "classes/Chain"
+                    },
+                    {
+                        "text": "Iterator",
+                        "link": "classes/Iterator"
+                    }
+                ]
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "compareDeep",
+                        "link": "functions/compareDeep"
+                    },
+                    {
+                        "text": "compareShallow",
+                        "link": "functions/compareShallow"
+                    },
+                    {
+                        "text": "copyDeep",
+                        "link": "functions/copyDeep"
+                    },
+                    {
+                        "text": "copyShallow",
+                        "link": "functions/copyShallow"
+                    },
+                    {
+                        "text": "debounce",
+                        "link": "functions/debounce"
+                    },
+                    {
+                        "text": "each",
+                        "link": "functions/each"
+                    },
+                    {
+                        "text": "get",
+                        "link": "functions/get"
+                    },
+                    {
+                        "text": "getSingle",
+                        "link": "functions/getSingle"
+                    },
+                    {
+                        "text": "installEventCenter",
+                        "link": "functions/installEventCenter"
+                    },
+                    {
+                        "text": "mergeDeep",
+                        "link": "functions/mergeDeep"
+                    },
+                    {
+                        "text": "mergeShallow",
+                        "link": "functions/mergeShallow"
+                    },
+                    {
+                        "text": "parseAreaListData",
+                        "link": "functions/parseAreaListData"
+                    },
+                    {
+                        "text": "queueExcution",
+                        "link": "functions/queueExcution"
+                    },
+                    {
+                        "text": "sleep",
+                        "link": "functions/sleep"
+                    },
+                    {
+                        "text": "throttle",
+                        "link": "functions/throttle"
+                    }
+                ]
+            },
+            {
+                "text": "variables",
+                "items": [
+                    {
+                        "text": "area",
+                        "link": "variables/area"
+                    },
+                    {
+                        "text": "eventCenter",
+                        "link": "variables/eventCenter"
+                    }
+                ]
+            }
+        ]
+    },
+    "/styles-log/": {
+        "base": "/styles-log/",
+        "items": [
+            {
+                "text": "styles-log",
+                "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "default",
+                        "link": "functions/default"
+                    }
+                ]
+            }
+        ]
+    },
+    "/vite-plugin-us/": {
+        "base": "/vite-plugin-us/",
+        "items": [
+            {
+                "text": "vite-plugin-us",
+                "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "us",
+                        "link": "functions/us"
+                    }
+                ]
+            },
+            {
+                "text": "interfaces",
+                "items": [
+                    {
+                        "text": "UsOptions",
+                        "link": "interfaces/UsOptions"
+                    }
+                ]
+            }
+        ]
+    }
 }

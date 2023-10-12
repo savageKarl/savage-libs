@@ -1,18 +1,14 @@
 {
-	"name": "savage-libs",
-	"version": "1.0.3",
-	"description": "",
-	"main": "index.js",
+	"name": "savage-libs-docs",
 	"scripts": {
-		"dev": "ts-node --esm generateDoc.ts && vitepress dev .",
-		"build": "ts-node --esm generateDoc.ts &&  vitepress build .",
-		"serve": "ts-node --esm generateDoc.ts &&  vitepress serve ."
+		"dev": "tsx generateDoc.ts && vitepress dev .",
+		"build": "tsx generateDoc.ts &&  vitepress build .",
+		"serve": "tsx generateDoc.ts &&  vitepress serve ."
 	},
 	"type": "module",
 	"keywords": [],
 	"author": "",
 	"devDependencies": {
-		"ts-node": "^10.9.1",
 		"typedoc": "0.23.15",
 		"typedoc-plugin-markdown": "^3.14.0",
 		"typescript": "4.6.4",
@@ -20,6 +16,7 @@
 		"vue": "^3.3.4"
 	},
 	"dependencies": {
-		"handlebars": "4.7.7"
+		"savage-utils": "workspace:^",
+		"del": "^5.1.0"
 	}
 }
