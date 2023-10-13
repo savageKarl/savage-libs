@@ -102,7 +102,8 @@ async function generateDoc(pkgName: string) {
 		hideBreadcrumbs: true,
 		disableSources: true,
 		skipErrorChecking: true,
-		logLevel: 'Error'
+		logLevel: 'Error',
+		excludeInternal: true
 	} as object)
 
 	const project = app.convert()
