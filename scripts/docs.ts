@@ -12,7 +12,7 @@ import { spawn } from 'cross-spawn'
 import { Application, TSConfigReader } from 'typedoc'
 
 import { queueExcution, mergeDeep } from 'savage-utils'
-import styleLog from 'styles-log'
+import styleLog from 'picox'
 
 import {
 	getFolderByPath,

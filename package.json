@@ -104,6 +104,6 @@
 		"esbuild-plugin-umd": "workspace:*",
 		"savage-types": "workspace:*",
 		"savage-utils": "workspace:*",
-		"styles-log": "workspace:*"
+		"picox": "workspace:*"
 	}
 }

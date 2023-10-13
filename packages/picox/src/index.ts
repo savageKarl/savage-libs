@@ -20,7 +20,7 @@ function createColors(enabled?: boolean) {
 		isColorSupported: boolean
 
 		constructor() {
-			super('return ("Welcome to styles-log")')
+			super('return ("Welcome to picox")')
 			this.isColorSupported = pico.isColorSupported
 
 			injectColorFn.apply(this)
@@ -63,7 +63,7 @@ export type StylesLog = StylesLogInstance & {
 	createColors: typeof createColors
 }
 
-export const styleLog = color as StylesLog
-styleLog.createColors = createColors
+export const picox = color as StylesLog
+picox.createColors = createColors
 
-export default styleLog
+export default picox

@@ -1,5 +1,5 @@
 {
-	"name": "styles-log",
+	"name": "picox",
 	"version": "0.0.1",
 	"description": "A lib base on picocolors for terminal color ouput, support chainable API.",
 	"miniprogram": "dist",

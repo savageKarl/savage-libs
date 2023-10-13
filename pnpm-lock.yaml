@@ -11,15 +11,15 @@ importers:
       esbuild-plugin-umd:
         specifier: workspace:*
         version: link:packages/esbuild-plugin-umd
+      picox:
+        specifier: workspace:*
+        version: link:packages/picox
       savage-types:
         specifier: workspace:*
         version: link:packages/savage-types
       savage-utils:
         specifier: workspace:*
         version: link:packages/savage-utils
-      styles-log:
-        specifier: workspace:*
-        version: link:packages/styles-log
     devDependencies:
       '@changesets/cli':
         specifier: 2.26.2
@@ -236,6 +236,12 @@ importers:
 
   packages/npm-utils: {}
 
+  packages/picox:
+    dependencies:
+      picocolors:
+        specifier: 1.0.0
+        version: 1.0.0
+
   packages/rollup-command:
     dependencies:
       cross-spawn:
@@ -310,12 +316,6 @@ importers:
       savage-types:
         specifier: workspace:*
         version: link:../savage-types
-
-  packages/styles-log:
-    dependencies:
-      picocolors:
-        specifier: 1.0.0
-        version: 1.0.0
 
   packages/typedoc-markdown:
     dependencies:
