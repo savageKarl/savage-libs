@@ -1,7 +1,7 @@
 {
 	"name": "elec-ipc",
 	"version": "0.0.15",
-	"description": "一个用于electron的通信库",
+	"description": "A library that makes communication between different processes more convenient for Electron applications",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",

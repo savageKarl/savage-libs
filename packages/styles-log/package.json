@@ -1,7 +1,7 @@
 {
 	"name": "styles-log",
 	"version": "0.0.1",
-	"description": "",
+	"description": "A lib base on picocolors for terminal color ouput, support chainable API.",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
