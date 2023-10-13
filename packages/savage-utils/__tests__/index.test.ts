@@ -16,7 +16,11 @@ import {
 	installEventCenter,
 	Chain,
 	sleep,
-	queueExcution
+	queueExcution,
+	capitalize,
+	unCapitalize,
+	hyphenToCamelCase,
+	camelCaseToHyphen
 } from '../src'
 
 import type { Fun } from '../src/types'
@@ -355,4 +359,19 @@ test('queueExcution', async () => {
 	expect(concurrentEnd - concurrentStart).toBeGreaterThanOrEqual(1000)
 
 	expect(queueEnd - queueStart).toBeGreaterThanOrEqual(3000)
+})
+
+test('capitalize', () => {
+	expect(capitalize('tom')).toBe('Tom')
+	expect(unCapitalize('Tom')).toBe('tom')
+})
+
+test('hyphenToCamelCase', () => {
+	expect(hyphenToCamelCase('foo-bar')).toBe('fooBar')
+	expect(hyphenToCamelCase('foo-bar', true)).toBe('FooBar')
+	expect(hyphenToCamelCase('foo-bar')).not.toBe('FooBar')
+})
+
+test('camelCaseToHyphen', () => {
+	expect(camelCaseToHyphen('fooBarStupid')).toBe('foo-bar-stupid')
 })

@@ -1,7 +1,3 @@
-/**
- * `savage-utils`只是一个简单的工具库
- * @packageDocumentation
- */
 export * from './constant/area'
 
 export * from './modules/eventCenter'

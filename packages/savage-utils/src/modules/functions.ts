@@ -40,3 +40,30 @@ export async function queueExcution(list: (() => Promise<void>)[]) {
 		await fn()
 	}
 }
+
+export function capitalize(text: string) {
+	return text
+		.split('')
+		.map((v, i) => (i === 0 ? v.toUpperCase() : v))
+		.join('')
+}
+
+export function unCapitalize(text: string) {
+	return text
+		.split('')
+		.map((v, i) => (i === 0 ? v.toLocaleLowerCase() : v))
+		.join('')
+}
+
+export function hyphenToCamelCase(text: string, isCapitalize = false) {
+	const handledText = text
+		.split('-')
+		.map(v => capitalize(v))
+		.join('')
+
+	return isCapitalize ? capitalize(handledText) : unCapitalize(handledText)
+}
+
+export function camelCaseToHyphen(text: string) {
+	return text.replace(/[A-Z]/g, match => `-${match.toLocaleLowerCase()}`)
+}
