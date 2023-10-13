@@ -14,6 +14,9 @@ importers:
       savage-types:
         specifier: workspace:*
         version: link:packages/savage-types
+      savage-utils:
+        specifier: workspace:*
+        version: link:packages/savage-utils
       styles-log:
         specifier: workspace:*
         version: link:packages/styles-log
@@ -51,6 +54,9 @@ importers:
       '@types/node':
         specifier: ^20.5.6
         version: 20.5.9
+      '@types/prompts':
+        specifier: 2.4.6
+        version: 2.4.6
       '@types/testing-library__jest-dom':
         specifier: 5.9.1
         version: 5.9.1
@@ -150,6 +156,9 @@ importers:
       prettier-eslint:
         specifier: ^15.0.1
         version: 15.0.1
+      prompts:
+        specifier: 2.4.2
+        version: 2.4.2
       rollup:
         specifier: ^3.2.3
         version: 3.28.1
@@ -2630,6 +2639,13 @@ packages:
 
   /@types/prettier@2.7.3:
     resolution: {integrity: sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA==}
+    dev: true
+
+  /@types/prompts@2.4.6:
+    resolution: {integrity: sha512-hIwnDhvsTV6XwAPo1zNy2MTelR0JmCxklIRsVxwROHLGaf6LfB+sGDkB9n+aqV4gXDz8z5MnlAz4CEC9wQDRsw==}
+    dependencies:
+      '@types/node': 20.5.9
+      kleur: 3.0.3
     dev: true
 
   /@types/prop-types@15.7.5:
