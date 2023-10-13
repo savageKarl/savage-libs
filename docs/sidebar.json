@@ -20,10 +20,6 @@
                     {
                         "text": "send",
                         "link": "functions/send"
-                    },
-                    {
-                        "text": "temp",
-                        "link": "functions/temp"
                     }
                 ]
             }
