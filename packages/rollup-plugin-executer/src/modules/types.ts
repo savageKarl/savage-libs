@@ -1,5 +1,5 @@
 import type { PluginHooks } from 'rollup'
-import { dataTypes } from 'savage-types'
+import { types } from 'savage-types'
 import type { Options as DelOptionsRaw } from 'del'
 
 export type executeOptions = {
@@ -9,7 +9,7 @@ export type executeOptions = {
 export type CommandCaller = string | (() => unknown)
 
 export function isCommandCaller(v: unknown): v is CommandCaller {
-	return !dataTypes.isArray(v)
+	return !types.isArray(v)
 }
 
 export type DelOptions = DelOptionsRaw & executeOptions
@@ -39,11 +39,11 @@ type OptionsList = Options[]
 export type Args = Command | CommandList | Options | OptionsList
 
 export function isCommand(v: unknown): v is Command {
-	return dataTypes.isFunction(v) && dataTypes.isString(v)
+	return types.isFunction(v) && types.isString(v)
 }
 
 export function isCommandList(v: unknown): v is CommandList {
-	return dataTypes.isArray(v) && isCommand((v as CommandList)[0])
+	return types.isArray(v) && isCommand((v as CommandList)[0])
 }
 
 export function isOptions(v: unknown): v is Options {
@@ -51,5 +51,5 @@ export function isOptions(v: unknown): v is Options {
 }
 
 export function isOptionsList(v: unknown): v is OptionsList {
-	return dataTypes.isArray(v) && isOptions((v as OptionsList)[0])
+	return types.isArray(v) && isOptions((v as OptionsList)[0])
 }

@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 
-import { deepCopy, deepCompare } from 'savage-utils'
-import { dataTypes } from 'savage-types'
+import { copyDeep, compareDeep } from 'savage-utils'
+import { isObject } from 'savage-types'
 
 import type {
 	DepsType,
@@ -11,8 +11,6 @@ import type {
 	Store,
 	DepStack
 } from './types'
-
-const { isObject } = dataTypes
 
 // global dependency collection
 const Dep: DepStack = []
@@ -35,10 +33,10 @@ function createReactive<T extends object>(target: T): T {
 			return res
 		},
 		set(target, key: string, value, receiver) {
-			const oldV = deepCopy((target as any)[key])
+			const oldV = copyDeep((target as any)[key])
 			const res = Reflect.set(target, key, value, receiver)
 			// debugger;
-			if (!deepCompare(oldV, value)) {
+			if (!compareDeep(oldV, value)) {
 				deps.get(key)?.forEach(item => item(oldV, value))
 			}
 			return res
