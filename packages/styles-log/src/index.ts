@@ -3,6 +3,8 @@ import { Colors } from 'picocolors/types'
 
 import type { StylesLogInstance } from './types'
 
+export type { StylesLogInstance } from './types'
+
 const colorFnStack = new Set<string>()
 
 const colorFnKeys = Object.keys(picocolors).filter(
@@ -57,7 +59,11 @@ function createColors(enabled?: boolean) {
 
 const color = createColors()
 
-const styleLog = color as typeof color & { createColors: typeof createColors }
+export type StylesLog = StylesLogInstance & {
+	createColors: typeof createColors
+}
+
+export const styleLog = color as StylesLog
 styleLog.createColors = createColors
 
 export default styleLog

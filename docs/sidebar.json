@@ -416,8 +416,26 @@
                 "text": "functions",
                 "items": [
                     {
-                        "text": "default",
-                        "link": "functions/default"
+                        "text": "styleLog",
+                        "link": "functions/styleLog"
+                    }
+                ]
+            },
+            {
+                "text": "interfaces",
+                "items": [
+                    {
+                        "text": "StylesLogInstance",
+                        "link": "interfaces/StylesLogInstance"
+                    }
+                ]
+            },
+            {
+                "text": "types",
+                "items": [
+                    {
+                        "text": "StylesLog",
+                        "link": "types/StylesLog"
                     }
                 ]
             }
