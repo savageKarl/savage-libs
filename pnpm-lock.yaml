@@ -150,6 +150,9 @@ importers:
       prettier-eslint:
         specifier: ^15.0.1
         version: 15.0.1
+      rollup:
+        specifier: ^3.2.3
+        version: 3.28.1
       tslib:
         specifier: ^2.6.2
         version: 2.6.2

@@ -84,6 +84,7 @@
 		"picocolors": "1.0.0",
 		"prettier": "^3.0.3",
 		"prettier-eslint": "^15.0.1",
+		"rollup": "^3.2.3",
 		"tslib": "^2.6.2",
 		"tsx": "3.13.0",
 		"typedoc": "0.23.15",
