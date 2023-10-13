@@ -1,34 +1,44 @@
-/* eslint-disable prefer-rest-params */
-import type { Args, executeOptions } from './types'
-import { isCommand, isCommandList, isOptions, isOptionsList } from './types'
+import type { Plugin } from 'rollup'
+
+import {
+	Args,
+	ExecuteOptions,
+	isCommand,
+	isCommandList,
+	isOptions,
+	isOptionsList
+} from './types'
 
 import { runCommand } from './run'
+
+export type * from './types'
 
 /**
  * a plugin function of rollup return config
  */
-export default function executer(args: Args) {
-	const base = {
+export function executer(args: Args) {
+	const pluginOptions: Plugin = {
 		name: 'rollup-plugin-executer'
 	}
-
-	const optionsRecord: Record<string, () => void> = {}
 	const defaultHook = 'buildEnd'
 
-	const executeOptionsDefault: executeOptions = {
+	const executeOptionsDefault: ExecuteOptions = {
 		sync: false
 	}
 
 	if (isCommand(args) || isCommandList(args)) {
-		optionsRecord[defaultHook] = function () {
-			runCommand(args, executeOptionsDefault, [...arguments])
+		pluginOptions[defaultHook] = function (...rest) {
+			runCommand(args, executeOptionsDefault, rest)
 		}
 	}
 
 	if (isOptions(args)) {
-		const sync = (Object.assign(executeOptionsDefault), { sync: args.sync })
-		optionsRecord[args.hook] = function () {
-			runCommand(args.commands, sync, [...arguments])
+		const executeOptions =
+			(Object.assign(executeOptionsDefault), { sync: args.sync })
+
+		// @ts-ignore
+		pluginOptions[args.hook] = function (...rest) {
+			runCommand(args.commands, executeOptions, rest)
 		}
 	}
 
@@ -37,15 +47,15 @@ export default function executer(args: Args) {
 
 		args.forEach(v => {
 			const sync = (Object.assign(executeOptionsDefault), { sync: v.sync })
-			hooksRecord[v.hook] = function () {
-				runCommand(v.commands, sync, [...arguments])
+			hooksRecord[v.hook] = function (...rest) {
+				runCommand(v.commands, sync, rest)
 			}
 		})
 
-		Object.keys(hooksRecord).forEach(
-			key => (optionsRecord[key] = hooksRecord[key])
-		)
+		Object.assign(pluginOptions, hooksRecord)
 	}
 
-	return Object.assign(base, optionsRecord)
+	return pluginOptions
 }
+
+export default executer

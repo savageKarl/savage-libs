@@ -53,6 +53,65 @@
             {
                 "text": "rollup-plugin-executer",
                 "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "executer",
+                        "link": "functions/executer"
+                    }
+                ]
+            },
+            {
+                "text": "interfaces",
+                "items": [
+                    {
+                        "text": "Context",
+                        "link": "interfaces/Context"
+                    },
+                    {
+                        "text": "DelOptionsRaw",
+                        "link": "interfaces/DelOptionsRaw"
+                    }
+                ]
+            },
+            {
+                "text": "types",
+                "items": [
+                    {
+                        "text": "Args",
+                        "link": "types/Args"
+                    },
+                    {
+                        "text": "Command",
+                        "link": "types/Command"
+                    },
+                    {
+                        "text": "CommandList",
+                        "link": "types/CommandList"
+                    },
+                    {
+                        "text": "DelOptions",
+                        "link": "types/DelOptions"
+                    },
+                    {
+                        "text": "ExecuteOptions",
+                        "link": "types/ExecuteOptions"
+                    },
+                    {
+                        "text": "Fun",
+                        "link": "types/Fun"
+                    },
+                    {
+                        "text": "Options",
+                        "link": "types/Options"
+                    },
+                    {
+                        "text": "OptionsList",
+                        "link": "types/OptionsList"
+                    }
+                ]
             }
         ]
     },

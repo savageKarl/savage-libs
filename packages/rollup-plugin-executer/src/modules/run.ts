@@ -1,7 +1,7 @@
 import { spawn as async, sync } from 'cross-spawn'
 import delRaw from 'del'
 
-import type { Context, Command, DelOptions, executeOptions } from './types'
+import type { Context, Command, DelOptions, ExecuteOptions } from './types'
 import { isCommand } from './types'
 
 const ctx: Context = {
@@ -10,7 +10,7 @@ const ctx: Context = {
 	hookOptions: []
 }
 
-async function execute(command: Command, options?: executeOptions) {
+async function execute(command: Command, options?: ExecuteOptions) {
 	if (typeof command === 'function') {
 		if (options?.sync) {
 			return await command(ctx)
@@ -31,7 +31,7 @@ async function execute(command: Command, options?: executeOptions) {
 	})
 }
 
-async function run(command: string | string[], options?: executeOptions) {
+async function run(command: string | string[], options?: ExecuteOptions) {
 	runCommand(command, options)
 }
 
@@ -42,7 +42,7 @@ async function del(pattern: string[], options?: DelOptions) {
 
 export async function runCommand(
 	command: Command | Command[],
-	options?: executeOptions,
+	options?: ExecuteOptions,
 	hookOptions?: unknown[]
 ) {
 	if (hookOptions) ctx.hookOptions = hookOptions
