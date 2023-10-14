@@ -89,18 +89,18 @@ async function main() {
 
 	writeFile(fnsFilePath, fnStr.join('\n'), { encoding: 'utf-8' })
 
-	readFile(indexFilePath, { encoding: 'utf-8' }).then(content => {
-		let namestr = Object.keys(completeObjects)
-			.filter(k => !completeObjects[k].isExclude)
-			.map(name => `- is${name}`)
-			.join('\n')
+	// readFile(indexFilePath, { encoding: 'utf-8' }).then(content => {
+	// 	let namestr = Object.keys(completeObjects)
+	// 		.filter(k => !completeObjects[k].isExclude)
+	// 		.map(name => `- is${name}`)
+	// 		.join('\n')
 
-		namestr = `\n\n${namestr}\n\n`
+	// 	namestr = `\n\n${namestr}\n\n`
 
-		const reg = /## all of api(?<str>[\s\S]+)\*\//
+	// 	const reg = /## all of api(?<str>[\s\S]+)\*\//
 
-		const oldStr = content.match(reg)?.groups?.str as string
+	// 	const oldStr = content.match(reg)?.groups?.str as string
 
-		writeFile(indexFilePath, content.replace(oldStr, namestr))
-	})
+	// 	writeFile(indexFilePath, content.replace(oldStr, namestr))
+	// })
 }
