@@ -6,6 +6,8 @@ import type { UmdOptions } from './types'
 import { pluginName } from './constants'
 import { wrap } from './utils'
 
+export type { UmdOptions } from './types'
+
 export function umd(options: UmdOptions) {
 	options = Object.assign({ external: [], globalVariableName: {} }, options)
 

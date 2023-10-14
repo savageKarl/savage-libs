@@ -11,14 +11,18 @@ import { spawn } from 'cross-spawn'
 
 import { Application, TSConfigReader } from 'typedoc'
 
-import { queueExcution, mergeDeep } from 'savage-utils'
-import styleLog from 'picox'
+import type { IPackageJson } from '@ts-type/package-dts'
+
+import { queueExcution, mergeDeep, capitalize } from 'savage-utils'
+import picox from 'picox'
 
 import {
 	getFolderByPath,
 	getFullpath,
 	resolveCliOption,
-	resolveTargetPkgNames
+	resolveTargetPkgNames,
+	packagesRoot,
+	require
 } from './utils'
 
 const docsPath = resolve(process.cwd(), 'docs')
@@ -87,7 +91,7 @@ function generateSidebarConfig() {
 }
 
 async function generateDoc(pkgName: string) {
-	console.log(styleLog.blue(`Generating documents for package ${pkgName}...`))
+	console.log(picox.blue(`Generating documents for package ${pkgName}...`))
 
 	const app = new Application()
 
@@ -103,21 +107,54 @@ async function generateDoc(pkgName: string) {
 		disableSources: true,
 		skipErrorChecking: true,
 		logLevel: 'Error',
-		excludeInternal: true
+		excludeInternal: true,
+		readme: 'none'
 	} as object)
 
 	const project = app.convert()
-	// debugger
+
 	if (project) {
 		const outputDir = resolve(docsPath, pkgName)
 		await app.generateDocs(project, outputDir)
 
+		const pkgJsonPath = resolve(packagesRoot, pkgName, 'package.json')
+
+		const pkgJson = require(pkgJsonPath) as Required<IPackageJson>
+		const docs = readFileSync(resolve(packagesRoot, pkgName, 'doc.md'), {
+			encoding: 'utf-8',
+			flag: 'a+'
+		})
+
+		const templatePath = resolve(process.cwd(), 'scripts/docsTemplate.txt')
+		const moduleFilePath = resolve(docsPath, pkgName, 'modules.md')
+
+		const template = readFileSync(templatePath, { encoding: 'utf-8' })
+
+		const content = replaceTemplateVariable(template, {
+			capitalizeName: capitalize(pkgJson.name),
+			description: pkgJson.description,
+			name: pkgJson.name,
+			content: docs
+		})
+
+		writeFileSync(moduleFilePath, content, { encoding: 'utf-8' })
+
 		console.log(
-			styleLog.green(
+			picox.green(
 				`Documentation generated at ${outputDir} for package ${pkgName}.`
 			)
 		)
 	}
+}
+
+function replaceTemplateVariable(
+	template: string,
+	variableRecord: Record<string, string>
+) {
+	return Object.keys(variableRecord).reduce(
+		(preV, curV) => preV.replaceAll(`[${curV}]`, variableRecord[curV]),
+		template
+	)
 }
 
 main()

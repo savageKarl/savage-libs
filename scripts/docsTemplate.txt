@@ -1,0 +1,27 @@
+# [capitalizeName]
+
+> [description]
+
+## Installtion
+
+::: code-group
+
+```[npm]
+npm i [name]
+```
+
+```[pnpm]
+pnpm add [name]
+```
+
+```[yarn]
+yarn add [name]
+```
+
+:::
+
+[content]
+
+# Issues
+
+Please let me know if there are any issues, click this [link](https://github.com/savage181855/savage-libs/issues).
