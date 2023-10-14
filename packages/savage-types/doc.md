@@ -4,7 +4,7 @@
 - supports multiple APIs
 - support typescript type guard
 
-## how to use
+## How to use
 
 ```typescript
 import { types } from 'savage-types'
