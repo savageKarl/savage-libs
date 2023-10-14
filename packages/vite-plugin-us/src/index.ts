@@ -1,8 +1,10 @@
-import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
+import type { UserConfig, PluginOption } from 'vite'
 
-import { UsOptions } from './types/userscript'
+import { UsOptions } from './types/types'
 import { plugins } from './plugins'
-import { mergeOptions } from './optionsMerge'
+import { mergeOptions } from './utils/optionsMerge'
+
+export type { UsOptions } from './types/types'
 
 export function us(usOptions: UsOptions) {
 	const usOptionsMerged = mergeOptions(usOptions)
@@ -22,3 +24,5 @@ export function us(usOptions: UsOptions) {
 
 	return [usPlugin, ...plugins.map(v => v(usOptionsMerged))]
 }
+
+export default us

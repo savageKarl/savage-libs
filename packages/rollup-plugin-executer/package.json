@@ -1,15 +1,29 @@
 {
 	"name": "rollup-plugin-executer",
 	"version": "0.0.13",
-	"description": "",
+	"description": "A rollup plugin can execute commands or functions on a specified hook.",
 	"miniprogram": "dist",
-	"main": "index.js",
-	"module": "dist/rollup-command.esm-bundler.js",
-	"types": "dist/rollup-command.d.ts",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
-		"index.js",
 		"dist"
 	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
@@ -26,6 +40,7 @@
 	},
 	"dependencies": {
 		"cross-spawn": "7.0.3",
-		"del": "^5.1.0"
+		"del": "^5.1.0",
+		"savage-types": "workspace:^"
 	}
 }

@@ -26,7 +26,8 @@
 		"types": ["vitest/globals", "@testing-library/jest-dom"],
 		"rootDir": ".",
 		"paths": {
-			"savage-*": ["packages/savage-*/src"]
+			"savage-*": ["packages/savage-*/src"],
+			"vite-plugin-us/*": ["packages/vite-plugin-us/src/*"]
 		}
 	},
 	"include": [

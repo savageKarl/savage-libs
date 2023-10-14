@@ -1,0 +1,34 @@
+{
+	"name": "picox",
+	"version": "0.0.4",
+	"description": "A lib base on picocolors for terminal color ouput, support chainable API.",
+	"miniprogram": "dist",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"external": "dependencies",
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
+	"scripts": {},
+	"keywords": [],
+	"author": "",
+	"dependencies": {
+		"picocolors": "1.0.0"
+	}
+}

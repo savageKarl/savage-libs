@@ -1,46 +1,46 @@
 import fs from 'node:fs/promises'
 
-import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
+import type { PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
-import { UsOptions, grants, Grants } from '../types/userscript'
-import { generateHeadMeta } from '../generateHeadMeta'
-import { existFile, setResHeader, funcToString } from '../utils'
+import type { Grants } from '../types/userscript'
+import type { UsOptions } from '../types/types'
+
+import { Metadata } from '../utils/metadata'
+import {
+	existFile,
+	setResHeader,
+	fnToString,
+	addPrefixForName
+} from '../utils/utils'
+import { devPath, grants, pluginName } from '../utils/constants'
 
 export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
 
 	return {
-		name: 'vite-plugin-us:serve',
+		name: `${pluginName}:serve`,
 		enforce: 'post',
 		apply: 'serve',
-		config() {
-			const name = usOptions.headMetaData.name
-			if (usOptions.prefix) usOptions.headMetaData.name = `dev: ${name}`
-
-			const { host, port } = usOptions.server
-			return {
-				server: {
-					open: false,
-					cors: true,
-					host,
-					port
-				}
-			} as UserConfig
-		},
 		async configResolved(config) {
 			resovledConfig = config
 		},
 		async configureServer(server) {
-			const installPath = 'vite-plugin-us.user.js'
-			usOptions.headMetaData.grant = grants as unknown as Grants[]
-			const newMetaData = generateHeadMeta(usOptions.headMetaData)
+			addPrefixForName(usOptions, 'development')
+
+			usOptions.metaData.grant = grants as unknown as Grants[]
+			const metadata = new Metadata(usOptions.metaData)
+
+			const newMetaData = usOptions.generate.modifyMetadata?.(
+				metadata.generate(),
+				'development'
+			) as string
 			const { host, port } = usOptions.server
 			currentOrigin = `http://${host as string}:${port as number}`
 
 			server.middlewares.use(async (req, res, next) => {
-				if (!new RegExp(installPath).test(req.url as string)) return next()
+				if (!new RegExp(devPath).test(req.url as string)) return next()
 
 				setResHeader(res, {
 					'access-control-allow-origin': '*',
@@ -48,8 +48,8 @@ export function serve(usOptions: Required<UsOptions>) {
 				})
 
 				const htmlStr = await server.transformIndexHtml('', '')
-				const regex = /<(script)[\s\S]+?<\/script>/g
-				const scriptStrList = [...htmlStr.matchAll(regex)].map(v => v[0])
+				const regScriptTag = /<(script)[\s\S]+?<\/script>/g
+				const scriptStrList = [...htmlStr.matchAll(regScriptTag)].map(v => v[0])
 				const scriptType = {
 					inlineScriptList: [] as string[][],
 					linkScriptList: [] as string[]
@@ -80,7 +80,7 @@ export function serve(usOptions: Required<UsOptions>) {
 				return res.end(
 					[
 						newMetaData,
-						funcToString((scriptType: ScriptType) => {
+						fnToString((scriptType: ScriptType) => {
 							scriptType.linkScriptList.reverse().forEach(src => {
 								const script = document.createElement('script')
 								script.type = 'module'
@@ -101,13 +101,15 @@ export function serve(usOptions: Required<UsOptions>) {
 							)
 						}, scriptType),
 
-						funcToString((gmApiList: string[]) => {
-							// @ts-ignore
-							gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
-							// @ts-ignore
-							// eslint-disable-next-line dot-notation
-							unsafeWindow['GM'] = window['GM']
-						}, grants)
+						usOptions.autoAddGrant
+							? fnToString((gmApiList: string[]) => {
+									// @ts-ignore
+									gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
+									// @ts-ignore
+									// eslint-disable-next-line dot-notation
+									unsafeWindow['GM'] = window['GM']
+							  }, grants)
+							: ''
 					].join('\n')
 				)
 			})
@@ -121,17 +123,19 @@ export function serve(usOptions: Required<UsOptions>) {
 				cacheMetaData = (await fs.readFile(cachePath)).toString('utf-8')
 			}
 
-			let firstOpen = true
-			if (firstOpen || cacheMetaData !== newMetaData) {
-				firstOpen = false
-				const url = `${currentOrigin}/${installPath}`
+			if (cacheMetaData !== newMetaData) {
+				const url = currentOrigin
 				Promise.all([open(url), fs.writeFile(cachePath, newMetaData)])
 			}
 		},
 		transform(code, id) {
-			const reg = /export\s+default\s+"(.+?)"/
-			if (resovledConfig.assetsInclude(id) && reg.test(code)) {
-				return code.replace(reg, `export default '${currentOrigin}$1'`)
+			return replaceAssetUrl()
+
+			function replaceAssetUrl() {
+				const reg = /export\s+default\s+"(.+?)"/
+				if (resovledConfig.assetsInclude(id) && reg.test(code)) {
+					return code.replace(reg, `export default '${currentOrigin}$1'`)
+				}
 			}
 		}
 	} as PluginOption

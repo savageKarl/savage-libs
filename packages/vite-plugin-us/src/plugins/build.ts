@@ -1,117 +1,181 @@
-import { readFileSync, writeFileSync } from 'node:fs'
-import { resolve, extname } from 'node:path'
+import http from 'node:http'
+
+import connect from 'connect'
+import getPort from 'get-port'
+import open from 'open'
+
 import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
-import { OutputChunk } from 'rollup'
+import { OutputChunk, OutputAsset } from 'rollup'
+import { build as inlineBuild, loadConfigFromFile } from 'vite'
 
-import { UsOptions, grants } from '../types/userscript'
-import { generateHeadMeta } from '../generateHeadMeta'
+import { Metadata } from '../utils/metadata'
 import {
-	funcToString,
-	pkg,
-	collectCssDependencies,
-	resourcePath
-} from '../utils'
-import type { Grants, Resource } from '../types/userscript'
-
-let resovledConfig: ResolvedConfig
-let resource: Resource
-let cssUrls: string[]
+	injectCss,
+	addPrefixForName,
+	getViteConfigPath,
+	hyphenToCamelCase
+} from '../utils/utils'
+import { grants, pluginName, pkg } from '../utils/constants'
+import type { Grants } from '../types/userscript'
+import type { UsOptions } from '../types/types'
+import { bundleMiddware, redirectMiddleware } from '../utils/middleware'
+import { analyze, depCollection } from './analyze'
 
 export function build(usOptions: Required<UsOptions>) {
+	let resovledConfig: ResolvedConfig
+	let cssUrls: string[]
+
 	return {
-		name: 'vite-plugin-us:build',
+		name: `${pluginName}:build`,
 		enforce: 'post',
 		apply: 'build',
-		config() {
-			const name = usOptions.headMetaData.name
-			if (usOptions.prefix) usOptions.headMetaData.name = `production: ${name}`
+		async config() {
+			await analyzeDep(usOptions)
+			const resource = await depCollection.resovleDep()
 
-			resource = JSON.parse(readFileSync(resourcePath, { encoding: 'utf-8' }))
-			cssUrls = resource.urls.css || []
-			const jsUrls = resource.urls.js || []
+			cssUrls = resource?.categoryRecord?.css?.map(v => v.url) || []
+			const jsUrls = resource?.categoryRecord?.js?.map(v => v.url) || []
 
-			const r = usOptions.headMetaData.require
-			usOptions.headMetaData.require = r?.concat(jsUrls)
+			const r = usOptions.metaData.require
+			usOptions.metaData.require = r?.concat(jsUrls)
 
 			return {
 				build: {
-					assetsInlineLimit: Number.MAX_SAFE_INTEGER,
-					chunkSizeWarningLimit: Number.MAX_SAFE_INTEGER,
-					assetsDir: './',
-					target: 'esnext',
 					minify: usOptions.build.minify,
 					cssMinify: usOptions.build.cssMinify,
+					lib: {
+						entry: usOptions.entry,
+						fileName: `${usOptions.metaData.name}.user`,
+						name: hyphenToCamelCase(usOptions.metaData.name as string),
+						formats: ['iife']
+					},
 					rollupOptions: {
-						input: usOptions.entry,
-						external: resource.external,
+						external: resource.externals,
 						output: {
-							extend: true,
-							format: 'iife',
-							globals: resource.names
+							globals: resource.globalVariableNameRecord
 						}
 					}
 				}
 			} as UserConfig
 		},
 		load(id) {
-			return collectCssDependencies(id)
+			// prevent CSS dependencies dynamically introduced by automatic import plugins,
+			// and then proceed with CDN
+			return preventCssDep()
+			function preventCssDep() {
+				if (/node_modules/.test(id) && /css$/.test(id)) return ''
+			}
 		},
 		async configResolved(config) {
 			resovledConfig = config
 		},
-		async transform(code, id) {
-			return inlineSvg(code, id)
+		async generateBundle(options, bundle) {
+			const filename = `${usOptions.metaData.name}.user.iife.js`
+			const chunk = bundle[filename] as OutputChunk
+			chunk.fileName = `${usOptions.metaData.name}.user.js`
+
+			const css = bundle['style.css'] as OutputAsset
+			Reflect.deleteProperty(bundle, 'style.css')
+
+			autoAddGrant(usOptions, chunk)
+			addPrefixForName(usOptions, 'production')
+
+			const metadata = new Metadata(usOptions.metaData)
+
+			const metaDataStr = usOptions?.generate?.modifyMetadata?.(
+				metadata.generate(),
+				'production'
+			) as string
+
+			const codes = [
+				metaDataStr,
+				'',
+				await injectCss({
+					links: cssUrls,
+					inline: String(css.source),
+					minify: usOptions.build.cssMinify as boolean,
+					pluginName
+				}),
+				chunk.code
+			]
+
+			chunk.code = codes.join('\n')
 		},
-		generateBundle(options, bundle) {
-			for (const filename in bundle) {
-				if (/\.svg/.test(filename)) Reflect.deleteProperty(bundle, filename)
-			}
-		},
-		writeBundle(options, bundle) {
-			const key = Object.keys(bundle)[0]
-			const mainBundle = bundle[key] as OutputChunk
-			const code = mainBundle.code
+		async closeBundle() {
+			if (!usOptions.build.open) return
 
-			const regex = new RegExp(grants.join('|').replace('|$', ''), 'g')
-			const matchRes = [...code.matchAll(regex)]
-			const collectedGrant = matchRes.map(v => v[0])
+			const port = await getPort()
+			const app = connect()
 
-			usOptions.headMetaData.grant = collectedGrant as unknown as Grants[]
-			const newMetaData = generateHeadMeta(usOptions.headMetaData)
+			app.use(redirectMiddleware('prod'))
+			app.use(bundleMiddware(resovledConfig, usOptions))
 
-			const fullCodeList: string[] = []
-
-			const autoInjectExternalCss = funcToString(function (links: string[]) {
-				links.forEach(v => {
-					const link = document.createElement('link')
-					link.rel = 'stylesheet'
-					link.href = v
-					document.head.appendChild(link)
-				})
-			}, cssUrls)
-			fullCodeList.push(autoInjectExternalCss)
-
-			fullCodeList.unshift(newMetaData)
-			fullCodeList.push(code)
-
-			writeFileSync(
-				resolve(options.dir as string, key),
-				fullCodeList.join('\n')
-			)
+			http.createServer(app).listen(port)
+			const url = `http://localhost:${port}`
+			open(url)
 		}
 	} as PluginOption
 }
 
-function inlineSvg(code: string, id: string) {
-	if (
-		resovledConfig.assetsInclude(id) &&
-		/\.svg/.test(id) &&
-		/__VITE_ASSET__/.test(code)
-	) {
-		const base64 = readFileSync(/.+?\.svg/.exec(id)?.[0] as string, {
-			encoding: 'base64'
-		})
-		return `export default 'data:image/svg+xml;base64,${base64}'`
+/** NPF,`usOptions` */
+function autoAddGrant(usOptions: UsOptions, chunk: OutputChunk) {
+	if (usOptions.autoAddGrant) {
+		const regex = new RegExp(grants.join('|'), 'g')
+		const matchRes = [...chunk.code.matchAll(regex)]
+		const collectedGrant = matchRes.map(v => v[0])
+		usOptions.metaData.grant = collectedGrant as Grants[]
 	}
-	return null
+}
+
+async function getPluginsByViteConfig() {
+	const viteConfigPath = getViteConfigPath()
+
+	const configResult = (
+		await loadConfigFromFile(
+			{
+				mode: 'production',
+				command: 'build'
+			},
+			viteConfigPath
+		)
+	)?.config as unknown as ResolvedConfig
+
+	const plugins = configResult.plugins.filter(v => {
+		if (Array.isArray(v)) {
+			return !new RegExp(pluginName).test(v[0].name)
+		}
+		return true
+	})
+
+	return { plugins }
+}
+
+async function analyzeDep(usOptions: Required<UsOptions>) {
+	const depKeys = Object.keys(pkg.dependencies || {})
+
+	const { plugins } = await getPluginsByViteConfig()
+
+	await inlineBuild({
+		logLevel: 'error',
+		configFile: false,
+		plugins: [...plugins, analyze(usOptions)],
+		build: {
+			write: false,
+			lib: {
+				entry: usOptions.entry,
+				fileName: `${usOptions.metaData.name}.user`,
+				name: 'savage',
+				formats: ['iife']
+			},
+			rollupOptions: {
+				external: depKeys,
+				output: {
+					globals: depKeys.reduce(
+						(preV, curV) => Object.assign(preV, { [curV]: curV }),
+						{}
+					)
+				}
+			}
+		}
+	})
 }

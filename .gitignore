@@ -13,11 +13,12 @@ dts-build/packages
 docs/.vitepress/cache
 docs/.vitepress/dist
 
+.vitepress/cache
+.vitepress/dist
+
 docs/*
 
 !docs/index.md
 !docs/package.json
 !docs/sidebar.json
-!docs/generateDoc.ts
-!docs/CHANGELOG.md
 !docs/public

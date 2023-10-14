@@ -1,5 +1,4 @@
 {
-	"name": "vue-ts",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
@@ -9,6 +8,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"vue": "^3.3.4"
+		"vue": "^3.3.4",
+		"element-plus": "2.3.14"
 	}
 }

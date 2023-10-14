@@ -1,27 +1,26 @@
-import { readFileSync, writeFileSync } from 'node:fs'
-import { resolve } from 'node:path'
-import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
-import { OutputChunk } from 'rollup'
+import open from 'open'
 
-import { existFile, pkg, setResHeader } from '../utils'
-import { UsOptions, grants } from '../types/userscript'
-import type { Grants } from '../types/userscript'
-import { generateHeadMeta } from '../generateHeadMeta'
+import type { PluginOption, ResolvedConfig } from 'vite'
+import type { UsOptions } from '../types/types'
+import { pluginName } from '../utils/constants'
+import { bundleMiddware } from '../utils/middleware'
 
-export function preview(usOptions: UsOptions) {
+export function preview(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
+
 	return {
-		name: 'vite-plugin-us:preview',
+		name: `${pluginName}:preview`,
 		enforce: 'post',
-		apply: 'build',
-		config() {
-			return {} as UserConfig
-		},
-		async configResolved(config) {
+		apply: 'serve',
+		configResolved(config) {
 			resovledConfig = config
 		},
-		async transform(code, id) {},
-		generateBundle(options, bundle) {},
-		writeBundle(options, bundle) {}
+		configurePreviewServer(server) {
+			server.middlewares.use(bundleMiddware(resovledConfig, usOptions))
+
+			const { host, port } = usOptions.server
+			const currentOrigin = `http://${host as string}:${port as number}`
+			open(currentOrigin)
+		}
 	} as PluginOption
 }

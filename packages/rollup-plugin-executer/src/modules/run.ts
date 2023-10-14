@@ -1,32 +1,65 @@
-import { spawn } from 'cross-spawn'
+import { spawn as async, sync } from 'cross-spawn'
+import delOrigin from 'del'
 
-export type CommandCaller = string | (() => void)
+import { isString, typeOf } from 'savage-types'
 
-export async function execute(command: CommandCaller) {
-	if (typeof command === 'function') return await command()
-	if (typeof command !== 'string')
+import type { Command, CommandList, ExecuteOptions } from './types'
+
+export const del = delOrigin
+
+function baseRun(command: string | string[], sync = false) {
+	command = isString(command) ? [command] : command
+	return runCommands(command, { sync })
+}
+
+export const run = (command: string | string[]) => {
+	return baseRun(command, false)
+}
+
+// run.sync = (command: string | string[]) => {
+// 	return baseRun(command, true)
+// }
+
+async function execute(
+	command: Command,
+	options: ExecuteOptions,
+	hookArgs?: unknown[]
+) {
+	if (typeof command === 'function') {
+		if (options?.sync) {
+			return await command(...(hookArgs || []))
+		} else {
+			return command(...(hookArgs || []))
+		}
+	}
+	if (!isString(command))
 		return console.error(
-			`command must be a function or a string.  Recieved type ${typeof command}`
+			`command must be a function or a string.  Recieved type ${typeOf(
+				command
+			)}`
 		)
 
-	await new Promise(() => {
-		spawn(command, {
-			shell: true,
-			stdio: 'inherit'
-		})
+	const spawn = options?.sync ? sync : async
+
+	return spawn(command, {
+		shell: true,
+		stdio: 'inherit'
 	})
 }
 
-export function runCommand(command: CommandCaller | CommandCaller[]) {
-	if (Array.isArray(command)) {
-		command.forEach(v => {
-			execute(v)
-		})
+/**
+ * @internal
+ */
+export async function runCommands(
+	commands: CommandList,
+	options: ExecuteOptions,
+	hookOptions?: unknown[]
+) {
+	if (options?.sync) {
+		for (const v of commands) {
+			await execute(v, options, hookOptions)
+		}
 	} else {
-		execute(command)
+		commands.forEach(v => execute(v, options, hookOptions))
 	}
-}
-
-export interface RunCommand {
-	(command: CommandCaller | CommandCaller[]): void
 }

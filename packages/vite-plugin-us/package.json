@@ -1,33 +1,52 @@
 {
 	"name": "vite-plugin-us",
 	"version": "1.0.0",
-	"description": "A Vite plugin for developing and building userscript that can be run with the tampermonkey extension.",
+	"description": "A vite plugin for developing and building scripts that run on browser extensions such as Tampermonkey, Violentmonkey, Greasemonkey and ScriptCat.",
 	"miniprogram": "dist",
-	"main": "index.js",
-	"module": "dist/vite-plugin-us.esm-bundler.js",
-	"types": "dist/vite-plugin-us.d.ts",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
-		"index.js",
 		"dist"
 	],
 	"exports": {
 		".": {
-			"import": "./dist/vite-plugin-us.esm-bundler.js",
-			"require": "./index.js"
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
 		}
 	},
 	"buildOptions": {
-		"name": "savageUtils",
-		"formats": [
-			"esm-bundler",
+		"format": [
+			"esm",
 			"cjs"
+		],
+		"dts": true,
+		"minify": true,
+		"target": [
+			"esnext"
 		]
 	},
 	"type": "module",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
+	"scripts": {},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"devDependencies": {
+		"@types/connect": "^3.4.36",
+		"unplugin-auto-import": "^0.16.6",
+		"unplugin-vue-components": "^0.25.2"
+	},
+	"dependencies": {
+		"axios": "^1.5.0",
+		"connect": "^3.7.0",
+		"get-port": "7.0.0",
+		"jsdom": "^22.1.0",
+		"magic-string": "^0.30.3",
+		"open": "9.1.0",
+		"picocolors": "1.0.0",
+		"rollup": "^3.2.3",
+		"savage-utils": "workspace:^",
+		"ssl-root-cas": "^1.3.1",
+		"vite": "^4.4.11"
+	}
 }

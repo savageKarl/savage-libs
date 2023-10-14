@@ -1,19 +1,16 @@
-import { dataTypes } from 'savage-data-types'
+import { isObject, isArray } from 'savage-types'
 
 /**
  * 迭代器模式：内部迭代器，由函数内部控制自动进行迭代
- *
- * @param obj 目标对象
- * @param fn 回调函数
  */
 export function each<T extends object>(
 	obj: T,
 	fn: (v: T[keyof T], i: keyof T, obj: T) => unknown
 ) {
-	if (dataTypes.isObject(obj) || dataTypes.isArray(obj)) {
+	if (isObject(obj) || isArray(obj)) {
 		for (const k in obj) {
 			const res = fn(obj[k], k, obj)
-			if (dataTypes.isBoolean(res) && String(res) === 'false') break
+			if (res === false) break
 		}
 	}
 }
@@ -21,27 +18,23 @@ export function each<T extends object>(
 /**
  * 迭代器模式：外部迭代器，由外部控制进行迭代
  */
-export class Iterator<T extends any[]> {
-	constructor(obj: T) {
-		let current = 0
+export class Iterator<T extends unknown[]> {
+	private current = 0
+	public length: number
 
-		this.next = () => {
-			current += 1
-		}
-
-		this.isDone = () => {
-			return current + 1 >= this.length
-		}
-
+	constructor(private obj: T) {
 		this.length = obj.length
-
-		this.getCurrentItem = () => {
-			return obj[current]
-		}
 	}
 
-	next: () => void
-	isDone: () => boolean
-	getCurrentItem: () => T[keyof T]
-	length: number
+	isDone() {
+		return this.current + 1 >= this.length
+	}
+
+	next() {
+		this.current += 1
+	}
+
+	getCurrentItem() {
+		return this.obj[this.current]
+	}
 }

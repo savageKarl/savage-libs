@@ -1,0 +1,58 @@
+{
+	"name": "elec-ipc",
+	"version": "0.0.15",
+	"description": "A library that makes communication between different processes more convenient for Electron applications",
+	"miniprogram": "dist",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
+	"keywords": [
+		"electron-ipc",
+		"electrion",
+		"ipc",
+		"ipc-electron",
+		"electron-publish",
+		"electron-subscribe",
+		"electron ipc",
+		"ipc electron"
+	],
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
+	"scripts": {
+		"dev": "cross-env mode=dev nodemon rollup.config.js",
+		"build": "cross-env mode=pro rollup -c rollup.config.js",
+		"prepush": "npm run build",
+		"push": "npm publish --access public",
+		"lint": "eslint .",
+		"commit": "git-cz"
+	},
+	"config": {
+		"commitizen": {
+			"path": "node_modules/cz-conventional-changelog"
+		}
+	},
+	"license": "GPL-3.0",
+	"dependencies": {
+		"electron": "^25.0.1"
+	}
+}
