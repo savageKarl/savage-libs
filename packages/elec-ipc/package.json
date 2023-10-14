@@ -1,6 +1,6 @@
 {
 	"name": "elec-ipc",
-	"version": "0.0.16",
+	"version": "0.0.15",
 	"description": "A library that makes communication between different processes more convenient for Electron applications",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",

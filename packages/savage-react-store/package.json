@@ -1,6 +1,6 @@
 {
 	"name": "savage-react-store",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
@@ -33,7 +33,7 @@
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0",
 		"savage-types": "workspace:^",
-		"savage-utils": "workspace:^1.0.55"
+		"savage-utils": "workspace:^1.0.45"
 	},
 	"devDependencies": {
 		"@types/react": "^16.8.0",

@@ -55,7 +55,7 @@ async function createConfig(pkgName: string) {
 		dts: watch ? false : dts,
 		outDir,
 		watch,
-		clean: true,
+		clean: false,
 		esbuildPlugins: plugins,
 		external: _external,
 		...rest

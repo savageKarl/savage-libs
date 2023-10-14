@@ -90,6 +90,7 @@
 		"prompts": "2.4.2",
 		"rollup": "^3.2.3",
 		"tslib": "^2.6.2",
+		"tsup": "7.2.0",
 		"tsx": "3.13.0",
 		"typedoc": "0.23.15",
 		"typedoc-plugin-markdown": "^3.14.0",
@@ -102,8 +103,8 @@
 	},
 	"dependencies": {
 		"esbuild-plugin-umd": "workspace:*",
+		"picox": "workspace:*",
 		"savage-types": "workspace:*",
-		"savage-utils": "workspace:*",
-		"picox": "workspace:*"
+		"savage-utils": "workspace:*"
 	}
 }
