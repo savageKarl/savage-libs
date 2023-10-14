@@ -1,26 +1,42 @@
 import { spawn as async, sync } from 'cross-spawn'
-import delRaw from 'del'
+import delOrigin from 'del'
 
-import type { Context, Command, DelOptions, ExecuteOptions } from './types'
-import { isCommand } from './types'
+import { isString, typeOf } from 'savage-types'
 
-const ctx: Context = {
-	run,
-	del,
-	hookOptions: []
+import type { Command, CommandList, ExecuteOptions } from './types'
+
+export const del = delOrigin
+
+function baseRun(command: string | string[], sync = false) {
+	command = isString(command) ? [command] : command
+	return runCommands(command, { sync })
 }
 
-async function execute(command: Command, options?: ExecuteOptions) {
+export const run = (command: string | string[]) => {
+	return baseRun(command, false)
+}
+
+// run.sync = (command: string | string[]) => {
+// 	return baseRun(command, true)
+// }
+
+async function execute(
+	command: Command,
+	options: ExecuteOptions,
+	hookArgs?: unknown[]
+) {
 	if (typeof command === 'function') {
 		if (options?.sync) {
-			return await command(ctx)
+			return await command(...(hookArgs || []))
 		} else {
-			return command(ctx)
+			return command(...(hookArgs || []))
 		}
 	}
-	if (typeof command !== 'string')
+	if (!isString(command))
 		return console.error(
-			`command must be a function or a string.  Recieved type ${typeof command}`
+			`command must be a function or a string.  Recieved type ${typeOf(
+				command
+			)}`
 		)
 
 	const spawn = options?.sync ? sync : async
@@ -31,34 +47,19 @@ async function execute(command: Command, options?: ExecuteOptions) {
 	})
 }
 
-async function run(command: string | string[], options?: ExecuteOptions) {
-	runCommand(command, options)
-}
-
-async function del(pattern: string[], options?: DelOptions) {
-	if (options?.sync) return delRaw.sync(pattern, options)
-	else return delRaw(pattern, options)
-}
-
-export async function runCommand(
-	command: Command | Command[],
-	options?: ExecuteOptions,
+/**
+ * @internal
+ */
+export async function runCommands(
+	commands: CommandList,
+	options: ExecuteOptions,
 	hookOptions?: unknown[]
 ) {
-	if (hookOptions) ctx.hookOptions = hookOptions
-	let commands: Command[] = []
-
-	if (isCommand(command)) {
-		commands = [command]
-	} else {
-		commands = command
-	}
-
 	if (options?.sync) {
 		for (const v of commands) {
-			await execute(v, options)
+			await execute(v, options, hookOptions)
 		}
 	} else {
-		commands.forEach(v => execute(v, options))
+		commands.forEach(v => execute(v, options, hookOptions))
 	}
 }

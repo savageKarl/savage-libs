@@ -63,21 +63,16 @@
                 "text": "functions",
                 "items": [
                     {
-                        "text": "executer",
-                        "link": "functions/executer"
-                    }
-                ]
-            },
-            {
-                "text": "interfaces",
-                "items": [
-                    {
-                        "text": "Context",
-                        "link": "interfaces/Context"
+                        "text": "del",
+                        "link": "functions/del"
                     },
                     {
-                        "text": "DelOptionsRaw",
-                        "link": "interfaces/DelOptionsRaw"
+                        "text": "executer",
+                        "link": "functions/executer"
+                    },
+                    {
+                        "text": "run",
+                        "link": "functions/run"
                     }
                 ]
             },
@@ -97,10 +92,6 @@
                         "link": "types/CommandList"
                     },
                     {
-                        "text": "DelOptions",
-                        "link": "types/DelOptions"
-                    },
-                    {
                         "text": "ExecuteOptions",
                         "link": "types/ExecuteOptions"
                     },
@@ -115,6 +106,10 @@
                     {
                         "text": "OptionsList",
                         "link": "types/OptionsList"
+                    },
+                    {
+                        "text": "PluginHooks",
+                        "link": "types/PluginHooks"
                     }
                 ]
             }

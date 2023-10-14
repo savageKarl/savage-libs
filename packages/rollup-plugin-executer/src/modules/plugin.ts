@@ -2,53 +2,39 @@ import type { Plugin } from 'rollup'
 
 import {
 	Args,
-	ExecuteOptions,
 	isCommand,
 	isCommandList,
 	isOptions,
-	isOptionsList
+	isOptionsList,
+	CommandList
 } from './types'
 
-import { runCommand } from './run'
+import { runCommands } from './run'
+import { pluginName, defaultHook, executeOptionsDefault } from './constants'
 
 export type * from './types'
+export * from './run'
 
-/**
- * a plugin function of rollup return config
- */
 export function executer(args: Args) {
 	const pluginOptions: Plugin = {
-		name: 'rollup-plugin-executer'
-	}
-	const defaultHook = 'buildEnd'
-
-	const executeOptionsDefault: ExecuteOptions = {
-		sync: false
+		name: pluginName
 	}
 
 	if (isCommand(args) || isCommandList(args)) {
 		pluginOptions[defaultHook] = function (...rest) {
-			runCommand(args, executeOptionsDefault, rest)
+			args = isCommand(args) ? [args] : args
+			runCommands(args as CommandList, executeOptionsDefault, rest)
 		}
 	}
 
-	if (isOptions(args)) {
-		const executeOptions =
-			(Object.assign(executeOptionsDefault), { sync: args.sync })
-
-		// @ts-ignore
-		pluginOptions[args.hook] = function (...rest) {
-			runCommand(args.commands, executeOptions, rest)
-		}
-	}
-
-	if (isOptionsList(args)) {
+	if (isOptions(args) || isOptionsList(args)) {
+		args = isOptions(args) ? [args] : args
 		const hooksRecord: Record<string, () => void> = {}
 
 		args.forEach(v => {
 			const sync = (Object.assign(executeOptionsDefault), { sync: v.sync })
-			hooksRecord[v.hook] = function (...rest) {
-				runCommand(v.commands, sync, rest)
+			hooksRecord[v.hook ?? defaultHook] = function (...rest) {
+				runCommands(v.commands, sync, rest)
 			}
 		})
 

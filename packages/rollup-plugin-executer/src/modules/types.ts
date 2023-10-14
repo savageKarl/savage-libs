@@ -1,36 +1,27 @@
 import type { PluginHooks } from 'rollup'
 import { types } from 'savage-types'
-import type { Options as DelOptionsRaw } from 'del'
 
-export type { Options as DelOptionsRaw } from 'del'
+export type { PluginHooks } from 'rollup'
 
 export type ExecuteOptions = {
+	/**
+	 * @defaultValue false
+	 */
 	sync?: boolean
 }
 
-export type DelOptions = DelOptionsRaw & ExecuteOptions
-
-/** provide some powerful api */
-export interface Context {
-	/** be use to execute command by custom */
-	run: (command: string | string[], options: ExecuteOptions) => void
-	/** be use to del any file or folder by del lib  */
-	del: (pattern: string[], options: DelOptions) => unknown
-	/** current hook arguments */
-	hookOptions: unknown[]
-}
-
-export type Fun = (ctx: Context) => unknown
+export type Fun = (...args: unknown[]) => void | Promise<void>
 export type Command = string | Fun
+export type CommandList = Command[]
+
 export type Options = {
-	commands: Command[]
+	commands: CommandList
 	/**
 	 * @defaultValue `buildEnd`
 	 */
-	hook: keyof PluginHooks
+	hook?: keyof PluginHooks
 } & ExecuteOptions
 
-export type CommandList = Command[]
 export type OptionsList = Options[]
 export type Args = Command | CommandList | Options | OptionsList
 
@@ -38,7 +29,7 @@ export type Args = Command | CommandList | Options | OptionsList
  * @internal
  */
 export function isCommand(v: unknown): v is Command {
-	return types.isFunction(v) && types.isString(v)
+	return types.isFunction(v) || types.isString(v)
 }
 
 /**
@@ -60,4 +51,13 @@ export function isOptions(v: unknown): v is Options {
  */
 export function isOptionsList(v: unknown): v is OptionsList {
 	return types.isArray(v) && isOptions((v as OptionsList)[0])
+}
+
+/**
+ * @internal
+ */
+export interface Run {
+	(command: string | string[]): Promise<void>
+
+	// sync: (command: string | string[]) => void
 }
