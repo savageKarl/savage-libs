@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.14
+
+### Patch Changes
+
+- support new feat
+
 ## 1.0.13
 
 ### Patch Changes

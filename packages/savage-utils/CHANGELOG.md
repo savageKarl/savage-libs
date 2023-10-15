@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.55
+
+### Patch Changes
+
+- support new feat
+- Updated dependencies
+  - savage-types@1.0.14
+
 ## 1.0.53
 
 ### Patch Changes
