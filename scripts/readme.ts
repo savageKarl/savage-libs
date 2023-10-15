@@ -1,15 +1,15 @@
 import { resolve } from 'node:path'
 import { writeFile } from 'node:fs/promises'
 
-import type { IPackageJson } from '@ts-type/package-dts'
-
 import { capitalize } from 'savage-utils'
 
 import {
 	packagesRoot,
-	require,
+	getPkgJson,
 	resolveCliOption,
-	resolveTargetPkgNames
+	resolveTargetPkgNames,
+	getCompleteTemplate,
+	replaceTemplateVariable
 } from './utils'
 
 const { targetPkgNames, all } = resolveCliOption(process)
@@ -20,14 +20,15 @@ async function genereateReadme(name: string) {
 	const readmePath = resolve(packagesRoot, name, 'README.md')
 	const pkgJsonPath = resolve(packagesRoot, name, 'package.json')
 
-	const pkgJson = require(pkgJsonPath) as Required<IPackageJson>
+	const pkgJson = getPkgJson(pkgJsonPath)
 
-	const content = [
-		`# ${capitalize(pkgJson.name)}`,
-		pkgJson.description,
-		'# Documentation',
-		`See [here](https://savage181855.github.io/savage-libs/${pkgJson.name}/modules)`
-	].join('\n\n')
+	const template = await getCompleteTemplate(['commonHeader', 'readme'])
+
+	const content = replaceTemplateVariable(template, {
+		capitalizeName: capitalize(pkgJson.name),
+		description: pkgJson.description,
+		name: pkgJson.name
+	})
 
 	writeFile(readmePath, content, { encoding: 'utf-8' })
 }

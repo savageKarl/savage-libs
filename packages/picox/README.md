@@ -1,6 +1,6 @@
 # Picox
 
-A lib base on picocolors for terminal color ouput, support chainable API.
+> A lib base on picocolors for terminal color ouput, support chainable API.
 
 # Documentation
 

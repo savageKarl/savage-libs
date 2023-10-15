@@ -1,17 +1,23 @@
 import fs from 'node:fs'
+
+import { readdir, readFile } from 'node:fs/promises'
+
 import { createRequire } from 'node:module'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import minimist from 'minimist'
+import spawn from 'cross-spawn'
 
 import pico from 'picocolors'
-import spawn from 'cross-spawn'
+
+import type { IPackageJson } from '@ts-type/package-dts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export const require = createRequire(import.meta.url)
 export const packagesRoot = resolve(__dirname, '../packages')
+export const projectRoot = resolve(packagesRoot, '..')
 
 export function getFullpath(pkgName: string, subPath = 'src/index.ts') {
 	return resolve(packagesRoot, pkgName, subPath).replaceAll('\\', '/')
@@ -105,3 +111,46 @@ export function resolveTargetPkgNames(targetPkgNames: string[], all: boolean) {
 
 	return getChangedPkgNames()
 }
+
+export function replaceTemplateVariable(
+	template: string,
+	variableRecord: Record<string, string>
+) {
+	return Object.keys(variableRecord).reduce(
+		(preV, curV) => preV.replaceAll(`[${curV}]`, variableRecord[curV]),
+		template
+	)
+}
+
+export function getPkgJson(path: string) {
+	return require(path) as Required<IPackageJson>
+}
+
+export const getCompleteTemplate = (() => {
+	const templateRecord: Record<string, string> = {}
+
+	return async function (names: string[]) {
+		if (Object.keys(templateRecord).length === 0) {
+			const templatePath = resolve(process.cwd(), 'scripts/templates')
+			const files = await readdir(templatePath)
+
+			const removeExt = (name: string) => name.replace(/\.\w+$/, '')
+
+			;(
+				await Promise.all(
+					files.map(f =>
+						readFile(resolve(templatePath, f), { encoding: 'utf-8' })
+					)
+				)
+			).map((v, i) =>
+				Object.assign(templateRecord, {
+					[removeExt(files[i])]: v
+				})
+			)
+		}
+
+		return names
+			.reduce((preV, curV) => preV.concat(templateRecord[curV]), [] as string[])
+			.join('\n')
+	}
+})()

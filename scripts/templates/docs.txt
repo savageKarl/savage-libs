@@ -1,7 +1,3 @@
-# [capitalizeName]
-
-> [description]
-
 ## Installtion
 
 ::: code-group

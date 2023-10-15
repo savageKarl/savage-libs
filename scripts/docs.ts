@@ -11,8 +11,6 @@ import { spawn } from 'cross-spawn'
 
 import { Application, TSConfigReader } from 'typedoc'
 
-import type { IPackageJson } from '@ts-type/package-dts'
-
 import { queueExcution, mergeDeep, capitalize } from 'savage-utils'
 import picox from 'picox'
 
@@ -22,7 +20,9 @@ import {
 	resolveCliOption,
 	resolveTargetPkgNames,
 	packagesRoot,
-	require
+	replaceTemplateVariable,
+	getPkgJson,
+	getCompleteTemplate
 } from './utils'
 
 const docsPath = resolve(process.cwd(), 'docs')
@@ -119,23 +119,23 @@ async function generateDoc(pkgName: string) {
 
 		const pkgJsonPath = resolve(packagesRoot, pkgName, 'package.json')
 
-		const pkgJson = require(pkgJsonPath) as Required<IPackageJson>
-		const docs = readFileSync(resolve(packagesRoot, pkgName, 'doc.md'), {
+		const pkgJson = getPkgJson(pkgJsonPath)
+
+		const docsContent = readFileSync(resolve(packagesRoot, pkgName, 'doc.md'), {
 			encoding: 'utf-8',
 			flag: 'a+'
 		})
 
-		const templatePath = resolve(process.cwd(), 'scripts/docsTemplate.txt')
-		const moduleFilePath = resolve(docsPath, pkgName, 'modules.md')
-
-		const template = readFileSync(templatePath, { encoding: 'utf-8' })
+		const template = await getCompleteTemplate(['commonHeader', 'docs'])
 
 		const content = replaceTemplateVariable(template, {
 			capitalizeName: capitalize(pkgJson.name),
 			description: pkgJson.description,
 			name: pkgJson.name,
-			content: docs
+			content: docsContent
 		})
+
+		const moduleFilePath = resolve(docsPath, pkgName, 'modules.md')
 
 		writeFileSync(moduleFilePath, content, { encoding: 'utf-8' })
 
@@ -145,16 +145,6 @@ async function generateDoc(pkgName: string) {
 			)
 		)
 	}
-}
-
-function replaceTemplateVariable(
-	template: string,
-	variableRecord: Record<string, string>
-) {
-	return Object.keys(variableRecord).reduce(
-		(preV, curV) => preV.replaceAll(`[${curV}]`, variableRecord[curV]),
-		template
-	)
 }
 
 main()
