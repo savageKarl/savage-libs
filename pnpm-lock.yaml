@@ -286,6 +286,12 @@ importers:
         specifier: workspace:^
         version: link:../savage-types
 
+  packages/savage-log:
+    dependencies:
+      picox:
+        specifier: workspace:^
+        version: link:../picox
+
   packages/savage-mdtable: {}
 
   packages/savage-react-store:

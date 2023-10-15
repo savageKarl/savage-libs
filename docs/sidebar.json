@@ -569,5 +569,41 @@
                 ]
             }
         ]
+    },
+    "/savage-log/": {
+        "base": "/savage-log/",
+        "items": [
+            {
+                "text": "savage-log",
+                "link": "modules"
+            },
+            {
+                "text": "classes",
+                "items": [
+                    {
+                        "text": "Logger",
+                        "link": "classes/Logger"
+                    }
+                ]
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "createLogger",
+                        "link": "functions/createLogger"
+                    }
+                ]
+            },
+            {
+                "text": "interfaces",
+                "items": [
+                    {
+                        "text": "LoggerOptions",
+                        "link": "interfaces/LoggerOptions"
+                    }
+                ]
+            }
+        ]
     }
 }
