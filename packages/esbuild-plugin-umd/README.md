@@ -1,6 +1,6 @@
 # Esbuild-plugin-umd
 
-A esbuild plugin for building UMD module
+> A esbuild plugin for building UMD module
 
 # Documentation
 

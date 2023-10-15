@@ -56,9 +56,11 @@ export function getChangedPkgNames() {
 }
 
 export function fuzzyMatchPkgName(partialPkgNames: string[]) {
-	const matchResult = pkgNames.filter(name => {
-		return partialPkgNames.some(v => name.match(v))
-	})
+	const matchResult = pkgNames
+		.concat(getPkgJson(projectRoot).name)
+		.filter(name => {
+			return partialPkgNames.some(v => name.match(v))
+		})
 
 	if (matchResult.length) return matchResult
 
@@ -123,7 +125,7 @@ export function replaceTemplateVariable(
 }
 
 export function getPkgJson(path: string) {
-	return require(path) as Required<IPackageJson>
+	return require(resolve(path, 'package.json')) as Required<IPackageJson>
 }
 
 export const getCompleteTemplate = (() => {

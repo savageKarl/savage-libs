@@ -104,6 +104,7 @@
 	"dependencies": {
 		"esbuild-plugin-umd": "workspace:*",
 		"picox": "workspace:*",
+		"savage-mdtable": "workspace:^",
 		"savage-types": "workspace:*",
 		"savage-utils": "workspace:*"
 	}

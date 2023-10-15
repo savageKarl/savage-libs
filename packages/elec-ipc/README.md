@@ -1,6 +1,6 @@
 # Elec-ipc
 
-A library that makes communication between different processes more convenient for Electron applications
+> A library that makes communication between different processes more convenient for Electron applications
 
 # Documentation
 

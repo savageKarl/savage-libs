@@ -1,6 +1,6 @@
 # Rollup-plugin-executer
 
-A rollup plugin can execute commands or functions on a specified hook.
+> A rollup plugin can execute commands or functions on a specified hook.
 
 # Documentation
 

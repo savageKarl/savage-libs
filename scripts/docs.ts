@@ -117,9 +117,7 @@ async function generateDoc(pkgName: string) {
 		const outputDir = resolve(docsPath, pkgName)
 		await app.generateDocs(project, outputDir)
 
-		const pkgJsonPath = resolve(packagesRoot, pkgName, 'package.json')
-
-		const pkgJson = getPkgJson(pkgJsonPath)
+		const pkgJson = getPkgJson(resolve(packagesRoot, pkgName))
 
 		const docsContent = readFileSync(resolve(packagesRoot, pkgName, 'doc.md'), {
 			encoding: 'utf-8',

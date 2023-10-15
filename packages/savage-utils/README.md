@@ -1,6 +1,6 @@
 # Savage-utils
 
-A lib for collecting common utils function
+> A lib for collecting common utils function
 
 # Documentation
 

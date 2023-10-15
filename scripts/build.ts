@@ -17,8 +17,7 @@ const { targetPkgNames, all, watch } = resolveCliOption(process)
 const resolvedPkgNames = resolveTargetPkgNames(targetPkgNames, all)
 
 async function createConfig(pkgName: string) {
-	const pkgPath = resolve(packagesRoot, pkgName, 'package.json')
-	const pkgJson = getPkgJson(pkgPath)
+	const pkgJson = getPkgJson(resolve(packagesRoot, pkgName))
 	const buildOptions = pkgJson.buildOptions as BuildOptions
 	const {
 		libraryName = '',

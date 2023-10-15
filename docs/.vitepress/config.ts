@@ -2,7 +2,9 @@ import { defineConfig } from 'vitepress'
 
 import sidebar from '../sidebar.json'
 
-const name = 'savage-libs'
+import { getPkgJson, projectRoot } from '../../scripts/utils'
+
+const name = getPkgJson(projectRoot).name
 
 export default defineConfig({
 	base: `/${name}/`,

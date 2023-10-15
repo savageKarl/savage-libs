@@ -1,40 +1,80 @@
 import { resolve } from 'node:path'
-import { writeFile } from 'node:fs/promises'
 
+import { mdtable } from 'savage-mdtable'
 import { capitalize } from 'savage-utils'
 
 import {
+	projectRoot,
 	packagesRoot,
 	getPkgJson,
 	resolveCliOption,
 	resolveTargetPkgNames,
 	getCompleteTemplate,
-	replaceTemplateVariable
+	replaceTemplateVariable,
+	generateFiles,
+	pkgNames
 } from './utils'
 
 const { targetPkgNames, all } = resolveCliOption(process)
 
 const resolvedPkgNames = resolveTargetPkgNames(targetPkgNames, all)
 
-async function genereateReadme(name: string) {
-	const readmePath = resolve(packagesRoot, name, 'README.md')
-	const pkgJsonPath = resolve(packagesRoot, name, 'package.json')
+async function genereateReadme(pkgPath: string, type: 'root' | 'subPkg') {
+	const readmePath = resolve(pkgPath, 'README.md')
+	const pkgJson = getPkgJson(pkgPath)
 
-	const pkgJson = getPkgJson(pkgJsonPath)
+	const strategy = {
+		async root() {
+			const template = await getCompleteTemplate(['commonHeader'])
 
-	const template = await getCompleteTemplate(['commonHeader', 'readme'])
+			const content = replaceTemplateVariable(template, {
+				capitalizeName: capitalize(pkgJson.name),
+				description: pkgJson.description,
+				name: pkgJson.name
+			})
 
-	const content = replaceTemplateVariable(template, {
-		capitalizeName: capitalize(pkgJson.name),
-		description: pkgJson.description,
-		name: pkgJson.name
-	})
+			const table = mdtable({
+				header: ['Package', 'Version', 'Documention', 'Changelog'],
+				alignment: ['C', 'C', 'C', 'C'],
+				rows: pkgNames.map(pkgName => {
+					const { version } = getPkgJson(resolve(packagesRoot, pkgName))
+					return [
+						`[${pkgName}](./packages/${pkgName}#readme)`,
+						version,
+						`[Documention](https://savage181855.github.io/savage-libs/${pkgName}/modules.html)`,
+						`[Changelog](./packages/${pkgName}/CHANGELOG.md)`
+					]
+				})
+			})
 
-	writeFile(readmePath, content, { encoding: 'utf-8' })
+			return { content: [content, '# Packages', table].join('\n') }
+		},
+		async subPkg() {
+			const template = await getCompleteTemplate(['commonHeader', 'readme'])
+			const content = replaceTemplateVariable(template, {
+				capitalizeName: capitalize(pkgJson.name),
+				description: pkgJson.description,
+				name: pkgJson.name
+			})
+			return { content }
+		}
+	}
+
+	const { content } = await strategy[type]()
+
+	generateFiles({ [readmePath]: content })
 }
 
 main()
 function main() {
-	const tasks = resolvedPkgNames.map(name => () => genereateReadme(name))
-	Promise.all(tasks.map(v => v()))
+	const projectName = getPkgJson(projectRoot).name
+
+	if (targetPkgNames[0] === projectName) {
+		genereateReadme(projectRoot, 'root')
+	} else {
+		const tasks = resolvedPkgNames.map(
+			name => () => genereateReadme(resolve(packagesRoot, name), 'subPkg')
+		)
+		Promise.all(tasks.map(v => v()))
+	}
 }
