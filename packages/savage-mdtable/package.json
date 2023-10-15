@@ -1,6 +1,6 @@
 {
   "name": "savage-mdtable",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A library for generate markdown tables.",
   "miniprogram": "dist",
   "main": "dist/index.cjs",
