@@ -1,6 +1,6 @@
 {
   "name": "savage-log",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A logger that outputs logs on the terminal.",
   "miniprogram": "dist",
   "main": "dist/index.cjs",
