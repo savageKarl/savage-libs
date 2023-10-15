@@ -1,7 +1,7 @@
 {
 	"name": "savage-libs",
 	"version": "0.0.0",
-	"description": "monorepo",
+	"description": "A monorepo that stores all packages published on NPM.",
 	"private": true,
 	"type": "module",
 	"publishConfig": {
