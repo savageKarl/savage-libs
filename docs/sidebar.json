@@ -542,5 +542,32 @@
                 ]
             }
         ]
+    },
+    "/savage-mdtable/": {
+        "base": "/savage-mdtable/",
+        "items": [
+            {
+                "text": "savage-mdtable",
+                "link": "modules"
+            },
+            {
+                "text": "functions",
+                "items": [
+                    {
+                        "text": "mdtable",
+                        "link": "functions/mdtable"
+                    }
+                ]
+            },
+            {
+                "text": "interfaces",
+                "items": [
+                    {
+                        "text": "TableOptions",
+                        "link": "interfaces/TableOptions"
+                    }
+                ]
+            }
+        ]
     }
 }

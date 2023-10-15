@@ -1,0 +1,32 @@
+{
+  "name": "savage-mdtable",
+  "version": "0.0.0",
+  "description": "A library for generate markdown tables.",
+  "miniprogram": "dist",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "buildOptions": {
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "dts": true,
+    "minify": true
+  },
+  "type": "module",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "devDependencies": {},
+  "dependencies": {}
+}
