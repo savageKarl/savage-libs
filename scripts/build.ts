@@ -2,15 +2,14 @@ import { resolve } from 'node:path'
 
 import { build } from 'tsup'
 import type { Options as TsupOptions } from 'tsup'
-import type { IPackageJson } from '@ts-type/package-dts'
 
 import type { BuildOptions } from './types'
 import {
 	packagesRoot,
-	require,
 	getFullpath,
 	resolveCliOption,
-	resolveTargetPkgNames
+	resolveTargetPkgNames,
+	getPkgJson
 } from './utils'
 
 const { targetPkgNames, all, watch } = resolveCliOption(process)
@@ -19,8 +18,8 @@ const resolvedPkgNames = resolveTargetPkgNames(targetPkgNames, all)
 
 async function createConfig(pkgName: string) {
 	const pkgPath = resolve(packagesRoot, pkgName, 'package.json')
-	const pkg = require(pkgPath) as IPackageJson
-	const buildOptions = pkg.buildOptions as BuildOptions
+	const pkgJson = getPkgJson(pkgPath)
+	const buildOptions = pkgJson.buildOptions as BuildOptions
 	const {
 		libraryName = '',
 		external = 'dependencies',
@@ -34,7 +33,9 @@ async function createConfig(pkgName: string) {
 	const outDir = getFullpath(pkgName, 'dist')
 
 	const _external =
-		external === 'dependencies' ? Object.keys(pkg.dependencies || {}) : external
+		external === 'dependencies'
+			? Object.keys(pkgJson.dependencies || {})
+			: external
 
 	const plugins =
 		pkgName !== 'esbuild-plugin-umd'

@@ -1,8 +1,9 @@
-import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+import { spawn } from 'cross-spawn'
 import prompts from 'prompts'
-import { packagesRoot } from './utils'
+
+import { packagesRoot, generateFiles } from './utils'
 
 const template = {
 	name: '',
@@ -55,12 +56,18 @@ async function genereatePkg() {
 	template.name = name
 	template.description = description
 
-	await mkdir(resolve(packagesRoot, name))
-	writeFile(
-		resolve(packagesRoot, name, 'package.json'),
-		JSON.stringify(template, null, 2),
-		{ encoding: 'utf-8' }
-	)
+	const pkgPath = resolve(packagesRoot, name)
+	const srcPath = resolve(pkgPath, 'src')
+
+	const indexFilePath = resolve(srcPath, 'index.ts')
+	const pkgJsonPath = resolve(pkgPath, 'package.json')
+
+	generateFiles({
+		[pkgJsonPath]: JSON.stringify(template, null, 2),
+		[indexFilePath]: ''
+	})
+
+	spawn('pnpm readme -t', [name])
 }
 
 main()
