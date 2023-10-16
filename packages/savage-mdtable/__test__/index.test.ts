@@ -62,8 +62,6 @@ test('table with per-column padding', () => {
 | 7 | 8  |  9  |
 `
 
-	console.log(mdtable(Object.assign(options, { header: ['A', 'BB', 'CCC'] })))
-
 	expect(mdtable(Object.assign(options, { header: ['A', 'BB', 'CCC'] }))).toBe(
 		expected.trim()
 	)
