@@ -1,9 +1,10 @@
 import { defineConfig, UserConfig } from 'vitest/config'
-import { alias } from './scripts/aliases.js'
+
+import { compilerOptions } from './tsconfig.path.json'
 
 export default defineConfig({
 	resolve: {
-		alias
+		alias: getAlias(compilerOptions.paths)
 	},
 	test: {
 		globals: true,
@@ -17,3 +18,10 @@ export default defineConfig({
 		}
 	}
 }) as UserConfig
+
+function getAlias(pathRecord: Record<string, string[]>) {
+	return Object.keys(pathRecord).reduce(
+		(preV, curV) => Object.assign(preV, { [curV]: pathRecord[curV][0] }),
+		{} as Record<string, string>
+	)
+}

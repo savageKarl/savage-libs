@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"paths": {
+			"elec-ipc": ["packages/elec-ipc/src"],
+			"esbuild-plugin-umd": ["packages/esbuild-plugin-umd/src"],
+			"picox": ["packages/picox/src"],
+			"rollup-plugin-executer": ["packages/rollup-plugin-executer/src"],
+			"savage-log": ["packages/savage-log/src"],
+			"savage-mdtable": ["packages/savage-mdtable/src"],
+			"savage-react-store": ["packages/savage-react-store/src"],
+			"savage-types": ["packages/savage-types/src"],
+			"savage-utils": ["packages/savage-utils/src"],
+			"vite-plugin-us": ["packages/vite-plugin-us/src"]
+		}
+	}
+}

@@ -1,4 +1,5 @@
 {
+	"extends": "./tsconfig.path.json",
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "temp",
@@ -24,11 +25,7 @@
 		"jsx": "react-jsx",
 		"lib": ["esnext", "dom"],
 		"types": ["vitest/globals", "@testing-library/jest-dom"],
-		"rootDir": ".",
-		"paths": {
-			"savage-*": ["packages/savage-*/src"],
-			"vite-plugin-us/*": ["packages/vite-plugin-us/src/*"]
-		}
+		"rootDir": "."
 	},
 	"include": [
 		"**/*.ts",

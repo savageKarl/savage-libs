@@ -18,6 +18,7 @@
 		"docs:preview": "tsx scripts/docs --mode preview",
 		"create": "tsx scripts/create",
 		"readme": "tsx scripts/readme",
+		"aliases": "tsx scripts/aliases",
 		"check": "tsc --incremental --noEmit",
 		"lint": "eslint --cache --ext .ts packages/*/{src,__tests__}/**.ts",
 		"format": "prettier --write --cache \"**/*.[tj]s?(x)\"",

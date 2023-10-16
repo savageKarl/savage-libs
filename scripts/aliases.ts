@@ -1,11 +1,36 @@
 import { resolve } from 'node:path'
 
-import { pkgNames } from './utils'
+import {
+	projectRoot,
+	resolveCliOption,
+	resolveTargetPkgNames,
+	generateFiles
+} from './utils'
 
-const alias = pkgNames.reduce(
-	(preV, curV) =>
-		Object.assign(preV, { [curV]: resolve(`packages/${curV}/src`) }),
-	{}
-)
+const { targetPkgNames, all } = resolveCliOption(process)
 
-export { alias }
+const resolvedPkgNames = resolveTargetPkgNames(targetPkgNames, all)
+
+function generatePathFile(pkgNames: string[]) {
+	const template = {
+		compilerOptions: {
+			paths: {}
+		}
+	}
+
+	const paths = pkgNames.reduce(
+		(preV, curV) => Object.assign(preV, { [curV]: [`packages/${curV}/src`] }),
+		{}
+	)
+
+	template.compilerOptions.paths = paths
+
+	const aliasFilePath = resolve(projectRoot, 'tsconfig.path.json')
+
+	generateFiles({ [aliasFilePath]: JSON.stringify(template, null, 4) })
+}
+
+main()
+function main() {
+	generatePathFile(resolvedPkgNames)
+}

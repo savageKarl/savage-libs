@@ -68,6 +68,7 @@ async function genereatePkg() {
 	})
 
 	spawn('pnpm readme -t', [name])
+	spawn('pnpm aliases -t', [name])
 }
 
 main()
