@@ -116,7 +116,7 @@ export function serve(usOptions: Required<UsOptions>) {
 
 			if (!usOptions.server?.open) return
 
-			const cachePath = 'node_modules/.vite/vite-plugin-us.cache.js'
+			const cachePath = `node_modules/.vite/${pluginName}.cache.js`
 			let cacheMetaData = ''
 
 			if (existFile(cachePath)) {

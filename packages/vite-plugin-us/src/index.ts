@@ -4,12 +4,14 @@ import { UsOptions } from './types/types'
 import { plugins } from './plugins'
 import { mergeOptions } from './utils/optionsMerge'
 
+import { pluginName } from './utils/constants'
+
 export type { UsOptions } from './types/types'
 
 export function us(usOptions: UsOptions) {
 	const usOptionsMerged = mergeOptions(usOptions)
 	const usPlugin = {
-		name: 'vite-plugin-us',
+		name: pluginName,
 		enforce: 'post',
 		config() {
 			return {

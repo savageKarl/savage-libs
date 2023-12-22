@@ -15,7 +15,6 @@ export const pkg = (() => {
 	return JSON.parse(pkg) as IPackageJson
 })()
 
-export const resourcePath = 'node_modules/.vite/vite-plugin-us.resource.json'
 export const devPath = `${pluginName}.dev.user.js`
 export const previewPath = `${pluginName}.preview.user.js`
 export const prodPath = `${pluginName}.prod.user.js`
