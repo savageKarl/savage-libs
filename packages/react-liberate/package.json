@@ -1,7 +1,7 @@
 {
-	"name": "savage-react-store",
+	"name": "react-liberate",
 	"version": "1.0.1",
-	"description": "",
+	"description": "simple and elegant React Global State Manager",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",
