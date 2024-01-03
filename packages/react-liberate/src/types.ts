@@ -1,9 +1,15 @@
-export type Callback = (...args: any) => any
-export type DepsType = Map<any, Set<Callback>>
+// export type Callback = (arg: unknown) => unknown
 export type StateType = Record<string | number | symbol, unknown>
 
-export type ReturnType<T> = T extends (...args: any) => infer R
-	? R extends (...args: any) => any
+export type Callback<K extends keyof StateType = keyof StateType> = (
+	oldV: StateType[K],
+	V: StateType[K]
+) => unknown
+
+export type DepsType = Map<unknown, Set<Callback>>
+
+export type ReturnType<T> = T extends (...args: unknown[]) => infer R
+	? R extends (...args: unknown[]) => unknown
 		? ReturnType<R>
 		: R
 	: never
@@ -14,20 +20,36 @@ export type StoreWithGetters<G> = {
 
 export type GettersTree<S extends StateType> = Record<
 	string,
-	((state: S) => any) | (() => any)
+	((state: S) => unknown) | (() => unknown)
 >
 
 export type Options<S extends StateType, A, C> = {
 	state: S
-	computed?: C & ThisType<S & StoreWithGetters<C>> & GettersTree<S>
+	getters?: C & ThisType<S & StoreWithGetters<C>> & GettersTree<S>
 	actions?: A & ThisType<S & A & StoreWithGetters<C>>
 }
 
-export type Store<S, A, C> = S &
-	A &
-	StoreWithGetters<C> & {
-		patch(v: Partial<S> | ((arg: S) => unknown)): unknown
-		useWatcher<K extends keyof S>(k: K, fn: (oldV: S[K], V: S[K]) => any): any
-	}
+export type Api<S> = {
+	$patch(v: Partial<S> | ((arg: S) => unknown)): unknown
+	$watch<K extends keyof S>(k: K, fn: (oldV: S[K], V: S[K]) => unknown): unknown
+	$subscribe: (cb: () => unknown) => unknown
+}
+
+export type Store<S, A, C> = S & A & StoreWithGetters<C> & Api<S>
 
 export type DepStack = Callback[]
+
+export type PluginContext<S extends StateType, A, G> = {
+	options: Options<S, A, G>
+	store: Store<unknown, unknown, unknown>
+}
+
+export type PluginOptions<
+	S extends StateType = StateType,
+	A = unknown,
+	G = unknown
+> = (
+	ctx: PluginContext<S, A, G>
+) => (Partial<Store<unknown, unknown, unknown>> & object) | undefined | void
+
+export type Plugins = PluginOptions[]

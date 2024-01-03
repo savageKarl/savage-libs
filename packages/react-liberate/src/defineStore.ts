@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 
-import { copyDeep, compareDeep } from 'savage-utils'
-import { isObject } from 'savage-types'
+import { copyDeep, debounce } from 'savage-utils'
+import { isObject, isArray } from 'savage-types'
 
 import type {
 	DepsType,
@@ -9,13 +9,18 @@ import type {
 	Options,
 	Callback,
 	Store,
-	DepStack
+	DepStack,
+	Plugins,
+	PluginOptions
 } from './types'
 
 // global dependency collection
 const Dep: DepStack = []
 
-/** create reactive object */
+const subscribe: Set<() => unknown> = new Set()
+
+const plugins: Plugins = []
+
 function createReactive<T extends object>(target: T): T {
 	const deps: DepsType = new Map()
 
@@ -24,99 +29,45 @@ function createReactive<T extends object>(target: T): T {
 			const res = Reflect.get(target, key, receiver)
 			if (Dep.length > 0) {
 				if (!deps.get(key)) deps.set(key, new Set<Callback>())
-
-				Dep.forEach(item => {
-					deps.get(key)?.add(item)
-				})
+				Dep.forEach(item => deps.get(key)?.add(item))
 			}
-
 			return res
 		},
-		set(target, key: string, value, receiver) {
-			const oldV = copyDeep((target as any)[key])
+		set(target, key, value, receiver) {
+			const oldV = copyDeep(target[key as keyof T] as object)
 			const res = Reflect.set(target, key, value, receiver)
-			// debugger;
-			if (!compareDeep(oldV, value)) {
-				deps.get(key)?.forEach(item => item(oldV, value))
-			}
+			deps.get(key)?.forEach(item => item(oldV, value))
+			subscribe.forEach(fn => fn())
 			return res
 		}
 	})
 
 	for (const k in obj) {
 		const child = obj[k]
-		if (isObject(child)) {
-			obj[k] = createReactive(obj[k] as any) as any
+		if (isObject(child) || isArray(child)) {
+			obj[k] = createReactive(obj[k] as object) as T[Extract<keyof T, string>]
 		}
 	}
 	return obj
 }
 
-/** set the calculation property, specify this and the incoming state, and collect yourself as the dependency of the state */
-function setupComputed(fns: Record<string, Callback>, proxyStore: StateType) {
-	if (fns) {
-		for (const k in fns) {
-			fns[k] = fns[k].bind(proxyStore, proxyStore)
-			Dep.push(() => ((proxyStore as any)[k] = fns[k]()))
-			;(proxyStore as any)[k] = fns[k]()
-			Dep.pop()
-		}
-	}
-}
-
-/** collect dependency used by page */
+/** collect dependency used by components */
 function useCollectDep() {
 	const [, forceUpdate] = useReducer(c => c + 1, 0)
 	const callback = useRef<Callback>()
-	// 依赖只收集一次
+
+	// prevent collect dependencies if re-render
 	if (!callback.current) {
-		callback.current = function () {
-			forceUpdate()
-		}
+		callback.current = forceUpdate
 		Dep.push(callback.current)
 	}
-
 	useEffect(() => {
 		Dep.pop()
 	})
 }
 
-type Func<T = unknown> = (...args: unknown[]) => T
-
-/** convert actions to solve the problem of this loss in store actions */
-function setupActions(plainStore: StateType, proxyStore: StateType) {
-	for (const k in plainStore) {
-		if (typeof plainStore[k] === 'function') {
-			plainStore[k] = (plainStore[k] as Func).bind(proxyStore)
-		}
-	}
-}
-
-/** install the patch method to the store */
-function setupPatchOfStore(store: StateType) {
-	store.patch = function (val: StateType | Callback) {
-		if (typeof val === 'object') {
-			for (const k in val) {
-				store[k] = (val as any)[k]
-			}
-		}
-
-		if (typeof val === 'function') {
-			val(store)
-		}
-	}
-}
-
-/** install the watch hook to the store */
-function setupStoreOfWatcherHook(store: StateType) {
-	store.useWatcher = function useWatcher(v: string, fn: Callback) {
-		const callback = useRef<Callback>()
-		if (!callback.current) callback.current = fn
-		Dep.push(callback.current)
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const temp = store[v]
-		Dep.pop()
-	}
+export function loadPlugin(plugin: PluginOptions) {
+	plugins.push(plugin)
 }
 
 export function defineStore<
@@ -124,29 +75,99 @@ export function defineStore<
 	A extends Record<string, Callback>,
 	C = object
 >(options: Options<S, A, C>) {
+	const state = options.state
 	const actions = options.actions
+	const getters = options.getters
 
-	// proxy state to collect calculation property dependency
-	const state = createReactive(options.state)
-
-	const computed = options.computed as unknown as Record<string, Callback>
-
-	const s = {
+	const baseStore = createReactive({
 		...state,
-		...computed,
+		...getters,
 		...actions
-	} as Record<string, StateType | Callback>
+	}) as Store<S, A, C>
 
-	const store = createReactive(s)
+	for (const k in actions) {
+		// @ts-ignore
+		baseStore[k] = actions[k].bind(baseStore)
+	}
 
-	setupActions(s, store)
-	setupPatchOfStore(store)
-	setupStoreOfWatcherHook(store)
-	setupComputed(computed, store as any)
+	for (const k in getters) {
+		// @ts-ignore
+		getters[k] = getters[k].bind(baseStore, baseStore)
+		// @ts-ignore
+		Dep.push(() => (baseStore[k] = getters[k]()))
+		// @ts-ignorere
+		baseStore[k] = getters[k]()
+		Dep.pop()
+	}
 
-	function useStore(): Store<S, A, C> {
+	function $patch(val: Partial<S> | ((arg: S) => unknown)) {
+		if (typeof val === 'object') {
+			for (const k in val) {
+				// @ts-ignore
+				baseStore[k] = val[k]
+			}
+		}
+
+		if (typeof val === 'function') {
+			val(baseStore)
+		}
+	}
+
+	function $watch<K extends keyof S>(
+		k: K,
+		fn: (oldV: S[K], V: S[K]) => unknown
+	) {
+		// prevent collect dependencies if re-render
+		const callback = useRef<Callback<K>>()
+		// @ts-ignore
+		if (!callback.current) callback.current = fn
+		// @ts-ignore
+		Dep.push(callback.current)
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const temp = baseStore[k]
+		Dep.pop()
+	}
+
+	let env: 'component' | 'js' = 'js'
+
+	function $subscribe(cb: () => unknown) {
+		if (env === 'component') {
+			const callback = useRef<typeof cb>()
+			if (!callback.current) callback.current = debounce(() => cb(), 0)
+			subscribe.add(callback.current)
+		} else {
+			subscribe.add(debounce(() => cb(), 0))
+		}
+	}
+
+	const store = Object.assign(baseStore, {
+		$patch,
+		$watch,
+		$subscribe
+	})
+
+	setTimeout(() => {
+		plugins.forEach(p => {
+			Object.assign(
+				store,
+				p({
+					store,
+					// @ts-ignore
+					options: options || {}
+				})
+			)
+		})
+	}, 0)
+
+	function useStore() {
+		env = 'component'
+
+		useEffect(() => {
+			env = 'js'
+		})
+
 		useCollectDep()
-		return store as any
+		return store
 	}
 	return useStore
 }
