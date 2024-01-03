@@ -29,14 +29,15 @@ function createReactive<T extends object>(target: T): T {
 			const res = Reflect.get(target, key, receiver)
 			if (Dep.length > 0) {
 				if (!deps.get(key)) deps.set(key, new Set<Callback>())
-				Dep.forEach(item => deps.get(key)?.add(item))
+				Dep.forEach(fn => deps.get(key)?.add(fn))
 			}
 			return res
 		},
 		set(target, key, value, receiver) {
+			// debugger
 			const oldV = copyDeep(target[key as keyof T] as object)
 			const res = Reflect.set(target, key, value, receiver)
-			deps.get(key)?.forEach(item => item(oldV, value))
+			deps.get(key)?.forEach(fn => fn(oldV, value))
 			subscribe.forEach(fn => fn())
 			return res
 		}
@@ -75,9 +76,9 @@ export function defineStore<
 	A extends Record<string, Callback>,
 	C = object
 >(options: Options<S, A, C>) {
-	const state = options.state
-	const actions = options.actions
-	const getters = options.getters
+	const { state, actions, getters } = options
+
+	const initState = copyDeep(state)
 
 	const baseStore = createReactive({
 		...state,
@@ -87,7 +88,7 @@ export function defineStore<
 
 	for (const k in actions) {
 		// @ts-ignore
-		baseStore[k] = actions[k].bind(baseStore)
+		baseStore[k] = baseStore[k].bind(baseStore)
 	}
 
 	for (const k in getters) {
@@ -98,6 +99,24 @@ export function defineStore<
 		// @ts-ignorere
 		baseStore[k] = getters[k]()
 		Dep.pop()
+	}
+
+	const $state = createReactive(state)
+	for (const k in $state) {
+		// @ts-ignore
+		Dep.push((oldV, newV) => ($state[k] = newV))
+		const tempStoreValue = baseStore[k]
+		Dep.pop()
+
+		Dep.push((oldV, newV) => {
+			// @ts-ignore
+			if (!Object.is(newV, baseStore[k])) baseStore[k] = newV
+		})
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const temp$stateValue = $state[k]
+		Dep.pop()
+
+		$state[k] = tempStoreValue
 	}
 
 	function $patch(val: Partial<S> | ((arg: S) => unknown)) {
@@ -128,8 +147,28 @@ export function defineStore<
 		Dep.pop()
 	}
 
-	let env: 'component' | 'js' = 'js'
+	function $reset() {
+		function merge<T>(x: T, y: T) {
+			for (const k in y) {
+				const value = y[k]
 
+				// debugger
+				if (isObject(value)) {
+					merge(x[k], value)
+				} else if (isArray(value)) {
+					// debugger
+					;(x[k] as typeof value).length = value.length
+					// @ts-ignore
+					value.forEach((v, k) => (x[k] = value[k]))
+				} else {
+					x[k] = y[k]
+				}
+			}
+		}
+		merge($state, initState)
+	}
+
+	let env: 'component' | 'js' = 'js'
 	function $subscribe(cb: () => unknown) {
 		if (env === 'component') {
 			const callback = useRef<typeof cb>()
@@ -141,9 +180,11 @@ export function defineStore<
 	}
 
 	const store = Object.assign(baseStore, {
+		$state,
 		$patch,
 		$watch,
-		$subscribe
+		$subscribe,
+		$reset
 	})
 
 	setTimeout(() => {
@@ -153,8 +194,8 @@ export function defineStore<
 				p({
 					store,
 					// @ts-ignore
-					options: options || {}
-				})
+					options
+				}) || {}
 			)
 		})
 	}, 0)
