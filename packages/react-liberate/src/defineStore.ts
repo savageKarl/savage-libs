@@ -152,14 +152,13 @@ export function defineStore<
 			for (const k in y) {
 				const value = y[k]
 
-				// debugger
 				if (isObject(value)) {
 					merge(x[k], value)
 				} else if (isArray(value)) {
-					// debugger
-					;(x[k] as typeof value).length = value.length
 					// @ts-ignore
-					value.forEach((v, k) => (x[k] = value[k]))
+					x[k].length = value.length
+					// @ts-ignore
+					value.forEach((_, k2) => (x[k][k2] = value[k2]))
 				} else {
 					x[k] = y[k]
 				}
