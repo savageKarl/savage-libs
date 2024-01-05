@@ -1,8 +1,9 @@
-// export type Callback = (arg: unknown) => unknown
-export type StateType = Record<string | number | symbol, unknown>
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-export type Callback<T = StateType, K = StateType> = (oldV: T, V: K) => void
+export type StateTree = Record<string | number | symbol, unknown>
 
+export type Callback<T = StateTree, K = StateTree> = (oldV: T, V: K) => void
 export type DepsType = Map<unknown, Set<Callback>>
 
 export type ReturnType<T> = T extends (...args: unknown[]) => infer R
@@ -11,42 +12,89 @@ export type ReturnType<T> = T extends (...args: unknown[]) => infer R
 		: R
 	: never
 
-export type StoreWithGetters<G> = {
+export type _StoreWithGetters<G> = {
 	readonly [K in keyof G]: ReturnType<G[K]>
 }
 
-export type GettersTree<S extends StateType> = Record<
+export type _GettersTree<S extends StateTree> = Record<
 	string,
 	((state: S) => unknown) | (() => unknown)
 >
 
-export type Options<S extends StateType, A, C> = {
-	state: S
-	getters?: C & ThisType<S & StoreWithGetters<C>> & GettersTree<S>
-	actions?: A & ThisType<S & A & StoreWithGetters<C>>
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface LiberateCustomStateProperties<
+	S extends StateTree = StateTree
+> {}
+
+export type _ActionsTree = Record<
+	string | number | symbol,
+	(...args: any[]) => any
+>
+
+/**
+ * Interface to be extended by the user when they add properties through plugins.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface LiberateCustomProperties<
+	Id extends string = string,
+	S extends StateTree = StateTree,
+	G /* extends GettersTree<S> */ = _GettersTree<S>,
+	A /* extends ActionsTree */ = _ActionsTree
+> {}
+
+export type _DeepPartial<T> = { [K in keyof T]?: _DeepPartial<T[K]> }
+
+export interface _StoreWithState<Id extends string, S extends StateTree, G, A> {
+	$id: Id
+	$state: S & LiberateCustomStateProperties<S>
+	$patch(partialState: _DeepPartial<S>): void
+	$patch<F extends (state: S) => unknown>(
+		stateMutator: ReturnType<F> extends Promise<unknown> ? never : F
+	): void
+	$reset(): void
+	$subscribe(callback: (...args: unknown[]) => unknown): void
 }
 
-export type Api<S> = {
-	$patch(v: Partial<S> | ((arg: S) => unknown)): unknown
-	$watch<K extends keyof S>(k: K, fn: (oldV: S[K], V: S[K]) => unknown): unknown
-	$subscribe: (cb: () => unknown) => unknown
-}
+export type Store<
+	Id extends string,
+	S extends StateTree,
+	G,
+	A
+> = _StoreWithState<Id, S, G, A> &
+	S &
+	_StoreWithGetters<G> &
+	A &
+	LiberateCustomProperties<Id, S, G, A> &
+	LiberateCustomStateProperties<S>
 
-export type Store<S, A, C> = S & A & StoreWithGetters<C> & Api<S>
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface DefineStoreOptionsBase<S extends StateTree, Store> {}
+
+export interface DefineStoreOptions<
+	Id extends string,
+	S extends StateTree,
+	G /* extends GettersTree<S> */,
+	A /* extends Record<string, StoreAction> */
+> extends DefineStoreOptionsBase<S, Store<Id, S, G, A>> {
+	state: () => S
+	getters?: G & ThisType<S & _StoreWithGetters<G>> & _GettersTree<S>
+	actions?: A & ThisType<S & A & _StoreWithGetters<G>>
+}
 
 export type DepStack = Callback[]
 
-export type LiberatePluginContext<S extends StateType, A, G> = {
-	options: Options<S, A, G>
-	store: Store<unknown, unknown, unknown>
+export type LiberatePluginContext<
+	Id extends string = string,
+	S extends StateTree = StateTree,
+	G = _GettersTree<S>,
+	A = _ActionsTree
+> = {
+	options: DefineStoreOptions<Id, S, G, A>
+	store: Store<Id, S, G, A>
 }
 
-export type PluginOptions<
-	S extends StateType = StateType,
-	A = unknown,
-	G = unknown
-> = (
-	ctx: LiberatePluginContext<S, A, G>
-) => (Partial<Store<unknown, unknown, unknown>> & object) | undefined | void
-
-export type Plugins = PluginOptions[]
+export interface LiberatePlugin {
+	(
+		context: LiberatePluginContext
+	): Partial<LiberateCustomProperties & LiberateCustomStateProperties> | void
+}

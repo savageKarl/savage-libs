@@ -5,13 +5,14 @@ import { isObject, isArray } from 'savage-types'
 
 import type {
 	DepsType,
-	StateType,
-	Options,
+	StateTree,
+	DefineStoreOptions,
 	Callback,
 	Store,
 	DepStack,
-	Plugins,
-	PluginOptions
+	LiberatePlugin,
+	_GettersTree,
+	_ActionsTree
 } from './types'
 
 // global dependency collection
@@ -31,7 +32,7 @@ function getDep() {
 
 const subscribe: Set<() => unknown> = new Set()
 
-const plugins: Plugins = []
+const plugins: LiberatePlugin[] = []
 
 function createReactive<T extends object>(target: T): T {
 	const dataDepRecord: DepsType = new Map()
@@ -51,7 +52,7 @@ function createReactive<T extends object>(target: T): T {
 		},
 		set(target, key, value, receiver) {
 			// debugger
-			const oldV = copyDeep(target[key as keyof T])
+			const oldV = copyDeep(target[key as keyof T] as object) as StateTree
 			const status = Reflect.set(target, key, value, receiver)
 			dataDepRecord.get(key)?.forEach(dep => dep(oldV, value))
 			subscribe.forEach(fn => fn())
@@ -81,24 +82,25 @@ function useCollectDep() {
 	useEffect(removeDep)
 }
 
-export function loadPlugin(plugin: PluginOptions) {
+export function loadPlugin(plugin: LiberatePlugin) {
 	plugins.push(plugin)
 }
 
 export function defineStore<
-	S extends StateType = StateType,
-	A extends Record<string, Callback> = Record<string, Callback>,
-	C = object
->(options: Options<S, A, C>) {
+	Id extends string = string,
+	S extends StateTree = StateTree,
+	G extends _GettersTree<S> = _GettersTree<S>,
+	A extends _ActionsTree = _ActionsTree
+>(id: string, options: DefineStoreOptions<Id, S, G, A>) {
 	const { state, actions, getters } = options
 
-	const initState = copyDeep(state)
+	const initState = state()
 
 	const baseStore = createReactive({
-		...state,
+		...state(),
 		...getters,
 		...actions
-	}) as Store<S, A, C>
+	})
 
 	for (const k in actions) {
 		// @ts-ignore
@@ -115,7 +117,7 @@ export function defineStore<
 		removeDep()
 	}
 
-	const $state = createReactive(state)
+	const $state = createReactive(state())
 	for (const k in $state) {
 		// @ts-ignore
 		pushDep((oldV, newV) => ($state[k] = newV))
@@ -179,11 +181,12 @@ export function defineStore<
 	}
 
 	const store = Object.assign(baseStore, {
+		$id: id,
 		$state,
 		$patch,
 		$subscribe,
 		$reset
-	})
+	}) as Store<Id, S, G, A>
 
 	setTimeout(() => {
 		plugins.forEach(p => {
