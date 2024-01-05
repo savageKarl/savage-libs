@@ -1,10 +1,7 @@
 // export type Callback = (arg: unknown) => unknown
 export type StateType = Record<string | number | symbol, unknown>
 
-export type Callback<K extends keyof StateType = keyof StateType> = (
-	oldV: StateType[K],
-	V: StateType[K]
-) => unknown
+export type Callback<T = StateType, K = StateType> = (oldV: T, V: K) => void
 
 export type DepsType = Map<unknown, Set<Callback>>
 
@@ -39,7 +36,7 @@ export type Store<S, A, C> = S & A & StoreWithGetters<C> & Api<S>
 
 export type DepStack = Callback[]
 
-export type PluginContext<S extends StateType, A, G> = {
+export type LiberatePluginContext<S extends StateType, A, G> = {
 	options: Options<S, A, G>
 	store: Store<unknown, unknown, unknown>
 }
@@ -49,7 +46,7 @@ export type PluginOptions<
 	A = unknown,
 	G = unknown
 > = (
-	ctx: PluginContext<S, A, G>
+	ctx: LiberatePluginContext<S, A, G>
 ) => (Partial<Store<unknown, unknown, unknown>> & object) | undefined | void
 
 export type Plugins = PluginOptions[]
