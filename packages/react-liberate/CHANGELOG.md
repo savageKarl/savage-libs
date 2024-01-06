@@ -1,5 +1,11 @@
 # savage-react-store
 
+## 2.0.0
+
+### Major Changes
+
+- provide new apis and compelete types
+
 ## 1.0.1
 
 ### Patch Changes
