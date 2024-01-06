@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 
 import { copyDeep, debounce } from 'savage-utils'
-import { isObject, isArray } from 'savage-types'
+import { isObject, isArray, isFunction } from 'savage-types'
 
 import type {
 	DepsType,
@@ -14,6 +14,8 @@ import type {
 	_GettersTree,
 	_ActionsTree
 } from './types'
+
+import { reactiveMerge } from './utils'
 
 // global dependency collection
 const Dep: DepStack = []
@@ -94,10 +96,10 @@ export function defineStore<
 >(id: string, options: DefineStoreOptions<Id, S, G, A>) {
 	const { state, actions, getters } = options
 
-	const initState = state()
+	const initState = state ? state() : {}
 
 	const baseStore = createReactive({
-		...state(),
+		...(state ? state() : {}),
 		...getters,
 		...actions
 	})
@@ -117,55 +119,28 @@ export function defineStore<
 		removeDep()
 	}
 
-	const $state = createReactive(state())
+	const $state = createReactive(state ? state() : {}) as S
 	for (const k in $state) {
-		// @ts-ignore
-		pushDep((oldV, newV) => ($state[k] = newV))
-		const tempStoreValue = baseStore[k]
+		pushDep((oldV, newV) => ($state[k] = newV as S[Extract<keyof S, string>]))
+		const tempStoreValue = baseStore[k] as S[Extract<keyof S, string>]
 		removeDep()
 
 		pushDep((oldV, newV) => {
-			// @ts-ignore
 			if (!Object.is(newV, baseStore[k])) baseStore[k] = newV
 		})
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const temp$stateValue = $state[k]
 		removeDep()
-
 		$state[k] = tempStoreValue
 	}
 
 	function $patch(val: Partial<S> | ((arg: S) => unknown)) {
-		if (typeof val === 'object') {
-			for (const k in val) {
-				// @ts-ignore
-				baseStore[k] = val[k]
-			}
-		}
-
-		if (typeof val === 'function') {
-			val(baseStore)
-		}
+		if (isObject(val)) reactiveMerge($state, val)
+		if (isFunction(val)) val($state)
 	}
 
 	function $reset() {
-		function merge<T>(x: T, y: T) {
-			for (const k in y) {
-				const value = y[k]
-
-				if (isObject(value)) {
-					merge(x[k], value)
-				} else if (isArray(value)) {
-					// @ts-ignore
-					x[k].length = value.length
-					// @ts-ignore
-					value.forEach((_, k2) => (x[k][k2] = value[k2]))
-				} else {
-					x[k] = y[k]
-				}
-			}
-		}
-		merge($state, initState)
+		reactiveMerge($state, initState)
 	}
 
 	let apiExecuteEnv: 'component' | 'js' = 'js'

@@ -6,29 +6,22 @@ export type StateTree = Record<string | number | symbol, unknown>
 export type Callback<T = StateTree, K = StateTree> = (oldV: T, V: K) => void
 export type DepsType = Map<unknown, Set<Callback>>
 
-export type ReturnType<T> = T extends (...args: unknown[]) => infer R
-	? R extends (...args: unknown[]) => unknown
-		? ReturnType<R>
-		: R
-	: never
-
 export type _StoreWithGetters<G> = {
-	readonly [K in keyof G]: ReturnType<G[K]>
+	readonly [K in keyof G]: G[K] extends (...args: any[]) => infer R ? R : G[K]
 }
 
-export type _GettersTree<S extends StateTree> = Record<
-	string,
-	((state: S) => unknown) | (() => unknown)
+export type _ActionsTree = Record<
+	string | number | symbol,
+	(...args: any[]) => any
 >
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface LiberateCustomStateProperties<
 	S extends StateTree = StateTree
 > {}
-
-export type _ActionsTree = Record<
-	string | number | symbol,
-	(...args: any[]) => any
+export type _GettersTree<S extends StateTree> = Record<
+	string,
+	(state: S & LiberateCustomStateProperties<S>) => any
 >
 
 /**
@@ -49,7 +42,7 @@ export interface _StoreWithState<Id extends string, S extends StateTree, G, A> {
 	$state: S & LiberateCustomStateProperties<S>
 	$patch(partialState: _DeepPartial<S>): void
 	$patch<F extends (state: S) => unknown>(
-		stateMutator: ReturnType<F> extends Promise<unknown> ? never : F
+		stateMutator: ReturnType<F> extends Promise<any> ? never : F
 	): void
 	$reset(): void
 	$subscribe(callback: (...args: unknown[]) => unknown): void
@@ -74,11 +67,22 @@ export interface DefineStoreOptions<
 	Id extends string,
 	S extends StateTree,
 	G /* extends GettersTree<S> */,
-	A /* extends Record<string, StoreAction> */
+	A /* extends Record<string, StoreAction>  */
 > extends DefineStoreOptionsBase<S, Store<Id, S, G, A>> {
-	state: () => S
-	getters?: G & ThisType<S & _StoreWithGetters<G>> & _GettersTree<S>
-	actions?: A & ThisType<S & A & _StoreWithGetters<G>>
+	state?: () => S
+
+	getters?: G &
+		ThisType<S & _StoreWithGetters<G> & LiberateCustomProperties> &
+		_GettersTree<S>
+
+	actions?: A &
+		ThisType<
+			S &
+				A &
+				_StoreWithGetters<G> &
+				_StoreWithState<Id, S, G, A> &
+				LiberateCustomProperties
+		>
 }
 
 export type DepStack = Callback[]

@@ -1,7 +1,11 @@
 export * from './defineStore'
 
 export type {
+	StateTree,
+	Store,
 	DefineStoreOptionsBase,
 	LiberatePluginContext,
-	LiberatePlugin
+	LiberatePlugin,
+	LiberateCustomProperties,
+	LiberateCustomStateProperties
 } from './types'
