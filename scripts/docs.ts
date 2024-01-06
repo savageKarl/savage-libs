@@ -22,7 +22,7 @@ import {
 	packagesRoot,
 	replaceTemplateVariable,
 	getPkgJson,
-	getCompleteTemplate
+	spliceTemplate
 } from './utils'
 
 const docsPath = resolve(process.cwd(), 'docs')
@@ -124,7 +124,7 @@ async function generateDoc(pkgName: string) {
 			flag: 'a+'
 		})
 
-		const template = await getCompleteTemplate(['commonHeader', 'docs'])
+		const template = await spliceTemplate(['commonHeader', 'docs'])
 
 		const content = replaceTemplateVariable(template, {
 			capitalizeName: capitalize(pkgJson.name),

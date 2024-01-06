@@ -9,7 +9,7 @@ import {
 	getPkgJson,
 	resolveCliOption,
 	resolveTargetPkgNames,
-	getCompleteTemplate,
+	spliceTemplate,
 	replaceTemplateVariable,
 	generateFiles,
 	pkgNames
@@ -25,7 +25,7 @@ async function genereateReadme(pkgPath: string, type: 'root' | 'subPkg') {
 
 	const strategy = {
 		async root() {
-			const template = await getCompleteTemplate(['commonHeader'])
+			const template = await spliceTemplate(['commonHeader'])
 
 			const content = replaceTemplateVariable(template, {
 				capitalizeName: capitalize(pkgJson.name),
@@ -50,7 +50,7 @@ async function genereateReadme(pkgPath: string, type: 'root' | 'subPkg') {
 			return { content: [content, '# Packages', table].join('\n') }
 		},
 		async subPkg() {
-			const template = await getCompleteTemplate(['commonHeader', 'readme'])
+			const template = await spliceTemplate(['commonHeader', 'readme'])
 			const content = replaceTemplateVariable(template, {
 				capitalizeName: capitalize(pkgJson.name),
 				description: pkgJson.description,

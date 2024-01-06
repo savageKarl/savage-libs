@@ -28,10 +28,16 @@ const template = {
 	type: 'module',
 	scripts: {},
 	keywords: [],
-	author: '',
+	author: 'savage',
 	devDependencies: {},
 	dependencies: {}
 }
+
+const testFileContent = `
+test('hello', () => {
+	expect(1).toBe(1)
+})
+`
 
 async function genereatePkg() {
 	const questions = [
@@ -53,22 +59,26 @@ async function genereatePkg() {
 
 	const response = await prompts(questions)
 	const { name, description } = response
+
 	template.name = name
 	template.description = description
 
 	const pkgPath = resolve(packagesRoot, name)
-	const srcPath = resolve(pkgPath, 'src')
 
-	const indexFilePath = resolve(srcPath, 'index.ts')
+	const indexFilePath = resolve(pkgPath, 'src', 'index.ts')
 	const pkgJsonPath = resolve(pkgPath, 'package.json')
+	const docJsonPath = resolve(pkgPath, 'doc.md')
+	const testPath = resolve(pkgPath, '__test__', 'index.test.ts')
 
 	generateFiles({
 		[pkgJsonPath]: JSON.stringify(template, null, 2),
-		[indexFilePath]: ''
+		[indexFilePath]: '',
+		[docJsonPath]: '',
+		[testPath]: testFileContent
 	})
 
 	spawn('pnpm readme -t', [name])
-	spawn('pnpm aliases -t', [name])
+	spawn('pnpm aliases -a')
 }
 
 main()

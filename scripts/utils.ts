@@ -128,12 +128,15 @@ export function getPkgJson(path: string) {
 	return require(resolve(path, 'package.json')) as Required<IPackageJson>
 }
 
-export const getCompleteTemplate = (() => {
+export const spliceTemplate = (() => {
 	const templateRecord: Record<string, string> = {}
 
 	return async function (names: string[]) {
 		if (Object.keys(templateRecord).length === 0) {
-			const templatePath = resolve(process.cwd(), 'scripts/templates')
+			const templatePath = resolve(
+				process.cwd(),
+				'scripts/templates/documention'
+			)
 			const files = await readdir(templatePath)
 
 			const removeExt = (name: string) => name.replace(/\.\w+$/, '')
