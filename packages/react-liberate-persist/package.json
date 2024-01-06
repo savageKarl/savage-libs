@@ -1,0 +1,45 @@
+{
+	"name": "react-liberate-persist",
+	"version": "0.0.0",
+	"description": "a plugin of react-liberate that provide storage ability",
+	"miniprogram": "dist",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
+	"scripts": {},
+	"keywords": [],
+	"author": "",
+	"dependencies": {
+		"savage-types": "workspace:^",
+		"savage-utils": "workspace:^1.0.55"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0",
+		"react-dom": "^16.8.0"
+	},
+	"devDependencies": {
+		"react": "^16.8.0",
+		"react-dom": "^16.8.0",
+		"@types/react": "^16.8.0",
+		"@types/react-dom": "^16.8.0",
+		"vitest": "^0.34.3"
+	}
+}
