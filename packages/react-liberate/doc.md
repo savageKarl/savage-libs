@@ -14,24 +14,6 @@
 - **Watcher**
 - **Smart reminder**
 
-## installtion
-
-::: code-group
-
-```[npm]
-npm i react-liberate
-```
-
-```[pnpm]
-pnpm add react-liberate
-```
-
-```[yarn]
-yarn add react-liberate
-```
-
-:::
-
 **Notice**: The third-party mirror is not synchronized in time, so remember to use the official mirror! ! !
 
 ## compatibility
