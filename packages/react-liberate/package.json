@@ -30,12 +30,16 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"react": "^16.8.0",
-		"react-dom": "^16.8.0",
 		"savage-types": "workspace:^",
 		"savage-utils": "workspace:^1.0.55"
 	},
+	"peerDependencies": {
+		"react": "^16.8.0",
+		"react-dom": "^16.8.0"
+	},
 	"devDependencies": {
+		"react": "^16.8.0",
+		"react-dom": "^16.8.0",
 		"@types/react": "^16.8.0",
 		"@types/react-dom": "^16.8.0",
 		"vitest": "^0.34.3"
