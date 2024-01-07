@@ -17,6 +17,8 @@ import type {
 
 import { reactiveMerge } from './utils'
 
+import { getApiEnv } from './apiEnv'
+
 // global dependency collection
 const Dep: DepStack = []
 
@@ -143,10 +145,8 @@ export function defineStore<
 		reactiveMerge($state, initState)
 	}
 
-	let apiExecuteEnv: 'component' | 'js' = 'js'
-
 	function $subscribe(cb: () => unknown) {
-		if (apiExecuteEnv === 'component') {
+		if (getApiEnv() === 'component') {
 			const callback = useRef<typeof cb>()
 			if (!callback.current) callback.current = debounce(() => cb(), 0)
 			subscribe.add(callback.current)
@@ -177,13 +177,7 @@ export function defineStore<
 	}, 0)
 
 	function useStore() {
-		apiExecuteEnv = 'component'
-
-		useEffect(() => {
-			apiExecuteEnv = 'js'
-		})
-
-		useCollectDep()
+		if (getApiEnv() === 'component') useCollectDep()
 		return store
 	}
 	return useStore
