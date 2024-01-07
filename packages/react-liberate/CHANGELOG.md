@@ -1,5 +1,11 @@
 # savage-react-store
 
+## 2.0.1
+
+### Patch Changes
+
+- add obtain react api execution env and intercept error console log
+
 ## 2.0.0
 
 ### Major Changes
