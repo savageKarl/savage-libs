@@ -9,3 +9,5 @@ export * from './modules/compare'
 export * from './modules/iterator'
 export * from './modules/merge'
 export * from './modules/chain'
+
+export * from './modules/node'

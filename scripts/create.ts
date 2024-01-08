@@ -3,7 +3,8 @@ import { resolve } from 'node:path'
 import { spawn } from 'cross-spawn'
 import prompts from 'prompts'
 
-import { packagesRoot, generateFiles } from './utils'
+import { packagesRoot } from './utils'
+import { generateFiles } from 'savage-utils'
 
 const template = {
 	name: '',
