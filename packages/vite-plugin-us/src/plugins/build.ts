@@ -4,7 +4,12 @@ import connect from 'connect'
 import getPort from 'get-port'
 import open from 'open'
 
-import type { UserConfig, PluginOption, ResolvedConfig } from 'vite'
+import type {
+	UserConfig,
+	PluginOption,
+	ResolvedConfig,
+	InlineConfig
+} from 'vite'
 import { OutputChunk, OutputAsset } from 'rollup'
 import { build as inlineBuild, loadConfigFromFile } from 'vite'
 
@@ -31,10 +36,11 @@ export function build(usOptions: Required<UsOptions>) {
 		apply: 'build',
 		async config() {
 			await analyzeDep(usOptions)
+
 			const resource = await depCollection.resovleDep()
 
-			cssUrls = resource?.categoryRecord?.css?.map(v => v.url) || []
-			const jsUrls = resource?.categoryRecord?.js?.map(v => v.url) || []
+			cssUrls = resource?.categoryRecord?.css?.map(v => v.url)
+			const jsUrls = resource?.categoryRecord?.js?.map(v => v.url)
 
 			const r = usOptions.metaData.require
 			usOptions.metaData.require = r?.concat(jsUrls)
@@ -127,7 +133,7 @@ function autoAddGrant(usOptions: UsOptions, chunk: OutputChunk) {
 	}
 }
 
-async function getPluginsByViteConfig() {
+async function getViteConfig() {
 	const viteConfigPath = getViteConfigPath()
 
 	const configResult = (
@@ -147,15 +153,19 @@ async function getPluginsByViteConfig() {
 		return true
 	})
 
-	return { plugins }
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { plugins: p, ...rest } = configResult
+
+	return { plugins, ...rest }
 }
 
 async function analyzeDep(usOptions: Required<UsOptions>) {
 	const depKeys = Object.keys(pkg.dependencies || {})
 
-	const { plugins } = await getPluginsByViteConfig()
+	const { plugins, ...rest } = await getViteConfig()
 
 	await inlineBuild({
+		...rest,
 		logLevel: 'error',
 		configFile: false,
 		plugins: [...plugins, analyze(usOptions)],
@@ -177,5 +187,5 @@ async function analyzeDep(usOptions: Required<UsOptions>) {
 				}
 			}
 		}
-	})
+	} as unknown as InlineConfig)
 }
