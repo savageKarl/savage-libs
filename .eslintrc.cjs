@@ -34,14 +34,7 @@ module.exports = {
 			{ varsIgnorePattern: '.*', args: 'none' }
 		],
 		// most of the codebase are expected to be env agnostic
-		'no-restricted-globals': ['error', ...NodeGlobals],
-
-		'no-restricted-syntax': [
-			'error',
-			// since we target ES2015 for baseline support, we need to forbid object
-			// rest spread usage in destructure as it compiles into a verbose helper.
-			'ObjectPattern > RestElement'
-		]
+		'no-restricted-globals': ['error', ...NodeGlobals]
 	},
 	parserOptions: {
 		project: './tsconfig.json',
