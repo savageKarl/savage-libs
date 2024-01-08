@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.57
+
+### Patch Changes
+
+- acc5fe7: add node api
+
 ## 1.0.55
 
 ### Patch Changes
