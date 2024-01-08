@@ -19,10 +19,15 @@
 		"format": [
 			"esm",
 			"cjs",
-			"iife"
+			"umd"
 		],
 		"dts": true,
-		"minify": true
+		"minify": true,
+		"libraryName": "ReactLiberatePersist",
+		"globalVariableName": {
+			"savage-types": "SavageTypes",
+			"savage-utils": "SavageUtils"
+		}
 	},
 	"license": "GPL-3.0",
 	"type": "module",

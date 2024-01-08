@@ -18,13 +18,20 @@
 		"format": [
 			"esm",
 			"cjs",
-			"iife"
+			"umd"
 		],
 		"dts": true,
-		"minify": true
+		"minify": true,
+		"libraryName": "ReactLiberate",
+		"globalVariableName": {
+			"react": "React",
+			"react-dom": "ReactDOM",
+			"savage-types": "SavageTypes",
+			"savage-utils": "SavageUtils"
+		}
 	},
-	"unpkg": "./dist/index.global.js",
-	"jsdelivr": "./dist/index.global.js",
+	"unpkg": "./dist/index.umd.js",
+	"jsdelivr": "./dist/index.umd.js",
 	"type": "module",
 	"scripts": {
 		"test": "vitest"
