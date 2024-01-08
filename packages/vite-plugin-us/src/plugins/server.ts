@@ -15,6 +15,8 @@ import {
 } from '../utils/utils'
 import { devPath, grants, pluginName } from '../utils/constants'
 
+import { generateFiles } from 'savage-utils'
+
 export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
 	let currentOrigin: string
@@ -121,6 +123,8 @@ export function serve(usOptions: Required<UsOptions>) {
 
 			if (existFile(cachePath)) {
 				cacheMetaData = (await fs.readFile(cachePath)).toString('utf-8')
+			} else {
+				generateFiles({ [cachePath]: '' })
 			}
 
 			if (cacheMetaData !== newMetaData) {
@@ -140,3 +144,7 @@ export function serve(usOptions: Required<UsOptions>) {
 		}
 	} as PluginOption
 }
+
+// process.on('uncaughtException', e => {
+// 	console.log(e)
+// })
