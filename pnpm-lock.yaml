@@ -14,6 +14,9 @@ importers:
       picox:
         specifier: workspace:*
         version: link:packages/picox
+      savage-log:
+        specifier: workspace:^
+        version: link:packages/savage-log
       savage-mdtable:
         specifier: workspace:^
         version: link:packages/savage-mdtable
@@ -253,11 +256,17 @@ importers:
 
   packages/react-liberate:
     dependencies:
+      react:
+        specifier: ^16.8.0
+        version: 16.14.0
+      react-dom:
+        specifier: ^16.8.0
+        version: 16.14.0(react@16.14.0)
       savage-types:
         specifier: workspace:^
         version: link:../savage-types
       savage-utils:
-        specifier: workspace:^1.0.55
+        specifier: workspace:^1.0.58
         version: link:../savage-utils
     devDependencies:
       '@types/react':
@@ -266,23 +275,23 @@ importers:
       '@types/react-dom':
         specifier: ^16.8.0
         version: 16.9.19
-      react:
-        specifier: ^16.8.0
-        version: 16.14.0
-      react-dom:
-        specifier: ^16.8.0
-        version: 16.14.0(react@16.14.0)
       vitest:
         specifier: ^0.34.3
         version: 0.34.3(happy-dom@12.10.3)(jsdom@22.1.0)
 
   packages/react-liberate-persist:
     dependencies:
+      react:
+        specifier: ^16.8.0
+        version: 16.14.0
+      react-dom:
+        specifier: ^16.8.0
+        version: 16.14.0(react@16.14.0)
       savage-types:
         specifier: workspace:^
         version: link:../savage-types
       savage-utils:
-        specifier: workspace:^1.0.55
+        specifier: workspace:^1.0.58
         version: link:../savage-utils
     devDependencies:
       '@types/react':
@@ -291,12 +300,6 @@ importers:
       '@types/react-dom':
         specifier: ^16.8.0
         version: 16.9.19
-      react:
-        specifier: ^16.8.0
-        version: 16.14.0
-      react-dom:
-        specifier: ^16.8.0
-        version: 16.14.0(react@16.14.0)
       react-liberate:
         specifier: workspace:^
         version: link:../react-liberate
@@ -8098,6 +8101,7 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+    dev: false
 
   /proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
@@ -8150,6 +8154,7 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
+    dev: false
 
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
@@ -8162,6 +8167,7 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+    dev: false
 
   /react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
@@ -8183,6 +8189,7 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
+    dev: false
 
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
@@ -8466,6 +8473,7 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
+    dev: false
 
   /scheduler@0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}

@@ -66,7 +66,6 @@ export function wrap(options: Required<UmdOptions>, code: string) {
   var getPkgNameByPath = ${getPkgNameByPath.toString()}
 
   var require = _require || ${require.toString()}
-		debugger
 
   ${code}
 
