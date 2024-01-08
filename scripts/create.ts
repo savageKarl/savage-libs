@@ -30,6 +30,7 @@ const template = {
 	scripts: {},
 	keywords: [],
 	author: 'savage',
+	license: 'GPL-3.0',
 	devDependencies: {},
 	dependencies: {}
 }
