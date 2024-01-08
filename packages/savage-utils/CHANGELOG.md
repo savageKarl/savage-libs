@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.58
+
+### Patch Changes
+
+- 3e2fc1f: add format iife in build options
+
 ## 1.0.57
 
 ### Patch Changes

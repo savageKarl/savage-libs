@@ -1,5 +1,13 @@
 # vite-plugin-us
 
+## 1.0.3
+
+### Patch Changes
+
+- 4b32e9a: fix resolve path fail in build mode
+- Updated dependencies [3e2fc1f]
+  - savage-utils@1.0.58
+
 ## 1.0.2
 
 ### Patch Changes
