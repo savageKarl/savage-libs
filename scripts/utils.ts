@@ -173,11 +173,17 @@ export function generateFiles(pathRecord: Record<string, string>) {
 			.map((v, i, arr) => arr.slice(0, i).join('/'))
 			.filter((v, i, arr) => i !== 0 && i !== 1 && i !== arr.length)
 
-		const index = dirs.reduce((preV, curV, i, arr) => {
-			const status = fs.existsSync(curV)
-			if (status) return arr.length
-			else return i
-		}, 0)
+		let index = 0
+
+		for (const dir of dirs) {
+			const status = fs.existsSync(dir)
+			if (status) {
+				index = dirs.length
+			} else {
+				index = dirs.findIndex(v => v === dir)
+				break
+			}
+		}
 
 		if (index !== dirs.length) {
 			dirs.slice(index).forEach(path => fs.mkdirSync(path))
