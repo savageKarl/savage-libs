@@ -18,11 +18,14 @@
 	"buildOptions": {
 		"format": [
 			"esm",
-			"cjs"
+			"cjs",
+			"iife"
 		],
 		"dts": true,
 		"minify": true
 	},
+	"unpkg": "./dist/index.global.js",
+	"jsdelivr": "./dist/index.global.js",
 	"type": "module",
 	"publishConfig": {
 		"access": "public",

@@ -17,18 +17,27 @@
 	"buildOptions": {
 		"format": [
 			"esm",
-			"cjs"
+			"cjs",
+			"iife"
 		],
 		"dts": true,
 		"minify": true
 	},
+	"unpkg": "./dist/index.global.js",
+	"jsdelivr": "./dist/index.global.js",
 	"type": "module",
 	"scripts": {
 		"test": "vitest"
 	},
-	"keywords": [],
+	"keywords": [
+		"react-store",
+		"react",
+		"store",
+		"redux",
+		"redux-store"
+	],
 	"author": "",
-	"license": "ISC",
+	"license": "GPL-3.0",
 	"dependencies": {
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0",

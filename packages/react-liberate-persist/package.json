@@ -18,11 +18,13 @@
 	"buildOptions": {
 		"format": [
 			"esm",
-			"cjs"
+			"cjs",
+			"iife"
 		],
 		"dts": true,
 		"minify": true
 	},
+	"license": "GPL-3.0",
 	"type": "module",
 	"scripts": {},
 	"keywords": [],
