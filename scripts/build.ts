@@ -49,6 +49,12 @@ async function createConfig(pkgName: string) {
 			  ]
 			: []
 
+	const outExtension = (ctx: { format: 'esm' | 'cjs' | 'iife' | 'umd' }) => ({
+		js: { esm: '.js', cjs: '.cjs', iife: '.global.js', umd: '.umd.js' }[
+			ctx.format
+		]
+	})
+
 	return {
 		entry: [path],
 		minify: watch ? false : minify,
@@ -58,6 +64,7 @@ async function createConfig(pkgName: string) {
 		clean: false,
 		esbuildPlugins: plugins,
 		external: _external,
+		outExtension,
 		...rest
 	} as TsupOptions
 }
