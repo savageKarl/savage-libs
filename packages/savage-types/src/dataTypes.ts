@@ -1,5 +1,3 @@
-import * as fns from './fnList'
-
 export * from './fnList'
 
 /**
@@ -12,7 +10,3 @@ export const typeOf = (value: unknown, upperCase = true) => {
 
 	return s.toLocaleLowerCase()
 }
-
-export const types = Object.assign({ typeOf }, fns)
-
-export default types

@@ -1,9 +1,9 @@
-import { writeFile, readFile } from 'node:fs/promises'
+import { writeFile } from 'node:fs/promises'
 
 import axios from 'axios'
 import { load } from 'cheerio'
 
-import { docsUrl, fnsFilePath, specialType, indexFilePath } from './constants'
+import { docsUrl, fnsFilePath, specialType } from './constants'
 
 import type { TypeInfoItem } from './types'
 
