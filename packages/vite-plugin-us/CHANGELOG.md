@@ -1,5 +1,14 @@
 # vite-plugin-us
 
+## 1.0.4
+
+### Patch Changes
+
+- 4c43264: - just use npmmirror CDN
+  - No more distinction between domestic and foreign
+  - add new rule for seek CDN path
+  - savage-utils@1.0.61
+
 ## 1.0.3
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
 	"name": "savage-utils",
-	"version": "1.0.60",
+	"version": "1.0.61",
 	"description": "A lib for collecting common utils function",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",

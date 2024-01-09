@@ -1,6 +1,6 @@
 {
 	"name": "rollup-plugin-executer",
-	"version": "0.0.15",
+	"version": "0.0.16",
 	"description": "A rollup plugin can execute commands or functions on a specified hook.",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",

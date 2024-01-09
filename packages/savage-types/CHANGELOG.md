@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.16
+
+### Patch Changes
+
+- 142270a: remove type api
+
 ## 1.0.14
 
 ### Patch Changes

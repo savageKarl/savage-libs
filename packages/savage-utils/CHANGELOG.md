@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.0.61
+
+### Patch Changes
+
+- Updated dependencies [142270a]
+  - savage-types@1.0.16
+
 ## 1.0.58
 
 ### Patch Changes
