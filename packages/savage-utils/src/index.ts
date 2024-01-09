@@ -1,4 +1,4 @@
-export * from './constant/area'
+// export * from './constant/area'
 
 export * from './modules/eventCenter'
 export * from './modules/functions'
