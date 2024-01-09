@@ -26,7 +26,7 @@ export const htmlTempalte = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vite-plugin-us</title>
+  <title>${pluginName}</title>
 </head>
 
 <body>

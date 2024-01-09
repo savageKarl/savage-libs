@@ -32,5 +32,8 @@ export const regPkgFileNameRules: string[] = [
 	'production',
 	'production.min',
 	'index',
-	'index.full'
+	'index.full',
+	'index.umd',
+	'index.iife',
+	'global'
 ]

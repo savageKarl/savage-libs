@@ -39,7 +39,7 @@ type UrlsRecord = Record<
 class CDN {
 	private usedCDNs: ItemCDN[] = []
 	private leadingCdnRecord = {} as LeadingCdnRecord
-	private range: 'domestic' | 'foreign' = 'foreign'
+	private range: 'domestic' | 'foreign' = 'domestic'
 
 	public listGet() {
 		return this.usedCDNs
@@ -149,7 +149,6 @@ class CDN {
 			.forEach(v => {
 				availableCdnRecord[v.name] = urlsRecord[v.name]
 			})
-
 		return { availableCdnRecord }
 	}
 
@@ -188,7 +187,6 @@ class CDN {
 		}
 
 		strategy[this.range]()
-
 		const [pkgRes, directoryInfoRes] = await Promise.all([
 			serviceCDN.get(pkgJsonUrl),
 			serviceCDN.get(filesDirectoryUrl)
@@ -214,27 +212,32 @@ class CDN {
 		paths: string[],
 		version: string
 	) {
-		const { pkg, directoryInfo } = await this.getPkgJsonAndDirectoryInfo(
-			pkgName,
-			version
-		)
-		const allPaths = this.getPkgPathList(
-			directoryInfo as unknown as PkgPathInfo
-		)
-		const pkgCdnPath = seekCdnPath.seek(pkg as unknown as PkgCDN, allPaths)
+		let pkgCdnPath = ''
+
+		try {
+			const { pkg, directoryInfo } = await this.getPkgJsonAndDirectoryInfo(
+				pkgName,
+				version
+			)
+			const allPaths = this.getPkgPathList(
+				directoryInfo as unknown as PkgPathInfo
+			)
+			pkgCdnPath = seekCdnPath.seek(pkg as unknown as PkgCDN, allPaths)
+		} catch (e) {}
+
+		if (extname(pkgCdnPath) !== '.js') {
+			logger.warn(
+				`Unable to find CDN path for dependency ${pc.bold(pkgName)}, skipped!`
+			)
+			return false
+		}
 
 		const isJsFile = (path: string) => extname(path) === ''
 
 		paths = [...paths]
 			.map(p => {
-				if (isJsFile(p)) {
-					if (pkgCdnPath) return pkgCdnPath
-					else
-						logger.warn(
-							`Unable to find CDN path for dependency ${pc.bold(
-								pkgName
-							)}, skipped!`
-						)
+				if (isJsFile(p) && pkgCdnPath) {
+					return pkgCdnPath
 				}
 				return p
 			})
@@ -244,6 +247,7 @@ class CDN {
 		paths = [...new Set(paths)]
 
 		const { urlsRecord } = this.spliceUrl(pkgName, paths, version)
+
 		return urlsRecord
 	}
 
@@ -274,16 +278,18 @@ class CDN {
 		if (!isObjectHasValue(pkgDepsRecord)) return [] as DepRecord[]
 
 		const urlsRecord = (
-			await Promise.all(
-				pkgNames.map(
-					async pkgName =>
-						await this.getUrlForDep(
-							pkgName,
-							pkgDepsRecord[pkgName].paths,
-							pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
-						)
-				)
-			)
+			(await Promise.all(
+				pkgNames
+					.map(
+						async pkgName =>
+							await this.getUrlForDep(
+								pkgName,
+								pkgDepsRecord[pkgName].paths,
+								pkgDepsRecord[pkgName].version.replace(/^[\^~]/g, '')
+							)
+					)
+					.filter(async res => (await res) !== false)
+			)) as UrlsRecord[]
 		).reduce((preV, curV) => {
 			Object.keys(curV).forEach(k => {
 				preV[k] = (preV[k] || []).concat(curV[k])
@@ -291,13 +297,19 @@ class CDN {
 			return preV
 		}, {})
 
-		conditionLog(urlsRecord, 'Getting the available CDNs...')
+		conditionLog(urlsRecord, urlsRecord)
 
-		const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
+		const key = Object.keys(urlsRecord)[0]
+		const urlRecords = urlsRecord[key]
 
-		conditionLog(availableCdnRecord, 'Getting the fastest CDNs...')
+		// conditionLog(urlsRecord, 'Getting the available CDNs...')
 
-		const { urlRecords } = await this.getFastestCdn(availableCdnRecord)
+		// const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
+		// conditionLog(availableCdnRecord, availableCdnRecord)
+		// conditionLog(availableCdnRecord, 'Getting the fastest CDNs...')
+
+		// const { urlRecords } = await this.getFastestCdn(availableCdnRecord)
+		// conditionLog(urlRecords, urlRecords)
 
 		const codeRecord = (
 			await Promise.all(

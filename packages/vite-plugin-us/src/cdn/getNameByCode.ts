@@ -85,7 +85,7 @@ class GlobalVariableNameRegex {
 		this.code = code
 	}
 
-	capitalizeName() {
+	private capitalizeName() {
 		const camelCaseName = this.pkgName.split('-').reduce((pre, cur) => {
 			const splitArr = cur.split('')
 			splitArr[0] = splitArr[0].toUpperCase()
@@ -97,7 +97,7 @@ class GlobalVariableNameRegex {
 		return [camelCaseName, upperCaseName]
 	}
 
-	getModuleType() {
+	private getModuleType() {
 		const regUmd = unionRegex(regUmdRules)
 		const regGlobal = unionRegex(regGlobalRules)
 		const regIife = unionRegex(regIifeRules)
@@ -123,7 +123,7 @@ class GlobalVariableNameRegex {
 		return name || ''
 	}
 
-	getNameFromUmdModule() {
+	private getNameFromUmdModule() {
 		const regNames = this.capitalizeName()
 		const regNameRules = [
 			`(?<name0>${regNames[0]})` as unknown as RegExp,
@@ -146,12 +146,12 @@ class GlobalVariableNameRegex {
 		return name
 	}
 
-	getNameFromGlobalModule() {
+	private getNameFromGlobalModule() {
 		const regNameWithGlobal = unionRegex(regNameWithGlobalRules)
 		return this.code.match(regNameWithGlobal)?.groups?.name
 	}
 
-	getNameFromIifeModule() {
+	private getNameFromIifeModule() {
 		const regNameWithIife = unionRegex(regNameWithIifeRules)
 		return this.code.match(regNameWithIife)?.groups?.name
 	}
@@ -161,15 +161,23 @@ export function getNameByCode(pkgName: string, code: string) {
 	const chain = new Chain()
 
 	const nodeEval = chain.turnToNode(() => {
-		const globalVariableNameEval = new GlobalVariableNameEval()
-		const name = globalVariableNameEval.getNameByCode(code)
-		return name || 'nextNode'
+		try {
+			const globalVariableNameEval = new GlobalVariableNameEval()
+			const name = globalVariableNameEval.getNameByCode(code)
+			return name || 'nextNode'
+		} catch {
+			return 'nextNode'
+		}
 	})
 
 	const nodeRegex = chain.turnToNode(() => {
-		const globalVariableNameRegex = new GlobalVariableNameRegex(pkgName, code)
-		const name = globalVariableNameRegex.getNameByCode()
-		return name || 'nextNode'
+		try {
+			const globalVariableNameRegex = new GlobalVariableNameRegex(pkgName, code)
+			const name = globalVariableNameRegex.getNameByCode()
+			return name || 'nextNode'
+		} catch {
+			return 'nextNode'
+		}
 	})
 
 	const nodeLast = chain.turnToNode(() => {
