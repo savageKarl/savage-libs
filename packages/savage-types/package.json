@@ -18,16 +18,14 @@
 	"buildOptions": {
 		"format": [
 			"esm",
-			"cjs"
+			"cjs",
+			"umd"
 		],
 		"dts": true,
 		"minify": true
 	},
-	"type": "module",
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
+	"unpkg": "./dist/index.umd.js",
+	"jsdelivr": "./dist/index.umd.js",
 	"scripts": {
 		"generate": "tsx src/generate.ts"
 	},

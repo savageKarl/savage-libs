@@ -1,6 +1,6 @@
 {
 	"name": "savage-utils",
-	"version": "1.0.58",
+	"version": "1.0.59",
 	"description": "A lib for collecting common utils function",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
@@ -19,23 +19,14 @@
 		"format": [
 			"esm",
 			"cjs",
-			"iife"
+			"umd"
 		],
 		"dts": true,
 		"minify": true
 	},
-	"unpkg": "./dist/index.global.js",
-	"jsdelivr": "./dist/index.global.js",
+	"unpkg": "./dist/index.umd.js",
+	"jsdelivr": "./dist/index.umd.js",
 	"type": "module",
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
-	"config": {
-		"commitizen": {
-			"path": "node_modules/cz-conventional-changelog"
-		}
-	},
 	"license": "GPL-3.0",
 	"dependencies": {
 		"savage-types": "workspace:*"
