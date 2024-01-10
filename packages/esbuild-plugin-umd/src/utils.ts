@@ -46,8 +46,6 @@ export function wrap(options: Required<UmdOptions>, code: string) {
 
 	const template = `
   ;(function (global, factory) {
-		let _require = (()=>{ try { return require } catch {} })()
-
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, ${getDepString(
 			`require('[name]')`
 		)}) :
@@ -64,7 +62,7 @@ export function wrap(options: Required<UmdOptions>, code: string) {
   let globalRecord = ${JSON.stringify(options.globalVariableName)}
 
   let getPkgNameByPath = ${getPkgNameByPath.toString()}
-
+	let _require = (()=>{ try { return require } catch {} })()
   let require = _require || ${require.toString()}
 
   ${code}
