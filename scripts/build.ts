@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 
-import { build } from 'tsup'
-import type { Options as TsupOptions } from 'tsup'
+import { build } from 'savage-tsup'
+import type { Options as TsupOptions } from 'savage-tsup'
 
 import type { BuildOptions } from './types'
 import {
@@ -43,7 +43,6 @@ async function createConfig(pkgName: string) {
 					(await import('esbuild-plugin-umd')).umd({
 						libraryName,
 						external: _external,
-
 						globalVariableName
 					})
 			  ]
@@ -56,6 +55,7 @@ async function createConfig(pkgName: string) {
 	})
 
 	return {
+		...rest,
 		entry: [path],
 		minify: watch ? false : minify,
 		dts: watch ? false : dts,
@@ -64,8 +64,7 @@ async function createConfig(pkgName: string) {
 		clean: false,
 		esbuildPlugins: plugins,
 		external: _external,
-		outExtension,
-		...rest
+		outExtension
 	} as TsupOptions
 }
 
