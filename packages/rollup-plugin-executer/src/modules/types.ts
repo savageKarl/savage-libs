@@ -1,5 +1,5 @@
 import type { PluginHooks } from 'rollup'
-import { types } from 'savage-types'
+import { isFunction, isString, isArray } from 'savage-types'
 
 export type { PluginHooks } from 'rollup'
 
@@ -29,14 +29,14 @@ export type Args = Command | CommandList | Options | OptionsList
  * @internal
  */
 export function isCommand(v: unknown): v is Command {
-	return types.isFunction(v) || types.isString(v)
+	return isFunction(v) || isString(v)
 }
 
 /**
  * @internal
  */
 export function isCommandList(v: unknown): v is CommandList {
-	return types.isArray(v) && isCommand((v as CommandList)[0])
+	return isArray(v) && isCommand((v as CommandList)[0])
 }
 
 /**
@@ -50,7 +50,7 @@ export function isOptions(v: unknown): v is Options {
  * @internal
  */
 export function isOptionsList(v: unknown): v is OptionsList {
-	return types.isArray(v) && isOptions((v as OptionsList)[0])
+	return isArray(v) && isOptions((v as OptionsList)[0])
 }
 
 /**
