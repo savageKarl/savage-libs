@@ -1,6 +1,6 @@
 {
 	"name": "react-liberate",
-	"version": "2.0.5",
+	"version": "2.0.6",
 	"description": "simple and elegant React Global State Manager",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
@@ -24,11 +24,11 @@
 		"minify": true,
 		"libraryName": "ReactLiberate",
 		"globalVariableName": {
-			"react": "React",
-			"react-dom": "ReactDOM",
-			"savage-types": "SavageTypes",
-			"savage-utils": "SavageUtils"
-		}
+			"react": "React"
+		},
+		"external": [
+			"react"
+		]
 	},
 	"unpkg": "./dist/index.umd.js",
 	"jsdelivr": "./dist/index.umd.js",
@@ -47,13 +47,11 @@
 	"license": "GPL-3.0",
 	"dependencies": {
 		"react": "^16.8.0",
-		"react-dom": "^16.8.0",
 		"savage-types": "workspace:^",
 		"savage-utils": "workspace:^1.0.61"
 	},
 	"peerDependencies": {
-		"react": "^16.8.0",
-		"react-dom": "^16.8.0"
+		"react": "^16.8.0"
 	},
 	"devDependencies": {
 		"@types/react": "^16.8.0",

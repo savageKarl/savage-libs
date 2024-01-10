@@ -22,7 +22,11 @@
 			"umd"
 		],
 		"dts": true,
-		"minify": true
+		"minify": true,
+		"libraryName": "SavageUtils",
+		"globalVariableName": {
+		},
+		"external": []
 	},
 	"unpkg": "./dist/index.umd.js",
 	"jsdelivr": "./dist/index.umd.js",

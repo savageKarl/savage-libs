@@ -23,7 +23,10 @@
 			"umd"
 		],
 		"dts": true,
-		"minify": true
+		"minify": true,
+		"libraryName": "SavageTypes",
+		"globalVariableName": {},
+		"external": []
 	},
 	"unpkg": "./dist/index.umd.js",
 	"jsdelivr": "./dist/index.umd.js",
@@ -49,9 +52,5 @@
 		"url": "https://github.com/savage181855/data-types",
 		"email": "2443005004@qq.com"
 	},
-	"license": "GPL-3.0",
-	"dependencies": {
-		"axios": "^1.5.0",
-		"cheerio": "1.0.0-rc.12"
-	}
+	"license": "GPL-3.0"
 }
