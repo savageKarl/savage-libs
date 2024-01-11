@@ -69,7 +69,7 @@ export function removeSvg(bundle: OutputBundle) {
 
 interface InjectCssOptions {
 	links: string[]
-	inline: string
+	inline?: string
 	minify: boolean
 	pluginName: string
 }
@@ -84,10 +84,12 @@ export function injectCss(options: InjectCssOptions) {
 				document.head.appendChild(link)
 			})
 
-			const style = document.createElement('style')
-			style.dataset.vitePluginId = options.pluginName
-			style.textContent = options.inline
-			document.head.appendChild(style)
+			if (options.inline) {
+				const style = document.createElement('style')
+				style.dataset.vitePluginId = options.pluginName
+				style.textContent = options.inline
+				document.head.appendChild(style)
+			}
 		})
 	}, options)
 	return options.minify ? minifyCode(code, 'js') : code

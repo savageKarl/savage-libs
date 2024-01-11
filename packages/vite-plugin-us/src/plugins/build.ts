@@ -53,7 +53,7 @@ export function build(usOptions: Required<UsOptions>) {
 						entry: usOptions.entry,
 						fileName: `${usOptions.metaData.name}.user`,
 						name: hyphenToCamelCase(usOptions.metaData.name as string),
-						formats: ['iife']
+						formats: ['umd']
 					},
 					rollupOptions: {
 						external: resource.externals,
@@ -76,12 +76,13 @@ export function build(usOptions: Required<UsOptions>) {
 			resovledConfig = config
 		},
 		async generateBundle(options, bundle) {
-			const filename = `${usOptions.metaData.name}.user.iife.js`
+			// debugger
+			const filename = `${usOptions.metaData.name}.user.umd.cjs`
 			const chunk = bundle[filename] as OutputChunk
 			chunk.fileName = `${usOptions.metaData.name}.user.js`
 
 			const css = bundle['style.css'] as OutputAsset
-			Reflect.deleteProperty(bundle, 'style.css')
+			if (css) Reflect.deleteProperty(bundle, 'style.css')
 
 			autoAddGrant(usOptions, chunk)
 			addPrefixForName(usOptions, 'production')
@@ -98,7 +99,7 @@ export function build(usOptions: Required<UsOptions>) {
 				'',
 				await injectCss({
 					links: cssUrls,
-					inline: String(css.source),
+					inline: css ? String(css.source) : '',
 					minify: usOptions.build.cssMinify as boolean,
 					pluginName
 				}),

@@ -175,14 +175,28 @@ class CDN {
 			const isJsFile = extname(v.url) === '.js'
 			if (isJsFile) {
 				const name = v.globalVariableName
-				const template =
-					'try{if(name){window["name"]=name}if(window["name"]){this["name"]=window["name"]}}catch{}'
 
-				template.replace(/name/g, name)
+				const template = `
+				;(function () {
+					let [name] =
+						this["[name]"] || window["[name]"]
+					if ([name].default) {
+						const defaultExport = [name].default
+						Object.keys([name]).forEach((key) => {
+							if (key !== "default") {
+								defaultExport[key] = [name][key]
+							}
+						})
+				
+						window["[name]"] = defaultExport
+						this["[name]"] = window["[name]"]
+					}
+				})();
+				`
 
 				handledDepsRecords.push(
 					Object.assign(copyDeep(v), {
-						url: generateJsDataUrlByCode(template.replace(/name/g, name))
+						url: generateJsDataUrlByCode(template.replaceAll('[name]', name))
 					})
 				)
 			}
