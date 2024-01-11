@@ -44,7 +44,7 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: ['**/__tests__/**', 'packages/dts-test/**'],
+			files: ['**/__tests__/**'],
 			rules: {
 				'no-restricted-globals': 'off',
 				'no-restricted-syntax': 'off',
@@ -55,13 +55,6 @@ module.exports = {
 		// Node scripts
 		{
 			files: ['scripts/**', 'index.js', 'packages/**/index.js'],
-			rules: {
-				'no-restricted-globals': 'off',
-				'no-restricted-syntax': 'off'
-			}
-		},
-		{
-			files: ['rollup.config.js'],
 			rules: {
 				'no-restricted-globals': 'off',
 				'no-restricted-syntax': 'off'
