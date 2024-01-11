@@ -6,4 +6,8 @@ export interface BuildOptions {
 	target: string[]
 	dts: boolean
 	minify: boolean
+	copy?: {
+		from: string
+		to: string
+	}
 }

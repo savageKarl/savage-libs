@@ -24,7 +24,11 @@
 		"minify": true,
 		"target": [
 			"esnext"
-		]
+		],
+		"copy": {
+			"from": "src/types",
+			"to": "dist/types"
+		}
 	},
 	"type": "module",
 	"scripts": {},

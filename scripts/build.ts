@@ -1,5 +1,8 @@
 import { resolve } from 'node:path'
 
+// @ts-ignore
+import copydir from 'copy-dir'
+
 import { build } from 'savage-tsup'
 import type { Options as TsupOptions } from 'savage-tsup'
 
@@ -25,6 +28,7 @@ async function createConfig(pkgName: string) {
 		globalVariableName = {},
 		minify,
 		dts,
+		copy,
 		...rest
 	} = buildOptions
 
@@ -47,6 +51,23 @@ async function createConfig(pkgName: string) {
 					})
 			  ]
 			: []
+	if (copy) {
+		const from = resolve(packagesRoot, pkgName, copy.from)
+		const to = resolve(packagesRoot, pkgName, copy.to)
+
+		copydir(
+			from,
+			to,
+			{
+				utimes: true, // keep add time and modify time
+				mode: true, // keep file mode
+				cover: true // cover file when exists, default is true
+			},
+			function (err: unknown) {
+				if (err) throw err
+			}
+		)
+	}
 
 	const outExtension = (ctx: { format: 'esm' | 'cjs' | 'iife' | 'umd' }) => ({
 		js: { esm: '.js', cjs: '.cjs', iife: '.global.js', umd: '.umd.js' }[
@@ -63,7 +84,6 @@ async function createConfig(pkgName: string) {
 		clean: false,
 		esbuildPlugins: plugins,
 		...rest,
-		target: 'esnext',
 		external: _external,
 		outExtension
 	} as TsupOptions

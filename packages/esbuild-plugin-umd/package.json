@@ -21,7 +21,10 @@
 			"cjs"
 		],
 		"dts": true,
-		"minify": true
+		"minify": true,
+		"target": [
+			"esnext"
+		]
 	},
 	"type": "module",
 	"scripts": {},
