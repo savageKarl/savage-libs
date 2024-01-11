@@ -47,7 +47,6 @@ jobs:
         run: pnpm install --no-frozen-lockfile -r
       - name: Build with VitePress
         run: |
-          pnpm build -t esbuild-plugin-umd
           pnpm build -a
           pnpm docs:build -a
       - name: Upload artifact
