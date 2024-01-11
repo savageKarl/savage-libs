@@ -28,7 +28,7 @@
 		"test-coverage": "vitest -c vitest.unit.config.ts --coverage",
 		"log": "changeset add",
 		"versions": "changeset version",
-		"release": "changeset publish",
+		"release": "pnpm publish -r",
 		"commit": "git-cz",
 		"prepare": "husky install"
 	},
