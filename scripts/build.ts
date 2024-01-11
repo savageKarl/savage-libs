@@ -55,7 +55,6 @@ async function createConfig(pkgName: string) {
 	})
 
 	return {
-		...rest,
 		entry: [path],
 		minify: watch ? false : minify,
 		dts: watch ? false : dts,
@@ -63,6 +62,8 @@ async function createConfig(pkgName: string) {
 		watch,
 		clean: false,
 		esbuildPlugins: plugins,
+		...rest,
+		target: 'esnext',
 		external: _external,
 		outExtension
 	} as TsupOptions
