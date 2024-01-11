@@ -28,8 +28,12 @@ export function umd(options: UmdOptions) {
 				const jsFile = outputFiles?.filter(v => /js$/.test(v.path))
 
 				for (const file of jsFile || []) {
-					// @ts-ignore
-					const code = await rollupBuild(initialOptions.entryPoints[0], options)
+					const code = await rollupBuild(
+						// @ts-ignore
+						initialOptions.entryPoints[0],
+						initialOptions.minify || false,
+						options
+					)
 					const uint8array = new TextEncoder().encode(code)
 					file.contents = uint8array
 				}

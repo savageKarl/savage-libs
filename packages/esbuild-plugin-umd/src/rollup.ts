@@ -2,17 +2,28 @@ import { rollup } from 'rollup'
 import commonjs from '@rollup/plugin-commonjs'
 import rpt2 from 'rollup-plugin-typescript2'
 import nodeResolve from '@rollup/plugin-node-resolve'
+import terser from '@rollup/plugin-terser'
 
-import type { OutputOptions } from 'rollup'
+import type { OutputOptions, RollupOptions } from 'rollup'
 
 import type { UmdOptions } from './types'
 
-export async function build(entry: string, options: UmdOptions) {
+export async function build(
+	entry: string,
+	minify: boolean,
+	options: UmdOptions
+) {
 	const inputOptions = {
 		input: entry,
-		plugins: [commonjs(), rpt2({ check: false }), nodeResolve()],
-		external: options.external
-	}
+		plugins: [
+			commonjs(),
+			rpt2({ check: false }),
+			nodeResolve(),
+			minify ? terser() : ''
+		],
+		external: options.external,
+		treeshake: 'smallest'
+	} as RollupOptions
 
 	const outputOptions: OutputOptions = {
 		file: 'index.js',
