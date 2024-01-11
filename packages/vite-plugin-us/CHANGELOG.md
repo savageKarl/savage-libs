@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.6
+
+### Patch Changes
+
+- 71e53c4: chore: remove get fastest CDN and just use default CDN
+
 ## 1.0.5
 
 ### Patch Changes
