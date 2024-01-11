@@ -1,5 +1,13 @@
 # vite-plugin-us
 
+## 1.0.7
+
+### Patch Changes
+
+- 4653a90: - fix inline css bug
+  - change inject data url template
+  - fix bundle format with umd
+
 ## 1.0.6
 
 ### Patch Changes
