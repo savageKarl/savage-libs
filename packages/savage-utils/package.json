@@ -1,6 +1,6 @@
 {
 	"name": "savage-utils",
-	"version": "1.0.62",
+	"version": "1.0.63",
 	"description": "A lib for collecting common utils function",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
@@ -24,8 +24,7 @@
 		"dts": true,
 		"minify": true,
 		"libraryName": "SavageUtils",
-		"globalVariableName": {
-		},
+		"globalVariableName": {},
 		"external": []
 	},
 	"unpkg": "./dist/index.umd.js",

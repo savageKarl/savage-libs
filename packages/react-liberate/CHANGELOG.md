@@ -1,5 +1,14 @@
 # savage-react-store
 
+## 2.0.8
+
+### Patch Changes
+
+- 5968549:
+- Updated dependencies [5968549]
+  - savage-types@1.0.19
+  - savage-utils@1.0.63
+
 ## 2.0.5
 
 ### Patch Changes

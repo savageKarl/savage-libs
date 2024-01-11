@@ -1,5 +1,12 @@
 # vite-plugin-us
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [5968549]
+  - savage-utils@1.0.63
+
 ## 1.0.4
 
 ### Patch Changes

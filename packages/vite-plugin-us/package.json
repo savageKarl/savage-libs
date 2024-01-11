@@ -1,6 +1,6 @@
 {
 	"name": "vite-plugin-us",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "A vite plugin for developing and building scripts that run on browser extensions such as Tampermonkey, Violentmonkey, Greasemonkey and ScriptCat.",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
