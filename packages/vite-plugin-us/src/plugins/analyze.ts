@@ -1,6 +1,6 @@
 import type { PluginOption } from 'vite'
 
-import type { UsOptions } from '../types/types'
+import type { UsOptions } from '../utils/types'
 
 import { DepCollection } from '../utils/depCollection'
 import { pluginName } from '../utils/constants'

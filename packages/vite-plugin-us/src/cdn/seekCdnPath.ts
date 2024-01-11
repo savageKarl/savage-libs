@@ -1,4 +1,4 @@
-import { PkgCDN, SpliceSeekPathOptions } from '../types/types'
+import { PkgCDN, SpliceSeekPathOptions } from '../utils/types'
 
 import { regPkgFileNameRules, regPkgFolderRules } from './regexRules'
 

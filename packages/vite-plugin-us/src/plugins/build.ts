@@ -21,8 +21,8 @@ import {
 	hyphenToCamelCase
 } from '../utils/utils'
 import { grants, pluginName, pkg } from '../utils/constants'
-import type { Grants } from '../types/userscript'
-import type { UsOptions } from '../types/types'
+import type { Grants } from '../utils/userscript'
+import type { UsOptions } from '../utils/types'
 import { bundleMiddware, redirectMiddleware } from '../utils/middleware'
 import { analyze, depCollection } from './analyze'
 

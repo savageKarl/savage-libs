@@ -1,12 +1,12 @@
 import type { UserConfig, PluginOption } from 'vite'
 
-import { UsOptions } from './types/types'
+import { UsOptions } from './utils/types'
 import { plugins } from './plugins'
 import { mergeOptions } from './utils/optionsMerge'
 
 import { pluginName } from './utils/constants'
 
-export type { UsOptions } from './types/types'
+export type { UsOptions } from './utils/types'
 
 export function us(usOptions: UsOptions) {
 	const usOptionsMerged = mergeOptions(usOptions)

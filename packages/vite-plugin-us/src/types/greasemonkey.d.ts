@@ -6,41 +6,37 @@
 // This definition is based on the API reference of Greasemonkey.
 // http://wiki.greasespot.net/Greasemonkey_Manual:API
 
-////////////////
-// Global variable
-////////////////
-
 /**
  * Window object of the content page where the user script is running on.
  * @see {@link http://wiki.greasespot.net/UnsafeWindow}
  */
-declare var unsafeWindow: Window
+declare let unsafeWindow: Window
 
 /**
  * Meta data about the running user script.
  * @see {@link http://wiki.greasespot.net/GM_info}
  */
-declare var GM_info: {
-  script: {
-    description: string
-    excludes: string[]
-    includes: string[]
-    matches: string[]
-    name: string
-    namespace: string
-    resources: Object
-    'run-at': string
-    unwrap: boolean
-    version: string
-  }
-  scriptMetaStr: string
-  scriptWillUpdate: boolean
-  version: string
+declare let GM_info: {
+	script: {
+		description: string
+		excludes: string[]
+		includes: string[]
+		matches: string[]
+		name: string
+		namespace: string
+		resources: Object
+		'run-at': string
+		unwrap: boolean
+		version: string
+	}
+	scriptMetaStr: string
+	scriptWillUpdate: boolean
+	version: string
 }
 
-////////////////
+/// /////////////
 // Values
-////////////////
+/// /////////////
 
 /**
  * Deletes an existing name / value pair from the script storage.
@@ -78,9 +74,9 @@ declare function GM_setValue(name: string, value: string): void
 declare function GM_setValue(name: string, value: boolean): void
 declare function GM_setValue(name: string, value: number): void
 
-////////////////
+/// /////////////
 // Resources
-////////////////
+/// /////////////
 
 /**
  * Gets a content of a resouce defined by {@link http://wiki.greasespot.net/Metadata_Block#.40resource|@resource}.
@@ -98,9 +94,9 @@ declare function GM_getResourceText(resourceName: string): string
  */
 declare function GM_getResourceURL(resourceName: string): string
 
-////////////////
+/// /////////////
 // Utilities
-////////////////
+/// /////////////
 
 /**
  * Adds CSS to the content page.
@@ -133,9 +129,9 @@ declare function GM_openInTab(url: string): Window
  * @see    {@link http://wiki.greasespot.net/GM_registerMenuCommand}
  */
 declare function GM_registerMenuCommand(
-  caption: string,
-  commandFunc: Function,
-  accessKey?: string
+	caption: string,
+	commandFunc: Function,
+	accessKey?: string
 ): void
 
 /**
@@ -145,42 +141,42 @@ declare function GM_registerMenuCommand(
  */
 declare function GM_setClipboard(text: string): void
 
-////////////////
+/// /////////////
 // XMLHttpRequest
-////////////////
+/// /////////////
 
 /**
  * Request options for {@link GM_xmlhttpRequest}.
  * @see {@link http://wiki.greasespot.net/GM_xmlhttpRequest#Arguments}
  */
 interface GMXMLHttpRequestOptions {
-  binary?: boolean | undefined
-  context?: any
-  data?: string | undefined
-  headers?: Object | undefined
-  method: string
-  onabort?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-  onerror?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-  onload?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-  onprogress?: ((response: GMXMLHttpRequestProgressResponse) => any) | undefined
-  onreadystatechange?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-  ontimeout?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-  overrideMimeType?: string | undefined
-  password?: string | undefined
-  synchronous?: boolean | undefined
-  timeout?: number | undefined
-  upload?:
-    | {
-        onabort?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-        onerror?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-        onload?: ((response: GMXMLHttpRequestResponse) => any) | undefined
-        onprogress?:
-          | ((response: GMXMLHttpRequestProgressResponse) => any)
-          | undefined
-      }
-    | undefined
-  url: string
-  user?: string | undefined
+	binary?: boolean | undefined
+	context?: any
+	data?: string | undefined
+	headers?: Object | undefined
+	method: string
+	onabort?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+	onerror?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+	onload?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+	onprogress?: ((response: GMXMLHttpRequestProgressResponse) => any) | undefined
+	onreadystatechange?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+	ontimeout?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+	overrideMimeType?: string | undefined
+	password?: string | undefined
+	synchronous?: boolean | undefined
+	timeout?: number | undefined
+	upload?:
+		| {
+				onabort?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+				onerror?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+				onload?: ((response: GMXMLHttpRequestResponse) => any) | undefined
+				onprogress?:
+					| ((response: GMXMLHttpRequestProgressResponse) => any)
+					| undefined
+		  }
+		| undefined
+	url: string
+	user?: string | undefined
 }
 
 /**
@@ -188,42 +184,42 @@ interface GMXMLHttpRequestOptions {
  * @see {@link http://wiki.greasespot.net/GM_xmlhttpRequest#Response_Object}
  */
 interface GMXMLHttpRequestResponse {
-  readyState: number
-  responseHeaders: string
-  responseText: string
-  status: number
-  statusText: string
-  context: any
-  finalUrl: string
+	readyState: number
+	responseHeaders: string
+	responseText: string
+	status: number
+	statusText: string
+	context: any
+	finalUrl: string
 }
 
 /**
  * Response object for onprogress event of {@link GM_xmlhttpRequest}.
  */
 interface GMXMLHttpRequestProgressResponse extends GMXMLHttpRequestResponse {
-  lengthComputable: boolean
-  loaded: number
-  total: number
+	lengthComputable: boolean
+	loaded: number
+	total: number
 }
 
 /**
  * Returned object by {@link GM_xmlhttpRequest} in asynchronous mode.
  */
 interface GMXMLHttpRequestAsyncResult {
-  abort(): void
+	abort(): void
 }
 
 /**
  * Returned object by {@link GM_xmlhttpRequest} in synchronouse mode.
  */
 interface GMXMLHttpRequestSyncResult {
-  abort(): void
-  finalUrl: string
-  readyState: number
-  responseHeaders: string
-  responseText: string
-  status: number
-  statusText: string
+	abort(): void
+	finalUrl: string
+	readyState: number
+	responseHeaders: string
+	responseText: string
+	status: number
+	statusText: string
 }
 
 /**
@@ -231,8 +227,8 @@ interface GMXMLHttpRequestSyncResult {
  * @see  {@link http://wiki.greasespot.net/GM_xmlhttpRequest#Returns}
  */
 interface GMXMLHttpRequestResult
-  extends GMXMLHttpRequestAsyncResult,
-    GMXMLHttpRequestSyncResult {}
+	extends GMXMLHttpRequestAsyncResult,
+		GMXMLHttpRequestSyncResult {}
 
 /**
  * Sends a HTTP request to a URL.
@@ -242,5 +238,5 @@ interface GMXMLHttpRequestResult
  * @see      {@link http://wiki.greasespot.net/GM_setClipboard}
  */
 declare function GM_xmlhttpRequest(
-  options: GMXMLHttpRequestOptions
+	options: GMXMLHttpRequestOptions
 ): GMXMLHttpRequestResult

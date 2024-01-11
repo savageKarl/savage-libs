@@ -3,8 +3,8 @@ import fs from 'node:fs/promises'
 import type { PluginOption, ResolvedConfig } from 'vite'
 import open from 'open'
 
-import type { Grants } from '../types/userscript'
-import type { UsOptions } from '../types/types'
+import type { Grants } from '../utils/userscript'
+import type { UsOptions } from '../utils/types'
 
 import { Metadata } from '../utils/metadata'
 import {

@@ -1,4 +1,4 @@
-import { MetaData } from '../types/userscript'
+import { MetaData } from './userscript'
 
 import { camelCaseToHyphen, padEndWithSpace } from './utils'
 

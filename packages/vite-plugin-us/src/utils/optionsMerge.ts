@@ -3,7 +3,7 @@ import getPort from 'get-port'
 import { mergeDeep } from 'savage-utils'
 
 import { pkg, pluginName } from './constants'
-import { UsOptions } from '../types/types'
+import { UsOptions } from './types'
 
 type TargetType = string | Record<string, string> | undefined
 

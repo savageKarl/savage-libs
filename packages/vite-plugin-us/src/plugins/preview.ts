@@ -1,7 +1,7 @@
 import open from 'open'
 
 import type { PluginOption, ResolvedConfig } from 'vite'
-import type { UsOptions } from '../types/types'
+import type { UsOptions } from '../utils/types'
 import { pluginName } from '../utils/constants'
 import { bundleMiddware } from '../utils/middleware'
 

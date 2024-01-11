@@ -1,6 +1,6 @@
 import { extname } from 'node:path'
 
-import type { ResourceRecord, PkgDepsRecord, DepRecord } from '../types/types'
+import type { ResourceRecord, PkgDepsRecord, DepRecord } from './types'
 
 import { pkg } from './constants'
 import { cdn } from '../cdn/cdn'

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 
 import type { IPackageJson } from '@ts-type/package-dts'
 
-import type { IncompatibleFun } from '../types/userscript'
+import type { IncompatibleFun } from './userscript'
 
 export const pluginName = 'vite-plugin-us'
 

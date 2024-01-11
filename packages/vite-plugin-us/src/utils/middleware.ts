@@ -8,7 +8,7 @@ import { devPath, previewPath, htmlTempalte } from '../utils/constants'
 import { fnToString, setResHeader } from '../utils/utils'
 
 import { readFileSync } from 'node:fs'
-import type { UsOptions } from '../types/types'
+import type { UsOptions } from './types'
 
 export function redirectMiddleware(mode: 'dev' | 'preview' | 'prod') {
 	const strategy = {

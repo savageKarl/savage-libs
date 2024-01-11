@@ -12,7 +12,7 @@ import {
 	ItemCDN,
 	DepRecord,
 	LeadingCdnRecord
-} from '../types/types'
+} from '../utils/types'
 
 import { seekCdnPath } from './seekCdnPath'
 import { usedCdnList } from './useCdn'

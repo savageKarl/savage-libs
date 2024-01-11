@@ -1,9 +1,4 @@
-import {
-	runAt,
-	gmWindow,
-	incompatibleFun,
-	gmFunctions
-} from '../utils/constants'
+import { runAt, gmWindow, incompatibleFun, gmFunctions } from './constants'
 
 type GMLiterals<T extends string> = [`GM_${T}` | `GM.${T}`]
 type GMWindow = (typeof gmWindow)[number]

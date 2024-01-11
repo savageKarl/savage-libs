@@ -1,4 +1,4 @@
-import { ItemCDN } from '../types/types'
+import { ItemCDN } from '../utils/types'
 
 // const jsdelivr: ItemCDN = {
 // 	homePage: 'https://www.jsdelivr.com',

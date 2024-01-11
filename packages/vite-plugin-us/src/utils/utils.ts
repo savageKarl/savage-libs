@@ -7,7 +7,7 @@ import type { ResolvedConfig, EsbuildTransformOptions } from 'vite'
 import type { OutputBundle } from 'rollup'
 import { isObject, isArray } from 'savage-types'
 
-import type { UsOptions, Mode, Transform } from '../types/types'
+import type { UsOptions, Mode, Transform } from './types'
 import { logger } from './logger'
 
 export const existFile = (path: string) => {

@@ -1,6 +1,6 @@
 import { mergeDeep } from 'savage-utils'
 
-import { ChainNodeFun } from '../types/types'
+import { ChainNodeFun } from './types'
 
 class ChainNode {
 	private fn: ChainNodeFun

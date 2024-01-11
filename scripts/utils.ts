@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 
-import { readdir, readFile } from 'node:fs/promises'
+import { readdir, readFile, writeFile } from 'node:fs/promises'
 
 import { createRequire } from 'node:module'
 import { resolve, dirname } from 'node:path'
@@ -12,8 +12,6 @@ import spawn from 'cross-spawn'
 import pico from 'picocolors'
 
 import type { IPackageJson } from '@ts-type/package-dts'
-
-import { normalizePath } from 'savage-utils'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -161,3 +159,36 @@ export const spliceTemplate = (() => {
 			.join('\n')
 	}
 })()
+
+export function normalizePath(path: string) {
+	return path.replaceAll('\\', '/')
+}
+
+export function generateFiles(pathRecord: Record<string, string>) {
+	for (let [path, content] of Object.entries(pathRecord)) {
+		path = normalizePath(path)
+
+		const dirs = path
+			.split('/')
+			.map((v, i, arr) => arr.slice(0, i).join('/'))
+			.filter((v, i, arr) => i !== 0 && i !== 1 && i !== arr.length)
+
+		let index = 0
+
+		for (const dir of dirs) {
+			const status = fs.existsSync(dir)
+			if (status) {
+				index = dirs.length
+			} else {
+				index = dirs.findIndex(v => v === dir)
+				break
+			}
+		}
+
+		if (index !== dirs.length) {
+			dirs.slice(index).forEach(path => fs.mkdirSync(path))
+		}
+
+		writeFile(path, content, { encoding: 'utf-8' })
+	}
+}
