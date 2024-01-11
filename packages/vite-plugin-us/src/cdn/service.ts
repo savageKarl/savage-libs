@@ -11,8 +11,8 @@ export const serviceCDN = axios.create({
 	headers: {
 		'User-Agent':
 			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62'
-	},
-	timeout: 10000
+	}
+	// timeout:
 })
 
 serviceCDN.interceptors.request.use(config => {
@@ -26,9 +26,7 @@ serviceCDN.interceptors.response.use(
 		return response
 	},
 	err => {
-		// writeFile(resolve('axiosErrorLog.json'), JSON.stringify(err, null, 4), {
-		// 	encoding: 'utf-8'
-		// })
-		return Promise.reject(err)
+		// debugger
+		return Promise.resolve(err)
 	}
 )

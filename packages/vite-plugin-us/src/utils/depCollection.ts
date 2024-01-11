@@ -147,7 +147,6 @@ export class DepCollection {
 		const depsRecords = this.manuallyResources.concat(
 			await cdn.getDepsRecords(pkgDepsRecord)
 		)
-
 		if (
 			!conditionLog(
 				depsRecords,
@@ -168,9 +167,14 @@ export class DepCollection {
 
 		if (categoryRecord.js) {
 			console.table(categoryRecord.js.filter(v => extname(v.url) === '.js'))
+		} else {
+			categoryRecord.js = []
 		}
+
 		if (categoryRecord.css) {
 			console.table(categoryRecord.css)
+		} else {
+			categoryRecord.css = []
 		}
 
 		return resourceRecord

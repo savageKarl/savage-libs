@@ -3,9 +3,10 @@ import { resolve } from 'node:path'
 import type { ServerResponse } from 'node:http'
 
 import { transformWithEsbuild } from 'vite'
-
 import type { ResolvedConfig, EsbuildTransformOptions } from 'vite'
 import type { OutputBundle } from 'rollup'
+import { isObject, isArray } from 'savage-types'
+
 import type { UsOptions, Mode, Transform } from '../types/types'
 import { logger } from './logger'
 
@@ -164,13 +165,20 @@ export function hyphenToCamelCase(name: string) {
 
 export function conditionLog(
 	target: Record<string, unknown> | unknown[],
-	trueMsg: string,
-	falseMsg?: string
+	trueMsg: string | Record<string, unknown> | unknown[],
+	falseMsg?: string | Record<string, unknown> | unknown[]
 ) {
 	const status = isObjectHasValue(target)
 
-	if (status) logger.info(trueMsg)
-	else falseMsg && logger.info(falseMsg)
+	const handleText = (v: typeof trueMsg) => {
+		return isArray(v) || isObject(v) ? JSON.stringify(v, null, 4) : v
+	}
+
+	if (status) {
+		logger.info(handleText(trueMsg))
+	} else {
+		falseMsg && logger.info(handleText(falseMsg))
+	}
 
 	return status
 }

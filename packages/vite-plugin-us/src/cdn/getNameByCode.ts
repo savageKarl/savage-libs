@@ -52,10 +52,6 @@ class GlobalVariableNameEval {
 			v => !this.globalKeys.includes(v)
 		)[0]
 
-		this.globalNameKeys.push(globalKeyName)
-		this.windowNameKeys.push(windowKeyName)
-		this.resetKey()
-
 		return { windowKeyName, globalKeyName }
 	}
 
@@ -65,14 +61,17 @@ class GlobalVariableNameEval {
 	}
 
 	public getNameByCode(code: string) {
-		this.saveKeys()
-		// eslint-disable-next-line no-eval
-		const _eval = eval
-		_eval(code)
+		try {
+			this.saveKeys()
+			// eslint-disable-next-line no-eval
+			const _eval = eval
+			_eval(code)
 
-		const { globalKeyName, windowKeyName } = this.getNameKey()
-
-		return globalKeyName || windowKeyName || ''
+			const { globalKeyName, windowKeyName } = this.getNameKey()
+			return globalKeyName || windowKeyName || ''
+		} catch (e) {
+			return ''
+		}
 	}
 }
 
@@ -165,7 +164,7 @@ export function getNameByCode(pkgName: string, code: string) {
 			const globalVariableNameEval = new GlobalVariableNameEval()
 			const name = globalVariableNameEval.getNameByCode(code)
 			return name || 'nextNode'
-		} catch {
+		} catch (e) {
 			return 'nextNode'
 		}
 	})

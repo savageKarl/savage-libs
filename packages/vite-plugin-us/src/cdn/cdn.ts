@@ -2,7 +2,6 @@ import { extname } from 'node:path'
 
 import pc from 'picocolors'
 import { copyDeep } from 'savage-utils'
-import MagicString from 'magic-string'
 
 import {
 	PkgDepsRecord,
@@ -56,40 +55,6 @@ class CDN {
 		this.usedCDNs.push(...(useCdnList as ItemCDN[]))
 	}
 
-	// private async getCurrentRange() {
-	// 	logger.error('getCurrentRange')
-	// 	const { domestic, foreign } = this.leadingCdnRecord
-
-	// 	try {
-	// 		if (domestic && foreign) {
-	// 			const winner = (
-	// 				await Promise.allSettled([
-	// 					serviceCDN.get(domestic.homePage),
-	// 					serviceCDN.get(foreign.homePage)
-	// 				])
-	// 			)
-	// 				.filter(v => v.status === 'fulfilled')
-	// 				.reduce((preV, curV) => {
-	// 					if (preV.status === 'fulfilled' && curV.status === 'fulfilled') {
-	// 						const preVTime = preV.value.time - preV.value.config.time
-	// 						const CurVTime = curV.value.time - curV.value.config.time
-
-	// 						return preVTime - CurVTime > 0 ? curV : preV
-	// 					}
-	// 					return preV
-	// 				})
-	// 			console.log(winner)
-	// 			// return (this.range = [domestic, foreign].filter(
-	// 			// 	v => v.homePage === winner.config.url
-	// 			// )[0].range)
-	// 		} else {
-	// 			console.error('must be set demostic and foreign leading CDN')
-	// 		}
-	// 	} catch (e) {
-	// 		console.error(e)
-	// 	}
-	// }
-
 	private spliceUrl(pkgName: string, paths: string[], version: string) {
 		const urlsRecord: UrlsRecord = {}
 
@@ -116,56 +81,6 @@ class CDN {
 		})
 
 		return { urlsRecord }
-	}
-
-	private async getAvailableCdn(urlsRecord: UrlsRecord) {
-		const cdnKeys = Object.keys(urlsRecord)
-
-		const availableCdnRecord: UrlsRecord = {}
-
-		;(
-			await Promise.all(
-				cdnKeys.map(async key => {
-					const res = await Promise.allSettled(
-						urlsRecord[key].map(p => serviceCDN.get(p.url))
-					)
-
-					const status = res.every(v => {
-						const regErrorContent = /404: Not Found/g
-
-						const isFulfilled = v.status === 'fulfilled'
-						const isCorrectContent = (v: string) => !regErrorContent.test(v)
-						return isFulfilled && isCorrectContent(v.value.data)
-					})
-
-					return {
-						name: key,
-						status
-					}
-				})
-			)
-		)
-			.filter(v => v.status)
-			.forEach(v => {
-				availableCdnRecord[v.name] = urlsRecord[v.name]
-			})
-		return { availableCdnRecord }
-	}
-
-	private async getFastestCdn(availableCdnRecord: UrlsRecord) {
-		const cdnKeys = Object.keys(availableCdnRecord)
-
-		const winner = await Promise.race(
-			cdnKeys.map(k => serviceCDN.get(availableCdnRecord[k][0].url))
-		)
-
-		const key = cdnKeys.filter(
-			k => availableCdnRecord[k][0].url === winner.config.url
-		)[0]
-
-		const urlRecords = availableCdnRecord[key]
-
-		return { urlRecords }
 	}
 
 	private async getPkgJsonAndDirectoryInfo(pkgName: string, version: string) {
@@ -260,11 +175,14 @@ class CDN {
 			const isJsFile = extname(v.url) === '.js'
 			if (isJsFile) {
 				const name = v.globalVariableName
-				const s = new MagicString(`if(${name}){window['${name}']=${name}}`)
+				const template =
+					'try{if(name){window["name"]=name}if(window["name"]){this["name"]=window["name"]}}catch{}'
+
+				template.replace(/name/g, name)
 
 				handledDepsRecords.push(
 					Object.assign(copyDeep(v), {
-						url: generateJsDataUrlByCode(s.toString())
+						url: generateJsDataUrlByCode(template.replace(/name/g, name))
 					})
 				)
 			}
@@ -301,15 +219,6 @@ class CDN {
 
 		const key = Object.keys(urlsRecord)[0]
 		const urlRecords = urlsRecord[key]
-
-		// conditionLog(urlsRecord, 'Getting the available CDNs...')
-
-		// const { availableCdnRecord } = await this.getAvailableCdn(urlsRecord)
-		// conditionLog(availableCdnRecord, availableCdnRecord)
-		// conditionLog(availableCdnRecord, 'Getting the fastest CDNs...')
-
-		// const { urlRecords } = await this.getFastestCdn(availableCdnRecord)
-		// conditionLog(urlRecords, urlRecords)
 
 		const codeRecord = (
 			await Promise.all(
