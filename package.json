@@ -27,7 +27,7 @@
 		"test-unit": "vitest -c vitest.unit.config.ts",
 		"test-coverage": "vitest -c vitest.unit.config.ts --coverage",
 		"log": "changeset add",
-		"versions": "changeset version",
+		"version": "changeset version && npm run readme -t savage-libs",
 		"release": "pnpm publish -r --no-git-checks",
 		"commit": "git-cz",
 		"prepare": "husky install"
