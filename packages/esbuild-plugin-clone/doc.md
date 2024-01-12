@@ -1,6 +1,6 @@
 ## Usage
 
-use glob within, so can use glob pattern
+use [glob](https://github.com/isaacs/node-glob#readme) within, so can use glob pattern
 
 ```ts
 import { clone } from 'esbuild-plugin-clone'
