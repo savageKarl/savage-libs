@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -7,7 +8,7 @@ export type Callback<T = StateTree, K = StateTree> = (oldV: T, V: K) => void
 export type DepsType = Map<unknown, Set<Callback>>
 
 export type _StoreWithGetters<G> = {
-	readonly [K in keyof G]: G[K] extends (...args: any[]) => infer R ? R : G[K]
+	readonly [k in keyof G]: G[k] extends (...args: any[]) => infer R ? R : G[k]
 }
 
 export type _ActionsTree = Record<
@@ -19,6 +20,7 @@ export type _ActionsTree = Record<
 export interface LiberateCustomStateProperties<
 	S extends StateTree = StateTree
 > {}
+
 export type _GettersTree<S extends StateTree> = Record<
 	string,
 	(state: S & LiberateCustomStateProperties<S>) => any
@@ -56,7 +58,7 @@ export type Store<
 > = _StoreWithState<Id, S, G, A> &
 	S &
 	_StoreWithGetters<G> &
-	A &
+	(_ActionsTree extends A ? {} : A) &
 	LiberateCustomProperties<Id, S, G, A> &
 	LiberateCustomStateProperties<S>
 
@@ -66,23 +68,41 @@ export interface DefineStoreOptionsBase<S extends StateTree, Store> {}
 export interface DefineStoreOptions<
 	Id extends string,
 	S extends StateTree,
-	G /* extends GettersTree<S> */,
-	A /* extends Record<string, StoreAction>  */
+	G,
+	A
 > extends DefineStoreOptionsBase<S, Store<Id, S, G, A>> {
 	state?: () => S
 
-	getters?: G &
-		ThisType<S & _StoreWithGetters<G> & LiberateCustomProperties> &
-		_GettersTree<S>
+	getters?: G & ThisType<S & _StoreWithGetters<G> & LiberateCustomProperties>
 
 	actions?: A &
 		ThisType<
-			S &
-				A &
-				_StoreWithGetters<G> &
+			A &
+				S &
 				_StoreWithState<Id, S, G, A> &
+				_StoreWithGetters<G> &
 				LiberateCustomProperties
 		>
+}
+
+/**
+ * Return type of `defineStore()`. Function that allows instantiating a store.
+ */
+export interface StoreDefinition<
+	Id extends string = string,
+	S extends StateTree = StateTree,
+	G /* extends GettersTree<S> */ = _GettersTree<S>,
+	A /* extends ActionsTree */ = _ActionsTree
+> {
+	/**
+	 * Returns a store, creates it if necessary.
+	 */
+	(): Store<Id, S, G, A>
+
+	/**
+	 * Id of the store. Used by map helpers.
+	 */
+	$id: Id
 }
 
 export type DepStack = Callback[]

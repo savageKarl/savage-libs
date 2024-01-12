@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { useEffect, useReducer, useRef } from 'react'
 
 import { copyDeep, debounce } from 'savage-utils'
@@ -12,7 +13,8 @@ import type {
 	DepStack,
 	LiberatePlugin,
 	_GettersTree,
-	_ActionsTree
+	_ActionsTree,
+	StoreDefinition
 } from './types'
 
 import { reactiveMerge } from './utils'
@@ -91,11 +93,14 @@ export function loadPlugin(plugin: LiberatePlugin) {
 }
 
 export function defineStore<
-	Id extends string = string,
-	S extends StateTree = StateTree,
-	G extends _GettersTree<S> = _GettersTree<S>,
-	A extends _ActionsTree = _ActionsTree
->(id: string, options: DefineStoreOptions<Id, S, G, A>) {
+	Id extends string,
+	S extends StateTree,
+	G extends _GettersTree<S> = {},
+	A extends _ActionsTree = {}
+>(
+	id: Id,
+	options: DefineStoreOptions<Id, S, G, A>
+): StoreDefinition<Id, S, G, A> {
 	const { state, actions, getters } = options
 
 	const initState = state ? state() : {}
@@ -180,5 +185,7 @@ export function defineStore<
 		if (getApiEnv() === 'component') useCollectDep()
 		return store
 	}
+	useStore.$id = id
+
 	return useStore
 }
