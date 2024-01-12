@@ -1,7 +1,6 @@
-import { resolve } from 'node:path'
+import { join, resolve } from 'node:path'
 
-// @ts-ignore
-import copydir from 'copy-dir'
+import { clone } from 'esbuild-plugin-clone'
 
 import { build } from 'savage-tsup'
 import type { Options as TsupOptions } from 'savage-tsup'
@@ -40,32 +39,27 @@ async function createConfig(pkgName: string) {
 			? Object.keys(pkgJson.dependencies || {})
 			: external
 
-	const plugins =
-		pkgName !== 'esbuild-plugin-umd'
-			? [
-					// @ts-ignore
-					(await import('esbuild-plugin-umd')).umd({
-						libraryName,
-						external: _external,
-						globalVariableName
-					})
-			  ]
-			: []
-	if (copy) {
-		const from = resolve(packagesRoot, pkgName, copy.from)
-		const to = resolve(packagesRoot, pkgName, copy.to)
+	const plugins = []
 
-		copydir(
-			from,
-			to,
-			{
-				utimes: true, // keep add time and modify time
-				mode: true, // keep file mode
-				cover: true // cover file when exists, default is true
-			},
-			function (err: unknown) {
-				if (err) throw err
-			}
+	if (pkgName !== 'esbuild-plugin-umd') {
+		plugins.push(
+			// @ts-ignore
+			(await import('esbuild-plugin-umd')).umd({
+				libraryName,
+				external: _external,
+				globalVariableName
+			})
+		)
+	}
+
+	if (copy) {
+		const from = join(resolve(packagesRoot, pkgName, copy.from), '**/*')
+		const to = resolve(packagesRoot, pkgName, copy.to)
+		plugins.push(
+			clone({
+				to,
+				from
+			})
 		)
 	}
 

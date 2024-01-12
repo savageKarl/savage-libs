@@ -4,7 +4,7 @@ import { spawn } from 'cross-spawn'
 import prompts from 'prompts'
 
 import { packagesRoot } from './utils'
-import { generateFiles } from 'savage-utils'
+import { generateFiles } from 'savage-node'
 
 const template = {
 	name: '',
