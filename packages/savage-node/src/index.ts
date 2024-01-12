@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises'
 
 import { normalizePath } from 'savage-utils'
 
-export function generateFiles(pathRecord: Record<string, string>) {
+export async function generateFiles(pathRecord: Record<string, string>) {
 	for (let [path, content] of Object.entries(pathRecord)) {
 		path = normalizePath(path)
 
@@ -28,6 +28,6 @@ export function generateFiles(pathRecord: Record<string, string>) {
 			dirs.slice(index).forEach(path => mkdirSync(path))
 		}
 
-		writeFile(path, content, { encoding: 'utf-8' })
+		await writeFile(path, content, { encoding: 'utf-8' })
 	}
 }
