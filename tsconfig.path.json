@@ -25,23 +25,14 @@
             "savage-mdtable": [
                 "packages/savage-mdtable/src"
             ],
+            "savage-node": [
+                "packages/savage-node/src"
+            ],
             "savage-types": [
                 "packages/savage-types/src"
             ],
             "savage-utils": [
                 "packages/savage-utils/src"
-            ],
-            "sfsdf": [
-                "packages/sfsdf/src"
-            ],
-            "temp": [
-                "packages/temp/src"
-            ],
-            "temp2": [
-                "packages/temp2/src"
-            ],
-            "temp3": [
-                "packages/temp3/src"
             ],
             "vite-plugin-us": [
                 "packages/vite-plugin-us/src"
