@@ -4,6 +4,9 @@
             "elec-ipc": [
                 "packages/elec-ipc/src"
             ],
+            "esbuild-plugin-clone": [
+                "packages/esbuild-plugin-clone/src"
+            ],
             "esbuild-plugin-umd": [
                 "packages/esbuild-plugin-umd/src"
             ],

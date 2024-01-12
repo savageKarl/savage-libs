@@ -1,0 +1,36 @@
+{
+	"name": "esbuild-plugin-clone",
+	"version": "0.0.0",
+	"description": "copy dirs and files",
+	"miniprogram": "dist",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"buildOptions": {
+		"format": [
+			"esm",
+			"cjs"
+		],
+		"dts": true,
+		"minify": true
+	},
+	"type": "module",
+	"scripts": {},
+	"keywords": [],
+	"author": "savage",
+	"license": "GPL-3.0",
+	"devDependencies": {
+		"glob": "^10.3.10",
+		"savage-utils": "workspace:*",
+		"savage-node": "workspace:*"
+	}
+}
