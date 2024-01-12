@@ -8,7 +8,7 @@ export default defineConfig({
 	},
 	test: {
 		globals: true,
-		// environment: 'jsdom',
+		environment: 'jsdom',
 		// disable threads on GH actions to speed it up
 		threads: !process.env.GITHUB_ACTIONS,
 		setupFiles: 'scripts/setupVitest.ts',
