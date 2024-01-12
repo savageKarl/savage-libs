@@ -67,3 +67,7 @@ export function hyphenToCamelCase(text: string, isCapitalize = false) {
 export function camelCaseToHyphen(text: string) {
 	return text.replace(/[A-Z]/g, match => `-${match.toLocaleLowerCase()}`)
 }
+
+export function normalizePath(path: string) {
+	return path.replaceAll('\\', '/')
+}
