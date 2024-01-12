@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      esbuild-plugin-umd:
-        specifier: workspace:*
-        version: link:packages/esbuild-plugin-umd
       picox:
         specifier: workspace:*
         version: link:packages/picox
@@ -96,6 +93,9 @@ importers:
       esbuild:
         specifier: ^0.19.2
         version: 0.19.2
+      esbuild-plugin-umd:
+        specifier: workspace:*
+        version: link:packages/esbuild-plugin-umd
       eslint:
         specifier: ^8.33.0
         version: 8.48.0
@@ -365,6 +365,12 @@ importers:
         version: link:../picox
 
   packages/savage-mdtable: {}
+
+  packages/savage-node:
+    dependencies:
+      savage-utils:
+        specifier: workspace:^
+        version: link:../savage-utils
 
   packages/savage-react-store:
     dependencies:
@@ -5020,18 +5026,6 @@ packages:
 
   /es6-object-assign@1.1.0:
     resolution: {integrity: sha512-MEl9uirslVwqQU369iHNWZXsI8yaZYGg/D65aOgZkeyFJwHYSxilf7rQzXKI7DdDuBPrBXbfk3sl9hJhmd5AUw==}
-    dev: true
-
-  /esbuild-plugin-copy@2.1.1(esbuild@0.19.2):
-    resolution: {integrity: sha512-Bk66jpevTcV8KMFzZI1P7MZKZ+uDcrZm2G2egZ2jNIvVnivDpodZI+/KnpL3Jnap0PBdIHU7HwFGB8r+vV5CVw==}
-    peerDependencies:
-      esbuild: '>= 0.14.0'
-    dependencies:
-      chalk: 4.1.2
-      chokidar: 3.5.3
-      esbuild: 0.19.2
-      fs-extra: 10.1.0
-      globby: 11.1.0
     dev: true
 
   /esbuild@0.18.20:

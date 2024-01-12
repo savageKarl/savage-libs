@@ -66,6 +66,7 @@
 		"cross-spawn": "7.0.3",
 		"cz-conventional-changelog": "^3.3.0",
 		"esbuild": "^0.19.2",
+		"esbuild-plugin-umd": "workspace:*",
 		"eslint": "^8.33.0",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-config-standard": "^17.1.0",
@@ -105,7 +106,6 @@
 		"vue-tsc": "1.8.11"
 	},
 	"dependencies": {
-		"esbuild-plugin-umd": "workspace:*",
 		"picox": "workspace:*",
 		"savage-log": "workspace:^",
 		"savage-mdtable": "workspace:^",
