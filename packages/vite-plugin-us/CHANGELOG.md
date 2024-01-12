@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.9
+
+### Patch Changes
+
+- 142f113: feat: add new options options.enable and options.nameOrPath
+
 ## 1.0.8
 
 ### Patch Changes
