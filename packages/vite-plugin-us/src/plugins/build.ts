@@ -2,7 +2,7 @@ import http from 'node:http'
 
 import connect from 'connect'
 import getPort from 'get-port'
-import open from 'open'
+import open, { apps } from 'open'
 
 import type {
 	UserConfig,
@@ -109,7 +109,7 @@ export function build(usOptions: Required<UsOptions>) {
 			chunk.code = codes.join('\n')
 		},
 		async closeBundle() {
-			if (!usOptions.build.open) return
+			if (!usOptions.build.open?.enable) return
 
 			const port = await getPort()
 			const app = connect()
@@ -119,7 +119,18 @@ export function build(usOptions: Required<UsOptions>) {
 
 			http.createServer(app).listen(port)
 			const url = `http://localhost:${port}`
-			open(url)
+
+			const { nameOrPath } = usOptions.build?.open
+			const name = ['chrome', 'firefox', 'edge'].includes(nameOrPath)
+				? // @ts-ignore
+				  apps[nameOrPath]
+				: nameOrPath
+
+			open(url, {
+				app: {
+					name
+				}
+			})
 		}
 	} as PluginOption
 }

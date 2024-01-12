@@ -34,6 +34,19 @@ type ManualCdnResource = DepRecord
 
 export type Mode = 'development' | 'production' | 'preview'
 
+export interface Open {
+	/**
+	 * @defaultValue `true`
+	 */
+	enable: boolean
+	/**
+	 * @defaultValue `chrome`
+	 *
+	 * value can be one of 'chrome' | 'firefox' | 'edge', or app.exe path
+	 */
+	nameOrPath: ('chrome' | 'firefox' | 'edge') | string
+}
+
 export interface UsOptions {
 	/**
 	 * path of userscript entry.
@@ -65,7 +78,7 @@ export interface UsOptions {
 		/** auto open browser in development mode
 		 * @defaultValue `true`
 		 */
-		open?: boolean
+		open?: Open
 		/**
 		 * @defaultValue `localhost`
 		 */
@@ -78,7 +91,7 @@ export interface UsOptions {
 		/** auto open browser in production mode
 		 * @defaultValue `true`
 		 */
-		open?: boolean
+		open?: Open
 		/**
 		 * minify js in production mode
 		 */

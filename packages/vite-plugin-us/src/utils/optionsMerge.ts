@@ -18,11 +18,17 @@ const defaultOpts: Required<UsOptions> = {
 	autoAddGrant: true,
 	server: {
 		port: 12345,
-		open: true,
+		open: {
+			enable: true,
+			nameOrPath: 'chrome'
+		},
 		host: 'localhost'
 	},
 	build: {
-		open: true,
+		open: {
+			enable: true,
+			nameOrPath: 'chrome'
+		},
 		minify: true,
 		cssMinify: true,
 		external: {

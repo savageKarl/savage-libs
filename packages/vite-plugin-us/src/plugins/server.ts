@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 
 import type { PluginOption, ResolvedConfig } from 'vite'
-import open from 'open'
+import open, { apps } from 'open'
 
 import type { Grants } from '../utils/userscript'
 import type { UsOptions } from '../utils/types'
@@ -15,7 +15,7 @@ import {
 } from '../utils/utils'
 import { devPath, grants, pluginName } from '../utils/constants'
 
-import { generateFiles } from 'savage-utils'
+import { generateFiles } from 'savage-node'
 
 export function serve(usOptions: Required<UsOptions>) {
 	let resovledConfig: ResolvedConfig
@@ -116,7 +116,7 @@ export function serve(usOptions: Required<UsOptions>) {
 				)
 			})
 
-			if (!usOptions.server?.open) return
+			if (!usOptions.server?.open?.enable) return
 
 			const cachePath = `node_modules/.vite/${pluginName}.cache.js`
 			let cacheMetaData = ''
@@ -128,8 +128,21 @@ export function serve(usOptions: Required<UsOptions>) {
 			}
 
 			if (cacheMetaData !== newMetaData) {
+				const { nameOrPath } = usOptions.server?.open
+				const name = ['chrome', 'firefox', 'edge'].includes(nameOrPath)
+					? // @ts-ignore
+					  apps[nameOrPath]
+					: nameOrPath
+
 				const url = currentOrigin
-				Promise.all([open(url), fs.writeFile(cachePath, newMetaData)])
+				Promise.all([
+					open(url, {
+						app: {
+							name
+						}
+					}),
+					fs.writeFile(cachePath, newMetaData)
+				])
 			}
 		},
 		transform(code, id) {
