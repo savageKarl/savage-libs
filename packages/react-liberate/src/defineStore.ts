@@ -40,7 +40,7 @@ const subscribe: Set<() => unknown> = new Set()
 
 const plugins: LiberatePlugin[] = []
 
-function createReactive<T extends object>(target: T): T {
+function createReactive<T extends object>(target: T, cb?: () => unknown): T {
 	const dataDepRecord: DepsType = new Map()
 
 	const obj = new Proxy(target, {
@@ -61,7 +61,7 @@ function createReactive<T extends object>(target: T): T {
 			const oldV = copyDeep(target[key as keyof T] as object) as StateTree
 			const status = Reflect.set(target, key, value, receiver)
 			dataDepRecord.get(key)?.forEach(dep => dep(oldV, value))
-			subscribe.forEach(fn => fn())
+			cb?.()
 			return status
 		}
 	})
@@ -69,7 +69,10 @@ function createReactive<T extends object>(target: T): T {
 	for (const k in obj) {
 		const child = obj[k]
 		if (isObject(child) || isArray(child)) {
-			obj[k] = createReactive(child as object) as T[Extract<keyof T, string>]
+			obj[k] = createReactive(child as object, cb) as T[Extract<
+				keyof T,
+				string
+			>]
 		}
 	}
 	return obj
@@ -105,11 +108,14 @@ export function defineStore<
 
 	const initState = state ? state() : {}
 
-	const baseStore = createReactive({
-		...(state ? state() : {}),
-		...getters,
-		...actions
-	})
+	const baseStore = createReactive(
+		{
+			...(state ? state() : {}),
+			...getters,
+			...actions
+		},
+		() => subscribe.forEach(fn => fn())
+	)
 
 	for (const k in actions) {
 		// @ts-ignore
@@ -147,16 +153,16 @@ export function defineStore<
 	}
 
 	function $reset() {
-		reactiveMerge($state, initState)
+		reactiveMerge($state, initState, true)
 	}
 
 	function $subscribe(cb: () => unknown) {
 		if (getApiEnv() === 'component') {
 			const callback = useRef<typeof cb>()
-			if (!callback.current) callback.current = debounce(() => cb(), 0)
+			if (!callback.current) callback.current = cb
 			subscribe.add(callback.current)
 		} else {
-			subscribe.add(debounce(() => cb(), 0))
+			subscribe.add(cb)
 		}
 	}
 

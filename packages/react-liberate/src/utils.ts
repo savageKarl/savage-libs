@@ -1,18 +1,31 @@
-import { isObject, isArray } from 'savage-types'
+import { isObject, isArray, isUndefined } from 'savage-types'
+import { copyDeep } from 'savage-utils'
 
-export function reactiveMerge<T>(x: T, y: T) {
+export function reactiveMerge<T extends object>(x: T, y: T, clear = false) {
+	if (clear) {
+		const xKey = Object.keys(x)
+		const yKey = Object.keys(y)
+
+		const deleteKeys = xKey.filter(k => !yKey.includes(k))
+		deleteKeys.forEach(k => Reflect.deleteProperty(x, k))
+	}
+
 	for (const k in y) {
-		const value = y[k]
+		const xValue = x[k]
+		const yValue = y[k]
 
-		if (isObject(value)) {
-			reactiveMerge(x[k], value)
-		} else if (isArray(value)) {
+		if (xValue === yValue) continue
+
+		if (isObject(yValue) && isObject(xValue)) {
+			reactiveMerge(xValue, yValue, clear)
+		} else if (isArray(yValue)) {
+			if (isUndefined(xValue)) x[k] = [] as T[Extract<keyof T, string>]
 			// @ts-ignore
-			x[k].length = value.length
+			x[k].length = yValue.length
 			// @ts-ignore
-			value.forEach((_, k2) => (x[k][k2] = value[k2]))
+			yValue.forEach((_, k2) => (x[k][k2] = yValue[k2]))
 		} else {
-			x[k] = y[k]
+			x[k] = copyDeep(y[k] as object) as T[Extract<keyof T, string>]
 		}
 	}
 }
