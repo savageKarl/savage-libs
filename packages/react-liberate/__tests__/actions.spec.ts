@@ -50,6 +50,11 @@ describe('Actions', () => {
 		}
 	})
 
+	beforeEach(() => {
+		const store = useStore()
+		store.$reset()
+	})
+
 	const useB = defineStore('B', {
 		state: () => ({ b: 'b' })
 	})
@@ -75,11 +80,11 @@ describe('Actions', () => {
 
 	it('store is forced as the context', () => {
 		const store = useStore()
-		expect(store.$state.a).toBe(false)
+		expect(store.$state.a).toBe(true)
 		expect(() => {
 			store.toggle.call(null)
 		}).not.toThrow()
-		expect(store.$state.a).toBe(true)
+		expect(store.$state.a).toBe(false)
 	})
 
 	it('can call other actions', () => {
