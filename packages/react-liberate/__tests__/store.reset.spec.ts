@@ -17,6 +17,7 @@ describe('store.$reset', () => {
 	it('can reset the state', () => {
 		const store = useStore()
 		store.name = 'Ed'
+
 		store.nested.n++
 		store.$reset()
 

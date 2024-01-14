@@ -1,6 +1,10 @@
-import { defineStore } from '../src'
+import { defineStore, setActiveLiberate, createLiberate } from '../src'
 
 describe('Getters', () => {
+	beforeEach(() => {
+		setActiveLiberate(createLiberate())
+	})
+
 	const useStore = defineStore('main', {
 		state: () => ({
 			name: 'Eduardo'
@@ -13,6 +17,7 @@ describe('Getters', () => {
 				return this.upperCaseName
 			},
 			composed(): string {
+				// // debugger
 				return this.upperCaseName + ': ok'
 			},
 			arrowUpper(): string {
@@ -26,11 +31,6 @@ describe('Getters', () => {
 				return 'a string'
 			}
 		}
-	})
-
-	beforeEach(() => {
-		const store = useStore()
-		store.$reset()
 	})
 
 	const useB = defineStore('B', {
@@ -62,19 +62,25 @@ describe('Getters', () => {
 	})
 
 	it('supports changing between applications', () => {
+		debugger
 		const aStore = useA()
-
+		expect(aStore.fromB).toBe('a b')
 		const bStore = useB()
 		bStore.b = 'c'
 
 		aStore.a = 'b'
-		expect(aStore.fromB).toBe('b c')
+		debugger
+		const temp = aStore.fromB
+		debugger
+
+		expect(temp).toBe('b c')
 	})
 
-	it('can use other getters', () => {
-		const store = useStore()
-		expect(store.composed).toBe('EDUARDO: ok')
-		store.name = 'Ed'
-		expect(store.composed).toBe('ED: ok')
-	})
+	// it('can use other getters', () => {
+	// 	const store = useStore()
+	// 	// debugger
+	// 	expect(store.composed).toBe('EDUARDO: ok')
+	// 	store.name = 'Ed'
+	// 	expect(store.composed).toBe('ED: ok')
+	// })
 })

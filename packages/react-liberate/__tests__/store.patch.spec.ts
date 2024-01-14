@@ -1,6 +1,10 @@
-import { defineStore } from '../src'
+import { defineStore, setActiveLiberate, createLiberate } from '../src'
 
 describe('$store.patch', () => {
+	beforeEach(() => {
+		setActiveLiberate(createLiberate())
+	})
+
 	const useStore = defineStore('main', {
 		state: () => ({
 			a: true,
@@ -12,21 +16,11 @@ describe('$store.patch', () => {
 		})
 	})
 
-	beforeEach(() => {
-		const store = useStore()
-		store.$reset()
-	})
-
 	const useArrayStore = defineStore('main', {
 		state: () => ({
 			items: [{ id: 0 }],
 			currentItem: { id: 1 }
 		})
-	})
-
-	beforeEach(() => {
-		const store = useArrayStore()
-		store.$reset()
 	})
 
 	it('patches a property without touching the rest', () => {
@@ -54,11 +48,7 @@ describe('$store.patch', () => {
 	it('can patch an item that has been copied to an array', () => {
 		const store = useArrayStore()
 		store.$state.currentItem = { id: 2 }
-		// NOTE: a patch of an object is always recursive, writing in the object, in
-		// place.
-		// store.$patch({ currentItem: { id: 2 } })
 		store.items.push(store.currentItem)
-		// store.$patch({ currentItem: { id: 3 } })
 		store.$state.currentItem = { id: 3 }
 
 		expect(store.$state.items).toEqual([{ id: 0 }, { id: 2 }])

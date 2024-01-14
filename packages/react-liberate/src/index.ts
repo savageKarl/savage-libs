@@ -1,4 +1,5 @@
-export * from './defineStore'
+export { defineStore, loadPlugin } from './defineStore'
+export { liberate, createLiberate, setActiveLiberate } from './liberate'
 
 export type {
 	StateTree,

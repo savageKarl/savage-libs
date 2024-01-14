@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { useEffect, useReducer, useRef } from 'react'
 
-import { copyDeep, debounce } from 'savage-utils'
 import { isObject, isArray, isFunction } from 'savage-types'
 
 import type {
@@ -10,35 +9,27 @@ import type {
 	DefineStoreOptions,
 	Callback,
 	Store,
-	DepStack,
 	LiberatePlugin,
 	_GettersTree,
 	_ActionsTree,
-	StoreDefinition
+	StoreDefinition,
+	ActiveEffect,
+	LiberateCustomStateProperties
 } from './types'
 
 import { reactiveMerge } from './utils'
-
 import { getApiEnv } from './apiEnv'
+import { liberate } from './liberate'
 
-// global dependency collection
-const Dep: DepStack = []
-
-function pushDep(fn: Callback) {
-	Dep.push(fn)
-}
-
-function removeDep() {
-	Dep.pop()
-}
-
-function getDep() {
-	return Dep.length > 0 ? Dep[Dep.length - 1] : undefined
-}
+let activeEffect: ActiveEffect
 
 const subscribe: Set<() => unknown> = new Set()
 
 const plugins: LiberatePlugin[] = []
+
+export function loadPlugin(plugin: LiberatePlugin) {
+	plugins.push(plugin)
+}
 
 function createReactive<T extends object>(target: T, cb?: () => unknown): T {
 	const dataDepRecord: DepsType = new Map()
@@ -47,20 +38,18 @@ function createReactive<T extends object>(target: T, cb?: () => unknown): T {
 		get(target, key: string, receiver) {
 			// debugger
 			const res = Reflect.get(target, key, receiver)
-			const dep = getDep()
-
-			if (dep) {
+			if (activeEffect) {
 				if (!dataDepRecord.get(key)) dataDepRecord.set(key, new Set<Callback>())
-				dataDepRecord.get(key)?.add(dep)
+				dataDepRecord.get(key)?.add(activeEffect)
 			}
 
 			return res
 		},
 		set(target, key, value, receiver) {
 			// debugger
-			const oldV = copyDeep(target[key as keyof T] as object) as StateTree
 			const status = Reflect.set(target, key, value, receiver)
-			dataDepRecord.get(key)?.forEach(dep => dep(oldV, value))
+			dataDepRecord.get(key)?.forEach(dep => dep(value))
+
 			cb?.()
 			return status
 		}
@@ -86,13 +75,9 @@ function useCollectDep() {
 	// prevent collect dependencies if re-render
 	if (!callback.current) {
 		callback.current = forceUpdate
-		pushDep(callback.current)
+		activeEffect = callback.current
 	}
-	useEffect(removeDep)
-}
-
-export function loadPlugin(plugin: LiberatePlugin) {
-	plugins.push(plugin)
+	useEffect(() => (activeEffect = undefined))
 }
 
 export function defineStore<
@@ -104,91 +89,132 @@ export function defineStore<
 	id: Id,
 	options: DefineStoreOptions<Id, S, G, A>
 ): StoreDefinition<Id, S, G, A> {
-	const { state, actions, getters } = options
-
-	const initState = state ? state() : {}
-
-	const baseStore = createReactive(
-		{
-			...(state ? state() : {}),
-			...getters,
-			...actions
-		},
-		() => subscribe.forEach(fn => fn())
-	)
-
-	for (const k in actions) {
-		// @ts-ignore
-		baseStore[k] = baseStore[k].bind(baseStore)
-	}
-
-	for (const k in getters) {
-		// @ts-ignore
-		getters[k] = getters[k].bind(baseStore, baseStore)
-		// @ts-ignore
-		pushDep(() => (baseStore[k] = getters[k]()))
-		// @ts-ignorere
-		baseStore[k] = getters[k]()
-		removeDep()
-	}
-
-	const $state = createReactive(state ? state() : {}) as S
-	for (const k in $state) {
-		pushDep((oldV, newV) => ($state[k] = newV as S[Extract<keyof S, string>]))
-		const tempStoreValue = baseStore[k] as S[Extract<keyof S, string>]
-		removeDep()
-
-		pushDep((oldV, newV) => {
-			if (!Object.is(newV, baseStore[k])) baseStore[k] = newV
-		})
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const temp$stateValue = $state[k]
-		removeDep()
-		$state[k] = tempStoreValue
-	}
-
-	function $patch(val: Partial<S> | ((arg: S) => unknown)) {
-		if (isObject(val)) reactiveMerge($state, val)
-		if (isFunction(val)) val($state)
-	}
-
-	function $reset() {
-		reactiveMerge($state, initState, true)
-	}
-
-	function $subscribe(cb: () => unknown) {
-		if (getApiEnv() === 'component') {
-			const callback = useRef<typeof cb>()
-			if (!callback.current) callback.current = cb
-			subscribe.add(callback.current)
-		} else {
-			subscribe.add(cb)
-		}
-	}
-
-	const store = Object.assign(baseStore, {
-		$id: id,
-		$state,
-		$patch,
-		$subscribe,
-		$reset
-	}) as Store<Id, S, G, A>
-
-	setTimeout(() => {
-		plugins.forEach(p => {
-			Object.assign(
-				store,
-				p({
-					store,
-					// @ts-ignore
-					options
-				}) || {}
-			)
-		})
-	}, 0)
-
 	function useStore() {
+		if (!liberate._store.has(id)) {
+			// debugger
+			const { state, actions, getters } = options
+
+			const initState = state ? state() : {}
+
+			const baseStore = createReactive(
+				{
+					...(state ? state() : {}),
+					...actions,
+					...getters,
+					$id: id,
+					$patch(val: Partial<S> | ((arg: S) => unknown)) {
+						if (isObject(val)) reactiveMerge(liberate._state.get(id) as S, val)
+						if (isFunction(val)) val(liberate._state.get(id) as S)
+					},
+
+					$reset() {
+						reactiveMerge(liberate._state.get(id) as S, initState, true)
+					},
+
+					$subscribe(cb: () => unknown) {
+						if (getApiEnv() === 'component') {
+							const callback = useRef<typeof cb>()
+							if (!callback.current) callback.current = cb
+							subscribe.add(callback.current)
+						} else {
+							subscribe.add(cb)
+						}
+					}
+				},
+				() => subscribe.forEach(fn => fn())
+			)
+
+			for (const k in actions) {
+				// @ts-ignore
+				baseStore[k] = baseStore[k].bind(baseStore)
+			}
+
+			// for (const k in getters) {
+			// 	let value: unknown
+
+			// 	const dep = () => {
+			// 		// @ts-ignore
+			// 		value = getters[k].call(baseStore, baseStore)
+			// 	}
+
+			// 	Object.defineProperties(baseStore, {
+			// 		[k]: {
+			// 			get() {
+			// 				if (!value) {
+			// 					pushDep(dep)
+			// 					dep()
+			// 					removeDep()
+			// 				}
+			// 				return value
+			// 			}
+			// 		}
+			// 	})
+			// }
+			debugger
+			for (const k in getters) {
+				const $state = liberate._state.get(id) as S &
+					LiberateCustomStateProperties<S>
+
+				// @ts-ignore
+				activeEffect = () =>
+					// @ts-ignore
+					(baseStore[k] = getters[k].call(baseStore, $state))
+
+				const tempGetterValue = getters[k].call(baseStore, $state)
+
+				activeEffect = undefined
+				// @ts-ignore
+				baseStore[k] = tempGetterValue
+			}
+
+			const $state = createReactive(state ? state() : {}) as S
+			for (const k in $state) {
+				activeEffect = newV => ($state[k] = newV as S[Extract<keyof S, string>])
+				// @ts-ignore
+				const tempStoreValue = baseStore[k] as S[Extract<keyof S, string>]
+				activeEffect = undefined
+
+				activeEffect = newV => {
+					// @ts-ignore
+					if (!Object.is(newV, baseStore[k])) baseStore[k] = newV
+				}
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const temp$stateValue = $state[k]
+				activeEffect = undefined
+
+				$state[k] = tempStoreValue
+			}
+
+			liberate._state.set(id, $state)
+
+			Object.defineProperties(baseStore, {
+				$state: {
+					get() {
+						return liberate._state.get(id)
+					}
+				}
+			})
+
+			const store = baseStore as Store<Id, S, G, A>
+
+			plugins.forEach(p => {
+				Object.assign(
+					store,
+					p({
+						store,
+						// @ts-ignore
+						options
+					}) || {}
+				)
+			})
+
+			liberate._store.set(id, store)
+		}
+
 		if (getApiEnv() === 'component') useCollectDep()
+
+		const store = liberate._store.get(id) as Store<Id, S, G, A>
+
 		return store
 	}
 	useStore.$id = id

@@ -4,8 +4,10 @@
 
 export type StateTree = Record<string | number | symbol, unknown>
 
-export type Callback<T = StateTree, K = StateTree> = (oldV: T, V: K) => void
+export type Callback<T = StateTree> = (V: T) => void
 export type DepsType = Map<unknown, Set<Callback>>
+
+export type ActiveEffect = Callback | undefined
 
 export type _StoreWithGetters<G> = {
 	readonly [k in keyof G]: G[k] extends (...args: any[]) => infer R ? R : G[k]
@@ -61,6 +63,13 @@ export type Store<
 	(_ActionsTree extends A ? {} : A) &
 	LiberateCustomProperties<Id, S, G, A> &
 	LiberateCustomStateProperties<S>
+
+export type StoreGeneric = Store<
+	string,
+	StateTree,
+	_GettersTree<StateTree>,
+	_ActionsTree
+>
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DefineStoreOptionsBase<S extends StateTree, Store> {}
