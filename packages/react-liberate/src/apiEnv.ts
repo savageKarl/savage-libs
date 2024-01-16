@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Fun } from './types'
+import { noop } from './utils'
 
 type ApiEnv = 'component' | 'js' | 'pending'
 
@@ -8,7 +10,7 @@ function setApiEnv(env: ApiEnv) {
 	apiExecuteEnv = env
 }
 
-export function getApiEnv() {
+function getApiEnv() {
 	try {
 		setApiEnv('pending')
 		useState()
@@ -20,10 +22,26 @@ export function getApiEnv() {
 	return apiExecuteEnv
 }
 
-const originErrorConsole = window.console.error
-
-window.console.error = function (...args: unknown[]) {
-	if (apiExecuteEnv === 'pending') return undefined
-
-	originErrorConsole(...args)
+export function safeHookRun(callback: Fun, elseCallback: Fun = noop) {
+	if (getApiEnv() === 'component') {
+		callback()
+	} else {
+		elseCallback()
+	}
 }
+
+function safeRun(callback: Fun) {
+	try {
+		callback()
+	} catch {}
+}
+
+safeRun(() => {
+	const originErrorConsole = window.console.error
+
+	window.console.error = function (...args: unknown[]) {
+		if (apiExecuteEnv === 'pending') return undefined
+
+		originErrorConsole(...args)
+	}
+})

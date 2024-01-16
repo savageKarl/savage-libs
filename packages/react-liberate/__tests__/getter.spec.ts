@@ -62,25 +62,21 @@ describe('Getters', () => {
 	})
 
 	it('supports changing between applications', () => {
-		debugger
 		const aStore = useA()
 		expect(aStore.fromB).toBe('a b')
 		const bStore = useB()
 		bStore.b = 'c'
 
 		aStore.a = 'b'
-		debugger
 		const temp = aStore.fromB
-		debugger
 
 		expect(temp).toBe('b c')
 	})
 
-	// it('can use other getters', () => {
-	// 	const store = useStore()
-	// 	// debugger
-	// 	expect(store.composed).toBe('EDUARDO: ok')
-	// 	store.name = 'Ed'
-	// 	expect(store.composed).toBe('ED: ok')
-	// })
+	it('can use other getters', () => {
+		const store = useStore()
+		expect(store.composed).toBe('EDUARDO: ok')
+		store.name = 'Ed'
+		expect(store.composed).toBe('ED: ok')
+	})
 })

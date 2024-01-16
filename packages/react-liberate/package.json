@@ -46,6 +46,7 @@
 	"author": "",
 	"license": "GPL-3.0",
 	"dependencies": {
+		"@maoism/runtime-core": "^3.4.13",
 		"react": "^16.8.0",
 		"savage-types": "workspace:^",
 		"savage-utils": "workspace:^1.0.63"

@@ -1,6 +1,10 @@
-import { defineStore } from '../src'
+import { defineStore, setActiveLiberate, createLiberate } from '../src'
 
 describe('Store', () => {
+	beforeEach(() => {
+		setActiveLiberate(createLiberate())
+	})
+
 	const useStore = defineStore('main', {
 		state: () => ({
 			a: true,
@@ -9,10 +13,6 @@ describe('Store', () => {
 				a: { b: 'string' }
 			}
 		})
-	})
-	beforeEach(() => {
-		const store = useStore()
-		store.$reset()
 	})
 
 	it('reuses a store', () => {
@@ -51,8 +51,10 @@ describe('Store', () => {
 		store.$state.a = false
 		const spy = vi.fn()
 		store.$subscribe(spy)
+		// debugger
 		expect(spy).not.toHaveBeenCalled()
 		store.$reset()
+
 		expect(spy).toHaveBeenCalledTimes(1)
 		store.$state.nested.foo = 'bar'
 		expect(spy).toHaveBeenCalledTimes(2)

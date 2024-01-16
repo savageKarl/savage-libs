@@ -1,17 +1,16 @@
-import { defineStore } from '../src'
+import { defineStore, setActiveLiberate, createLiberate } from '../src'
 
 describe('store.$reset', () => {
+	beforeEach(() => {
+		setActiveLiberate(createLiberate())
+	})
+
 	const useStore = defineStore('main', {
 		state: () => ({
 			name: 'Eduardo',
 			counter: 0,
 			nested: { n: 0 }
 		})
-	})
-
-	beforeEach(() => {
-		const store = useStore()
-		store.$reset()
 	})
 
 	it('can reset the state', () => {

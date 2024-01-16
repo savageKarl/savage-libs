@@ -24,6 +24,7 @@
 		"format": "prettier --write --cache \"**/*.[tj]s?(x)\"",
 		"format-check": "prettier --check --cache \"**/*.[tj]s?(x)\"",
 		"test": "vitest",
+		"test:vitest": "vitest --coverage",
 		"test-unit": "vitest -c vitest.unit.config.ts",
 		"test-coverage": "vitest -c vitest.unit.config.ts --coverage",
 		"log": "changeset add",

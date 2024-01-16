@@ -1,5 +1,12 @@
 /* eslint-disable no-prototype-builtins */
-import { defineStore, loadPlugin } from '../src'
+import { watch, ref, toRef, computed } from '@vue/runtime-core'
+
+import {
+	defineStore,
+	loadPlugin,
+	setActiveLiberate,
+	createLiberate
+} from '../src'
 
 declare module '../src' {
 	export interface LiberateCustomProperties<Id> {
@@ -21,6 +28,10 @@ declare module '../src' {
 }
 
 describe('store plugins', () => {
+	beforeEach(() => {
+		setActiveLiberate(createLiberate())
+	})
+
 	const useStore = defineStore('test', {
 		actions: {
 			incrementN() {
@@ -53,237 +64,145 @@ describe('store plugins', () => {
 		expect(store.uid).toBeDefined()
 	})
 
-	// it('overrides $reset', () => {
-	// 	const useStore = defineStore('main', {
-	// 		state: () => ({ n: 0 })
-	// 	})
+	it('overrides $reset', () => {
+		const useStore = defineStore('main', {
+			state: () => ({ n: 0 })
+		})
 
-	// 	loadPlugin(({ store }) => {
-	// 		// eslint-disable-next-line no-prototype-builtins
-	// 		if (!store.$state.hasOwnProperty('pluginN')) {
-	// 			store.$state.pluginN = 20
-	// 		}
-	// 		store.pluginN = store.$state.pluginN
+		loadPlugin(({ store }) => {
+			// eslint-disable-next-line no-prototype-builtins
+			if (!store.$state.hasOwnProperty('pluginN')) {
+				store.$state.pluginN = 20
+			}
+			store.pluginN = store.$state.pluginN
 
-	// 		const originalReset = store.$reset.bind(store)
-	// 		return {
-	// 			uid: 1,
-	// 			$reset() {
-	// 				originalReset()
-	// 				store.pluginN = 20
-	// 			}
-	// 		}
-	// 	})
+			const originalReset = store.$reset.bind(store)
+			return {
+				uid: 1,
+				$reset() {
+					originalReset()
+					store.pluginN = 20
+				}
+			}
+		})
 
-	// 	const store = useStore()
+		const store = useStore()
 
-	// 	store.pluginN = 200
-	// 	store.$reset()
-	// 	expect(store.$state.pluginN).toBe(20)
-	// 	expect(store.pluginN).toBe(20)
-	// })
+		store.pluginN = 200
+		store.$reset()
+		expect(store.$state.pluginN).toBe(20)
+		expect(store.pluginN).toBe(20)
+	})
 
-	// it('can install plugins before installing pinia', () => {
-	// 	const pinia = createPinia()
+	it('can be used in actions', () => {
+		// must call use after installing the plugin
+		loadPlugin(() => {
+			return { pluginN: 20 }
+		})
 
-	// 	loadPlugin(() => ({ pluginN: 1 }))
-	// 	loadPlugin(({ app }) => ({ uid: app._uid }))
+		const store = useStore()
 
-	// 	mount({ template: 'none' }, { global: { plugins: [pinia] } })
+		expect(store.incrementN()).toBe(20)
+	})
 
-	// 	loadPlugin(app => ({ hasApp: !!app }))
+	it('can be used in getters', () => {
+		loadPlugin(() => {
+			return { pluginN: 20 }
+		})
 
-	// 	const store = useStore(pinia)
+		const store = useStore()
+		expect(store.doubleN).toBe(40)
+	})
 
-	// 	expect(store.pluginN).toBe(1)
-	// 	expect(store.uid).toBeDefined()
-	// 	expect(store.hasApp).toBe(true)
-	// })
+	it('shares the same ref among stores', () => {
+		// must call use after installing the plugin
+		loadPlugin(({ store }) => {
+			if (!store.$state.hasOwnProperty('shared')) {
+				// @ts-expect-error: cannot be a ref yet
+				store.$state.shared = ref(20)
+			}
+			// @ts-expect-error: TODO: allow setting refs
+			store.shared = toRef(store.$state, 'shared')
+		})
 
-	// it('can be used in actions', () => {
-	// 	const pinia = createPinia()
+		const store = useStore()
+		const store2 = useStore()
 
-	// 	// must call use after installing the plugin
-	// 	loadPlugin(() => {
-	// 		return { pluginN: 20 }
-	// 	})
+		expect(store.$state.shared).toBe(20)
+		expect(store.shared).toBe(20)
+		expect(store2.$state.shared).toBe(20)
+		expect(store2.shared).toBe(20)
 
-	// 	mount({ template: 'none' }, { global: { plugins: [pinia] } })
+		store.$state.shared = 10
+		expect(store.$state.shared).toBe(10)
+		expect(store.shared).toBe(10)
+		expect(store2.$state.shared).toBe(10)
+		expect(store2.shared).toBe(10)
 
-	// 	const store = useStore(pinia)
+		store.shared = 1
+		expect(store.$state.shared).toBe(1)
+		expect(store.shared).toBe(1)
+		expect(store2.$state.shared).toBe(1)
+		expect(store2.shared).toBe(1)
+	})
 
-	// 	expect(store.incrementN()).toBe(20)
-	// })
+	it('passes the options of the options store', async () => {
+		const options = {
+			state: () => ({ n: 0 }),
+			actions: {
+				increment() {
+					// @ts-expect-error
+					this.n++
+				}
+			},
+			getters: {
+				a() {
+					return 'a'
+				}
+			}
+		}
+		const useStore = defineStore('main', options)
 
-	// it('can be used in getters', () => {
-	// 	const pinia = createPinia()
+		const store = useStore()
 
-	// 	// must call use after installing the plugin
-	// 	loadPlugin(() => {
-	// 		return { pluginN: 20 }
-	// 	})
+		loadPlugin(context => {
+			expect(context.options).toEqual(options)
+		})
+		useStore()
+	})
 
-	// 	mount({ template: 'none' }, { global: { plugins: [pinia] } })
+	it('run inside store effect', async () => {
+		// must call use after installing the plugin
+		loadPlugin(({ store }) => ({
+			// @ts-expect-error: invalid computed
+			double: computed(() => store.$state.n * 2)
+		}))
 
-	// 	const store = useStore(pinia)
-	// 	expect(store.doubleN).toBe(40)
-	// })
+		const useStore = defineStore('main', {
+			state: () => ({ n: 1 })
+		})
 
-	// it('allows chaining', () => {
-	// 	const pinia = createPinia()
+		const store = useStore()
 
-	// 	// must call use after installing the plugin
-	// 	loadPlugin(() => ({ globalA: 'a' })).use(() => ({ globalB: 'b' }))
+		const spy = vi.fn()
+		watch(() => store.double, spy, { flush: 'sync' })
 
-	// 	mount({ template: 'none' }, { global: { plugins: [pinia] } })
+		expect(spy).toHaveBeenCalledTimes(0)
 
-	// 	const store = useStore(pinia)
-	// 	expect(store.globalA).toBe('a')
-	// 	expect(store.globalB).toBe('b')
-	// })
+		store.n++
+		expect(spy).toHaveBeenCalledTimes(1)
+	})
 
-	// it('shares the same ref among stores', () => {
-	// 	const pinia = createPinia()
+	it('only executes plugins once after multiple installs', async () => {
+		const spy = vi.fn()
+		loadPlugin(spy)
 
-	// 	mount({ template: 'none' }, { global: { plugins: [pinia] } })
+		for (let i = 0; i < 3; i++) {
+			loadPlugin(spy)
+		}
 
-	// 	// must call use after installing the plugin
-	// 	loadPlugin(({ app, store }) => {
-	// 		if (!store.$state.hasOwnProperty('shared')) {
-	// 			// @ts-expect-error: cannot be a ref yet
-	// 			store.$state.shared = ref(20)
-	// 		}
-	// 		// @ts-expect-error: TODO: allow setting refs
-	// 		store.shared = toRef(store.$state, 'shared')
-	// 	})
+		useStore()
 
-	// 	const store = useStore(pinia)
-	// 	const store2 = useStore(pinia)
-
-	// 	expect(store.$state.shared).toBe(20)
-	// 	expect(store.shared).toBe(20)
-	// 	expect(store2.$state.shared).toBe(20)
-	// 	expect(store2.shared).toBe(20)
-
-	// 	store.$state.shared = 10
-	// 	expect(store.$state.shared).toBe(10)
-	// 	expect(store.shared).toBe(10)
-	// 	expect(store2.$state.shared).toBe(10)
-	// 	expect(store2.shared).toBe(10)
-
-	// 	store.shared = 1
-	// 	expect(store.$state.shared).toBe(1)
-	// 	expect(store.shared).toBe(1)
-	// 	expect(store2.$state.shared).toBe(1)
-	// 	expect(store2.shared).toBe(1)
-	// })
-
-	// it('passes the options of the options store', async () => {
-	// 	const options = {
-	// 		id: 'main',
-	// 		state: () => ({ n: 0 }),
-	// 		actions: {
-	// 			increment() {
-	// 				// @ts-expect-error
-	// 				this.n++
-	// 			}
-	// 		},
-	// 		getters: {
-	// 			a() {
-	// 				return 'a'
-	// 			}
-	// 		}
-	// 	}
-	// 	const useStore = defineStore(options)
-	// 	const pinia = createPinia()
-	// 	mount({ template: 'none' }, { global: { plugins: [pinia] } })
-
-	// 	await new Promise<void>(done => {
-	// 		loadPlugin(context => {
-	// 			expect(context.options).toEqual(options)
-	// 			done()
-	// 		})
-	// 		useStore(pinia)
-	// 	})
-	// })
-
-	// it('passes the options of a setup store', async () => {
-	// 	const useStore = defineStore('main', () => {
-	// 		const n = ref(0)
-
-	// 		function increment() {
-	// 			n.value++
-	// 		}
-	// 		const a = computed(() => 'a')
-
-	// 		return { n, increment, a }
-	// 	})
-	// 	const pinia = createPinia()
-	// 	mount({ template: 'none' }, { global: { plugins: [pinia] } })
-
-	// 	await new Promise<void>(done => {
-	// 		loadPlugin(context => {
-	// 			expect(context.options).toEqual({
-	// 				actions: {
-	// 					increment: expect.any(Function)
-	// 				}
-	// 			})
-	// 			;(context.store as any).increment()
-	// 			expect((context.store as any).n).toBe(1)
-	// 			done()
-	// 		})
-
-	// 		useStore()
-	// 	})
-	// })
-
-	// it('run inside store effect', async () => {
-	// 	const pinia = createPinia()
-
-	// 	// must call use after installing the plugin
-	// 	loadPlugin(({ store }) => ({
-	// 		// @ts-expect-error: invalid computed
-	// 		double: computed(() => store.$state.n * 2)
-	// 	}))
-
-	// 	const useStore = defineStore('main', {
-	// 		state: () => ({ n: 1 })
-	// 	})
-
-	// 	mount(
-	// 		{
-	// 			template: 'none',
-	// 			setup() {
-	// 				// create it inside of the component
-	// 				useStore()
-	// 			}
-	// 		},
-	// 		{ global: { plugins: [pinia] } }
-	// 	).unmount()
-
-	// 	const store = useStore(pinia)
-
-	// 	const spy = vi.fn()
-	// 	watch(() => store.double, spy, { flush: 'sync' })
-
-	// 	expect(spy).toHaveBeenCalledTimes(0)
-
-	// 	store.n++
-	// 	expect(spy).toHaveBeenCalledTimes(1)
-	// })
-
-	// it('only executes plugins once after multiple installs', async () => {
-	// 	const pinia = createPinia()
-
-	// 	const spy = vi.fn()
-	// 	loadPlugin(spy)
-
-	// 	for (let i = 0; i < 3; i++) {
-	// 		mount({ template: 'none' }, { global: { plugins: [pinia] } }).unmount()
-	// 	}
-
-	// 	useStore(pinia)
-
-	// 	expect(spy).toHaveBeenCalledTimes(1)
-	// })
+		expect(spy).toHaveBeenCalledTimes(1)
+	})
 })

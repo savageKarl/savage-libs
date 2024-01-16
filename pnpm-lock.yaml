@@ -296,6 +296,9 @@ importers:
 
   packages/react-liberate:
     dependencies:
+      '@maoism/runtime-core':
+        specifier: ^3.4.13
+        version: 3.4.13
       react:
         specifier: ^16.8.0
         version: 16.14.0
@@ -2394,6 +2397,23 @@ packages:
       globby: 11.1.0
       read-yaml-file: 1.1.0
     dev: true
+
+  /@maoism/reactivity@3.4.13:
+    resolution: {integrity: sha512-790L1LC/u3YCZz2gRZfQXw+Vjp+xf7KLfqo2tUW86/EO0n6yo/q89uROi9QF2fG4skD2ewFjOhjXnM4LHwnUuw==}
+    dependencies:
+      '@maoism/shared': 3.4.13
+    dev: false
+
+  /@maoism/runtime-core@3.4.13:
+    resolution: {integrity: sha512-3Gt+/9dNCMX1Kt1ThEIMDrkxOYdoTkX53I0DMM/0bIjRbOlap0P5u4UmGxj9IPhIG45qGM6ybPAMbpboo+c+BQ==}
+    dependencies:
+      '@maoism/reactivity': 3.4.13
+      '@maoism/shared': 3.4.13
+    dev: false
+
+  /@maoism/shared@3.4.13:
+    resolution: {integrity: sha512-q7dUhCmw35S3RwUh2N8tpsfsxW4TXmRHVl1Tl7mrXQJ5xJMhbTfFOjMMh1hF9IkhoZUrKgdmqvVAtLkoAI9QTA==}
+    dev: false
 
   /@microsoft/tsdoc-config@0.16.2:
     resolution: {integrity: sha512-OGiIzzoBLgWWR0UdRJX98oYO+XKGf7tiK4Zk6tQ/E4IJqGCe7dvkTvgDZV5cFJUzLGDOjeAXrnZoA6QkVySuxw==}

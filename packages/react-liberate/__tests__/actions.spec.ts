@@ -1,6 +1,10 @@
-import { defineStore } from '../src'
+import { defineStore, setActiveLiberate, createLiberate } from '../src'
 
 describe('Actions', () => {
+	beforeEach(() => {
+		setActiveLiberate(createLiberate())
+	})
+
 	const useStore = defineStore('main', {
 		state: () => ({
 			a: true,
@@ -48,11 +52,6 @@ describe('Actions', () => {
 				throw 'fail'
 			}
 		}
-	})
-
-	beforeEach(() => {
-		const store = useStore()
-		store.$reset()
 	})
 
 	const useB = defineStore('B', {

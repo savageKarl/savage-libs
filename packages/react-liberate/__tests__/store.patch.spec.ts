@@ -80,7 +80,7 @@ describe('$store.patch', () => {
 		store.$patch(state => {
 			expect(state).toBe(store.$state)
 			state.a = !state.a
-			state.list.push(1)
+			state?.list?.push(1)
 		})
 		expect(store.$state).toEqual({
 			a: false,

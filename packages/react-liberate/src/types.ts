@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+export type Fun = (...args: any) => any
 export type StateTree = Record<string | number | symbol, unknown>
 
 export type Callback<T = StateTree> = (V: T) => void
@@ -45,11 +46,14 @@ export interface _StoreWithState<Id extends string, S extends StateTree, G, A> {
 	$id: Id
 	$state: S & LiberateCustomStateProperties<S>
 	$patch(partialState: _DeepPartial<S>): void
-	$patch<F extends (state: S) => unknown>(
+	$patch<F extends (state: _DeepPartial<S>) => any>(
 		stateMutator: ReturnType<F> extends Promise<any> ? never : F
 	): void
 	$reset(): void
-	$subscribe(callback: (...args: unknown[]) => unknown): void
+	$subscribe(
+		callback: (...args: unknown[]) => any,
+		options?: { detached: boolean }
+	): any
 }
 
 export type Store<
