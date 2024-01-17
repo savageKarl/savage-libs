@@ -1,12 +1,7 @@
 /* eslint-disable no-prototype-builtins */
-import { watch, ref, toRef, computed } from '@vue/runtime-core'
+import { watch, ref, toRef, computed } from '@maoism/runtime-core'
 
-import {
-	defineStore,
-	loadPlugin,
-	setActiveLiberate,
-	createLiberate
-} from '../src'
+import { defineStore, setActiveLiberate, createLiberate } from '../src'
 
 declare module '../src' {
 	export interface LiberateCustomProperties<Id> {
@@ -28,9 +23,9 @@ declare module '../src' {
 }
 
 describe('store plugins', () => {
-	beforeEach(() => {
-		setActiveLiberate(createLiberate())
-	})
+	// beforeEach(() => {
+	// 	setActiveLiberate(createLiberate())
+	// })
 
 	const useStore = defineStore('test', {
 		actions: {
@@ -48,7 +43,9 @@ describe('store plugins', () => {
 
 	it('adds properties to stores', () => {
 		// must call use after installing the plugin
-		loadPlugin(({ store }) => {
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
+		liberate.use(({ store }) => {
 			// eslint-disable-next-line no-prototype-builtins
 			if (!store.$state.hasOwnProperty('pluginN')) {
 				store.$state.pluginN = 20
@@ -69,7 +66,9 @@ describe('store plugins', () => {
 			state: () => ({ n: 0 })
 		})
 
-		loadPlugin(({ store }) => {
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
+		liberate.use(({ store }) => {
 			// eslint-disable-next-line no-prototype-builtins
 			if (!store.$state.hasOwnProperty('pluginN')) {
 				store.$state.pluginN = 20
@@ -96,7 +95,9 @@ describe('store plugins', () => {
 
 	it('can be used in actions', () => {
 		// must call use after installing the plugin
-		loadPlugin(() => {
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
+		liberate.use(({ store }) => {
 			return { pluginN: 20 }
 		})
 
@@ -106,7 +107,9 @@ describe('store plugins', () => {
 	})
 
 	it('can be used in getters', () => {
-		loadPlugin(() => {
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
+		liberate.use(({ store }) => {
 			return { pluginN: 20 }
 		})
 
@@ -116,7 +119,9 @@ describe('store plugins', () => {
 
 	it('shares the same ref among stores', () => {
 		// must call use after installing the plugin
-		loadPlugin(({ store }) => {
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
+		liberate.use(({ store }) => {
 			if (!store.$state.hasOwnProperty('shared')) {
 				// @ts-expect-error: cannot be a ref yet
 				store.$state.shared = ref(20)
@@ -161,11 +166,11 @@ describe('store plugins', () => {
 				}
 			}
 		}
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
 		const useStore = defineStore('main', options)
 
-		const store = useStore()
-
-		loadPlugin(context => {
+		liberate.use(context => {
 			expect(context.options).toEqual(options)
 		})
 		useStore()
@@ -173,7 +178,9 @@ describe('store plugins', () => {
 
 	it('run inside store effect', async () => {
 		// must call use after installing the plugin
-		loadPlugin(({ store }) => ({
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
+		liberate.use(({ store }) => ({
 			// @ts-expect-error: invalid computed
 			double: computed(() => store.$state.n * 2)
 		}))
@@ -195,10 +202,13 @@ describe('store plugins', () => {
 
 	it('only executes plugins once after multiple installs', async () => {
 		const spy = vi.fn()
-		loadPlugin(spy)
+		const liberate = createLiberate()
+		setActiveLiberate(liberate)
+
+		liberate.use(spy)
 
 		for (let i = 0; i < 3; i++) {
-			loadPlugin(spy)
+			liberate.use(spy)
 		}
 
 		useStore()

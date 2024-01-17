@@ -1,4 +1,4 @@
-# savage-react-store
+# react-liberate
 
 ## 2.1.0
 

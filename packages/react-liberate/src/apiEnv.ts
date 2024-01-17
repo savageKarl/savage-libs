@@ -30,7 +30,7 @@ export function safeHookRun(callback: Fun, elseCallback: Fun = noop) {
 	}
 }
 
-function safeRun(callback: Fun) {
+export function safeRun(callback: Fun) {
 	try {
 		callback()
 	} catch {}

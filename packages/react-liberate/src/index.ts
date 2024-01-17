@@ -1,4 +1,4 @@
-export { defineStore, loadPlugin } from './defineStore'
+export { defineStore } from './defineStore'
 export { liberate, createLiberate, setActiveLiberate } from './liberate'
 
 export type {

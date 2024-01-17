@@ -1,4 +1,4 @@
-import { isRef, isReactive } from '@vue/runtime-core'
+import { isRef, isReactive } from '@maoism/runtime-core'
 import { isObject, isArray, isUndefined } from 'savage-types'
 import { copyDeep } from 'savage-utils'
 

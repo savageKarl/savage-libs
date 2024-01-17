@@ -9,14 +9,13 @@ import {
 	computed,
 	watch,
 	type ComputedRef
-} from '@vue/runtime-core'
+} from '@maoism/runtime-core'
 import { isFunction } from 'savage-types'
 
 import type {
 	StateTree,
 	DefineStoreOptions,
 	Store,
-	LiberatePlugin,
 	_GettersTree,
 	_ActionsTree,
 	StoreDefinition,
@@ -28,10 +27,6 @@ import { noop, mergeReactiveObjects } from './utils'
 import { safeHookRun } from './apiEnv'
 import { liberate } from './liberate'
 import { addSubscriptions, triggerSubscription } from './subscription'
-
-export function loadPlugin(plugin: LiberatePlugin) {
-	liberate._plugins.add(plugin)
-}
 
 function useRender() {
 	const [, setState] = useState({})
