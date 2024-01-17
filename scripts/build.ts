@@ -34,10 +34,9 @@ async function createConfig(pkgName: string) {
 	const path = getFullpath(pkgName)
 	const outDir = getFullpath(pkgName, 'dist')
 
-	const _external =
-		external === 'dependencies'
-			? Object.keys(pkgJson.dependencies || {})
-			: external
+	const deps = Object.keys(pkgJson.dependencies || {})
+
+	const _external = external === 'dependencies' ? deps : external
 
 	const plugins = []
 
@@ -78,7 +77,7 @@ async function createConfig(pkgName: string) {
 		clean: false,
 		esbuildPlugins: plugins,
 		...rest,
-		external: _external,
+		external: deps,
 		outExtension
 	} as TsupOptions
 }
