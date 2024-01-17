@@ -1,5 +1,19 @@
 # savage-react-store
 
+## 2.1.0
+
+### Minor Changes
+
+- 260515a: refactor all feature by reactivity api
+- 4991599: feat: provide new api
+
+### Patch Changes
+
+- f6d4d1a: perf: remove unnecessary change
+  test: add test
+- 01b2d13: - test: add test for actions
+  - fix: fix types error
+
 ## 2.0.8
 
 ### Patch Changes
