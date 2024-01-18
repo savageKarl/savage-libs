@@ -1,6 +1,6 @@
 import jsdom from 'jsdom'
 
-import { Chain } from '../utils/chain'
+import { Chain } from 'savage-utils'
 
 import { unionRegex } from '../utils/utils'
 import {

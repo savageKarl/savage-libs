@@ -42,30 +42,30 @@ export function unionRegex(arr: RegExp[]) {
 	)
 }
 
-export function inlineSvg(
-	resovledConfig: ResolvedConfig,
-	code: string,
-	id: string
-) {
-	if (
-		resovledConfig.assetsInclude(id) &&
-		/\.svg/.test(id) &&
-		/__VITE_ASSET__/.test(code)
-	) {
-		const base64 = readFileSync(/.+?\.svg/.exec(id)?.[0] as string, {
-			encoding: 'base64'
-		})
-		return `export default 'data:image/svg+xml;base64,${base64}'`
-	}
-	return null
-}
+// export function inlineSvg(
+// 	resovledConfig: ResolvedConfig,
+// 	code: string,
+// 	id: string
+// ) {
+// 	if (
+// 		resovledConfig.assetsInclude(id) &&
+// 		/\.svg/.test(id) &&
+// 		/__VITE_ASSET__/.test(code)
+// 	) {
+// 		const base64 = readFileSync(/.+?\.svg/.exec(id)?.[0] as string, {
+// 			encoding: 'base64'
+// 		})
+// 		return `export default 'data:image/svg+xml;base64,${base64}'`
+// 	}
+// 	return null
+// }
 
 /** NPF, `bundle` */
-export function removeSvg(bundle: OutputBundle) {
-	for (const filename in bundle) {
-		if (/\.svg/.test(filename)) Reflect.deleteProperty(bundle, filename)
-	}
-}
+// export function removeSvg(bundle: OutputBundle) {
+// 	for (const filename in bundle) {
+// 		if (/\.svg/.test(filename)) Reflect.deleteProperty(bundle, filename)
+// 	}
+// }
 
 interface InjectCssOptions {
 	links: string[]
@@ -74,7 +74,7 @@ interface InjectCssOptions {
 	pluginName: string
 }
 
-export function injectCss(options: InjectCssOptions) {
+export async function injectCss(options: InjectCssOptions) {
 	const code = fnToString((options: InjectCssOptions) => {
 		window.addEventListener('DOMContentLoaded', () => {
 			options.links.forEach(v => {
@@ -92,7 +92,7 @@ export function injectCss(options: InjectCssOptions) {
 			}
 		})
 	}, options)
-	return options.minify ? minifyCode(code, 'js') : code
+	return options.minify ? await minifyCode(code, 'js') : code
 }
 
 /** NPF, `usOptions` */
@@ -161,7 +161,14 @@ export function getViteConfigPath() {
 export function hyphenToCamelCase(name: string) {
 	return name
 		.split('-')
-		.map((v, i) => (i > 0 ? v.toUpperCase() : v))
+		.map((v, i) => {
+			return i > 0
+				? v
+						.split('')
+						.map((v, i) => (i === 0 ? v.toUpperCase() : v))
+						.join('')
+				: v
+		})
 		.join('')
 }
 

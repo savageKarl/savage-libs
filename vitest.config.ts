@@ -1,5 +1,4 @@
 import { defineConfig, UserConfig } from 'vitest/config'
-
 import { compilerOptions } from './tsconfig.path.json'
 
 export default defineConfig({
@@ -8,9 +7,8 @@ export default defineConfig({
 	},
 	test: {
 		globals: true,
-		environment: 'jsdom',
-		// disable threads on GH actions to speed it up
-		threads: !process.env.GITHUB_ACTIONS,
+		// environment: 'jsdom',
+		threads: true,
 		setupFiles: 'scripts/setupVitest.ts',
 		coverage: {
 			provider: 'istanbul',
