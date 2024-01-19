@@ -1,4 +1,4 @@
-import { resolve, join } from 'path'
+import { resolve } from 'path'
 import mock from 'mock-fs'
 import { mockConsole } from 'vitest-mock-console'
 import { type Mock } from 'vitest'
@@ -23,9 +23,7 @@ import {
 	getPkgNameByPath
 } from '../../src/utils/utils'
 
-function splicePath(p: string) {
-	return join('__fileSnapshot__', p)
-}
+import { splicePath } from './common'
 
 describe('utils', () => {
 	it('existFile', () => {
@@ -172,7 +170,7 @@ describe('utils', () => {
 					filename: 'temp.js',
 					loader: 'css'
 				})
-			).toMatchSnapshot()
+			).toMatchFileSnapshot(splicePath('transFormCss.css'))
 		})
 
 		it('should transform js code', async () => {
@@ -186,7 +184,7 @@ describe('utils', () => {
 					filename: 'temp.js',
 					loader: 'js'
 				})
-			).toMatchSnapshot()
+			).toMatchFileSnapshot(splicePath('transFormJs.js'))
 		})
 	})
 
@@ -209,14 +207,18 @@ describe('utils', () => {
 				justify-content: end;
 			}
 			`
-			expect(await minifyCode(css, 'css')).toMatchSnapshot()
+			expect(await minifyCode(css, 'css')).toMatchFileSnapshot(
+				splicePath('minifyCss.css')
+			)
 		})
 
 		it('should minify js code', async () => {
 			function fn() {
 				return 'foo'
 			}
-			expect(await minifyCode(fn.toString(), 'js')).toMatchSnapshot()
+			expect(await minifyCode(fn.toString(), 'js')).toMatchFileSnapshot(
+				splicePath('minifyJs.js')
+			)
 		})
 	})
 
@@ -272,7 +274,9 @@ describe('utils', () => {
 			here is mutilple comments
 		*/`
 
-		expect(removeCommentFromCode(s)).toMatchSnapshot()
+		expect(removeCommentFromCode(s)).toMatchFileSnapshot(
+			splicePath('removeCommentFromCode.js')
+		)
 	})
 
 	it('getPkgNameByPath', () => {

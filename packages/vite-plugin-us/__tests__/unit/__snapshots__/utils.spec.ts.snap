@@ -1,28 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`utils > generateJsDataUrlByCode 1`] = `"data:application/javascript,function%20fn()%20%7B%0A%20%20%20%20%20%20return%20%22foo%22%3B%0A%20%20%20%20%7D"`;
-
-exports[`utils > minifyCode > should minify css code 1`] = `
-".header_1f-hhx{justify-content:normal!important}.operation-area_HPE0LG{flex:8;justify-content:end}
-"
-`;
-
-exports[`utils > minifyCode > should minify js code 1`] = `
-"function fn(){return\\"foo\\"}
-"
-`;
-
-exports[`utils > removeCommentFromCode 1`] = `
-"		console.log('bar')
-		"
-`;
-
-exports[`utils > transform > should transform css code 1`] = `
-".header_1f-hhx{justify-content:normal!important}.operation-area_HPE0LG{flex:8;justify-content:end}
-"
-`;
-
-exports[`utils > transform > should transform js code 1`] = `
-"function fn(){return\\"foo\\"}
-"
-`;

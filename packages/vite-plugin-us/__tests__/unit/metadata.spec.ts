@@ -1,28 +1,7 @@
-import { Metadata } from 'vite-plugin-us/utils/metadata'
-import type { MetaData } from 'vite-plugin-us/types/userscript'
+import { Metadata } from '../../src/utils/metadata'
+import { type MetaData } from '../../src/utils/userscript'
 
-const res = `// ==UserScript==
-// @name                           testing
-// @namespace                      https://github.com/savage181855
-// @description                    this is just a test
-// @icon                           https: // test.com
-// @grant                          GM.addElement
-// @grant                          GM.addStyle
-// @author                         savage
-// @antifeature:fr     ads         We show you ads
-// @antifeature        ads         We show you ads
-// @require                        https://test.com.js
-// @include                        *
-// @include                        www.google.com
-// @include                        github.com
-// @match                          *
-// @match                          www.google.com
-// @match                          github.com
-// @exclude-match                  *
-// @exclude-match                  www.google.com
-// @exclude-match                  github.com
-// @run-at                         document_end
-// ==/UserScript==`
+import { splicePath } from './common'
 
 const config: MetaData = {
 	name: 'testing',
@@ -45,6 +24,6 @@ const config: MetaData = {
 describe('metadata', () => {
 	test('generate metadata', () => {
 		const metadata = new Metadata(config)
-		expect(metadata.generate()).toBe(res)
+		expect(metadata.generate()).toMatchFileSnapshot(splicePath('metadata.js'))
 	})
 })
