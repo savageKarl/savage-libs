@@ -207,6 +207,9 @@ importers:
       vitest:
         specifier: ^0.34.3
         version: 0.34.3(happy-dom@12.10.3)(jsdom@22.1.0)
+      vitest-mock-console:
+        specifier: workspace:^
+        version: link:packages/vitest-mock-console
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -529,6 +532,8 @@ importers:
       vue:
         specifier: ^3.3.4
         version: 3.3.4
+
+  packages/vitest-mock-console: {}
 
 packages:
 
