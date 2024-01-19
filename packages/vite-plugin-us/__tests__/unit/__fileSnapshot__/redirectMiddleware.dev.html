@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vite-plugin-us</title>
+</head>
+
+<body>
+<script>;(function redirect(path) {
+  if (window.parent === window) {
+    location.href = `/${path}`;
+    setTimeout(() => {
+      window.close();
+    }, 500);
+  }
+})("vite-plugin-us.dev.user.js");</script>
+</body>
+
+</html>

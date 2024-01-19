@@ -2,7 +2,7 @@ import type { ServerResponse } from 'node:http'
 
 import { resolve } from 'node:path'
 
-import type { Connect, ResolvedConfig } from 'vite'
+import type { Connect, ResolvedConfig, ViteDevServer } from 'vite'
 
 import { devPath, previewPath, htmlTempalte } from '../utils/constants'
 import { fnToString, setResHeader } from '../utils/utils'
@@ -61,6 +61,99 @@ export function bundleMiddware(
 
 		res.end(readFileSync(path, { encoding: 'utf-8' }))
 		process.exit(0)
+	}
+}
+
+interface SeverMiddleOptions {
+	server: ViteDevServer
+	currentOrigin: string
+	usOptions: UsOptions
+	newMetaData: string
+	grants: string[]
+}
+
+export function serverMiddleware({
+	server,
+	currentOrigin,
+	usOptions,
+	newMetaData,
+	grants
+}: SeverMiddleOptions) {
+	return async (
+		req: Connect.IncomingMessage,
+		res: ServerResponse,
+		next: Connect.NextFunction
+	) => {
+		if (!new RegExp(devPath).test(req.url as string)) return next()
+
+		setResHeader(res, {
+			'access-control-allow-origin': '*',
+			'content-type': 'application/javascript'
+		})
+
+		const htmlStr = await server.transformIndexHtml('', '')
+		const regScriptTag = /<(script)[\s\S]+?<\/script>/g
+		const scriptStrList = [...htmlStr.matchAll(regScriptTag)].map(v => v[0])
+		const scriptType = {
+			inlineScriptList: [] as string[][],
+			linkScriptList: [] as string[]
+		}
+
+		scriptStrList.forEach(s => {
+			const path = s.match(/src="(\/.+?)"/)?.[1]
+			if (path) return scriptType.linkScriptList.push(`${currentOrigin}${path}`)
+
+			const scriptContent = s.match(
+				/<script type="module">([\s\S]+?)<\/script>/
+			)?.[1]
+
+			if (scriptContent)
+				return scriptType.inlineScriptList.push(
+					scriptContent
+						.replace(/"/g, "'")
+						.replace(/'(.+?)'/, `'${currentOrigin}$1'`)
+						.split('\n')
+				)
+		})
+
+		scriptType.linkScriptList.push(`${currentOrigin}/${usOptions.entry}`)
+
+		type ScriptType = typeof scriptType
+
+		return res.end(
+			[
+				newMetaData,
+				fnToString((scriptType: ScriptType) => {
+					scriptType.linkScriptList.reverse().forEach(src => {
+						const script = document.createElement('script')
+						script.type = 'module'
+						script.src = src as string
+						document.head.insertBefore(script, document.head.firstChild)
+					})
+
+					scriptType.inlineScriptList.reverse().forEach(str => {
+						const script = document.createElement('script')
+						script.type = 'module'
+						script.textContent = str.join('\n')
+						document.head.insertBefore(script, document.head.firstChild)
+					})
+					// @ts-ignore
+					window.GM.log(
+						`current vserion is ${GM.info.version}, enjoy your day!`
+					)
+				}, scriptType),
+
+				usOptions.autoAddGrant
+					? fnToString((gmApiList: string[]) => {
+							// @ts-ignore
+							gmApiList.forEach(v => (unsafeWindow[v] = window[v]))
+							// @ts-ignore
+							// eslint-disable-next-line dot-notation
+							unsafeWindow['GM'] = window['GM']
+					  }, grants)
+					: ''
+			].join('\n')
+		)
 	}
 }
 
