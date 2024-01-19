@@ -1,5 +1,7 @@
 import { resolve, join } from 'path'
 import mock from 'mock-fs'
+import { mockConsole } from 'vitest-mock-console'
+import { type Mock } from 'vitest'
 import {
 	camelCaseToHyphen,
 	unionRegex,
@@ -20,16 +22,6 @@ import {
 	removeCommentFromCode,
 	getPkgNameByPath
 } from '../../src/utils/utils'
-
-// expect.addSnapshotSerializer({
-// 	serialize(val, config, indentation, depth, refs, printer) {
-// 		// `printer` is a function that serializes a value using existing plugins.
-// 		return `Pretty foo: ${printer(val.foo, config, indentation, depth, refs)}`
-// 	},
-// 	test(val) {
-// 		return val && Object.prototype.hasOwnProperty.call(val, 'foo')
-// 	}
-// })
 
 function splicePath(p: string) {
 	return join('__fileSnapshot__', p)
@@ -87,7 +79,7 @@ describe('utils', () => {
 
 	it('unionRegex', () => {
 		const regs = [/hello/, /fine/]
-		expect(unionRegex(regs)).toEqual(/hello|fine/)
+		expect(unionRegex(regs)).toEqual(/hello|fine/g)
 	})
 
 	describe('injectCss', () => {
@@ -161,6 +153,43 @@ describe('utils', () => {
 		expect(padEndWithSpace(s, 5)).toBe('a    ')
 	})
 
+	describe('transform', () => {
+		it('should transform css code', async () => {
+			const css = `
+		.header_1f-hhx {
+			justify-content: normal !important;
+		}
+		
+		.operation-area_HPE0LG {
+			flex: 8;
+			justify-content: end;
+		}
+		`
+			expect(
+				await transform({
+					minify: true,
+					code: css,
+					filename: 'temp.js',
+					loader: 'css'
+				})
+			).toMatchSnapshot()
+		})
+
+		it('should transform js code', async () => {
+			function fn() {
+				return 'foo'
+			}
+			expect(
+				await transform({
+					minify: true,
+					code: fn.toString(),
+					filename: 'temp.js',
+					loader: 'js'
+				})
+			).toMatchSnapshot()
+		})
+	})
+
 	it('generateJsDataUrlByCode', () => {
 		function fn() {
 			return 'foo'
@@ -198,5 +227,58 @@ describe('utils', () => {
 
 	it('hyphenToCamelCase', () => {
 		expect(hyphenToCamelCase('foo-bar')).toBe('fooBar')
+	})
+
+	describe('conditionLog', () => {
+		let cancelMock: Function
+		beforeEach(() => {
+			cancelMock = mockConsole()
+		})
+
+		afterEach(() => {
+			cancelMock()
+		})
+
+		it('should print true msg', () => {
+			conditionLog({ foo: 'foo' }, 'good', 'notgood')
+			expect(console.log).toHaveBeenCalled()
+			expect(console.log).toHaveBeenCalledTimes(1)
+
+			if ((console.log as Mock).mock.lastCall) {
+				expect((console.log as Mock).mock.lastCall[0]).toMatch(/s/)
+			}
+		})
+
+		it('should print fail msg', () => {
+			conditionLog({}, 'good', 'notgood')
+			expect(console.log).toHaveBeenCalled()
+			expect(console.log).toHaveBeenCalledTimes(1)
+
+			if ((console.log as Mock).mock.lastCall) {
+				expect((console.log as Mock).mock.lastCall[0]).toMatch(/notgood/)
+			}
+		})
+	})
+
+	it('isObjectHasValue', () => {
+		expect(isObjectHasValue({})).toBe(false)
+		expect(isObjectHasValue({ foo: 'foo' })).toBe(true)
+	})
+
+	it('removeCommentFromCode', () => {
+		const s = `// this is single line comment
+		console.log('bar')
+		/* 
+			here is mutilple comments
+		*/`
+
+		expect(removeCommentFromCode(s)).toMatchSnapshot()
+	})
+
+	it('getPkgNameByPath', () => {
+		expect(getPkgNameByPath('@maoism/foo')).toBe('@maoism/foo')
+		expect(getPkgNameByPath('@maoism/foo/baz')).toBe('@maoism/foo')
+		expect(getPkgNameByPath('foo/baz')).toBe('foo')
+		expect(getPkgNameByPath('a/foo/baz')).toBe('a')
 	})
 })

@@ -36,9 +36,10 @@ export function fnToString<T>(fn: (args: T) => unknown, args: T) {
 	return `;(${fn})(${JSON.stringify(args)});`
 }
 
-export function unionRegex(arr: RegExp[]) {
+export function unionRegex(arr: RegExp[], flag = 'g') {
 	return new RegExp(
-		arr.map(r => String(r).replace(/^\/|\/$|g$/g, '')).join('|')
+		arr.map(r => String(r).replace(/^\/|\/$|g$/g, '')).join('|'),
+		flag
 	)
 }
 

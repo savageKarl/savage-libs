@@ -11,3 +11,18 @@ exports[`utils > minifyCode > should minify js code 1`] = `
 "function fn(){return\\"foo\\"}
 "
 `;
+
+exports[`utils > removeCommentFromCode 1`] = `
+"		console.log('bar')
+		"
+`;
+
+exports[`utils > transform > should transform css code 1`] = `
+".header_1f-hhx{justify-content:normal!important}.operation-area_HPE0LG{flex:8;justify-content:end}
+"
+`;
+
+exports[`utils > transform > should transform js code 1`] = `
+"function fn(){return\\"foo\\"}
+"
+`;
