@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import react from 'react'
 import {
 	isRef,
 	isReactive,
@@ -96,8 +96,8 @@ export function mergeReactiveObjects<
 }
 
 export function useRender() {
-	const [, setState] = useState({})
-	const render = useCallback(() => setState({}), [])
+	const [, setState] = react.useState({})
+	const render = react.useCallback(() => setState({}), [])
 
 	return render
 }

@@ -1,56 +1,74 @@
 // @vitest-environment happy-dom
 import { renderHook, act } from '@testing-library/react'
-import { useState } from 'react'
-// import { useReactiveState, useRefState } from '../src/hooks'
+import react from 'react'
+import { type MockInstance, type Mock } from 'vitest'
+import { useReactiveState, useRefState, useGetterState } from '../src/hooks'
 
-// describe('hooks', () => {
-// 	// it('useRefState', () => {
-// 	// 	const count = renderHook(useRefState)
-// 	// })
-// 	it('test count update', () => {
-// 		const { result } = renderHook(() => useState({ count: 0 }))
-// 		const [state, setState] = result.current
-// 		setState({ count: state.count + 1 })
-// 		expect(state).toBe({ count: 1 })
-// 	})
-// 	it('useReactiveState', () => {})
-// })
+describe('hooks', () => {
+	let setState: Mock
+	let useStateSpy: MockInstance
+	let useCallbackSpy: MockInstance
 
-type UseCounterProps = {
-	initialCount?: number
-}
+	beforeEach(() => {
+		setState = vi.fn()
+		useStateSpy = vi
+			.spyOn(react, 'useState')
+			// @ts-ignore
+			.mockImplementation(state => [state, setState])
 
-export const useCounter = ({ initialCount = 0 }: UseCounterProps = {}) => {
-	const [count, setCount] = useState(initialCount)
-
-	const increment = () => {
-		setCount(prevCount => prevCount + 1)
-	}
-
-	return { count, increment }
-}
-
-describe('useCounter', () => {
-	test('should render the initial count', () => {
-		const { result } = renderHook(useCounter)
-		expect(result.current.count).toBe(0)
+		useCallbackSpy = vi
+			.spyOn(react, 'useCallback')
+			// @ts-ignore
+			.mockImplementation((fn: () => any, dep: any[]) => {
+				return fn
+			})
 	})
-})
 
-test('should accept and render the same initial count', () => {
-	const { result } = renderHook(useCounter, {
-		initialProps: { initialCount: 10 }
+	it('useRefState', () => {
+		const { result } = renderHook(useRefState, { initialProps: 0 })
+		expect(result.current.value).toBe(0)
+
+		result.current.value += 1
+		expect(result.current.value).toBe(1)
+		expect(setState).toHaveBeenCalled()
+		expect(setState).toHaveBeenCalledTimes(1)
+
+		result.current.value += 1
+		expect(result.current.value).toBe(2)
+		expect(setState).toHaveBeenCalled()
+		expect(setState).toHaveBeenCalledTimes(2)
 	})
-	expect(result.current.count).toBe(10)
-})
 
-test('should increment the count', () => {
-	const { result } = renderHook(useCounter)
-	act(() => result.current.increment())
-	expect(result.current.count).toBe(1)
-})
+	it('useReactiveState', () => {
+		const { result } = renderHook(useReactiveState, {
+			initialProps: { foo: 'foo' }
+		})
+		expect(result.current.foo).toBe('foo')
 
-test('shit', () => {
-	console.log(globalThis.console)
-	expect(globalThis).toBe(false)
+		result.current.foo = 'bar'
+		expect(result.current.foo).toBe('bar')
+		expect(setState).toHaveBeenCalled()
+		expect(setState).toHaveBeenCalledTimes(1)
+
+		result.current.foo = 'cat'
+		expect(result.current.foo).toBe('cat')
+		expect(setState).toHaveBeenCalled()
+		expect(setState).toHaveBeenCalledTimes(2)
+	})
+
+	it('useGetterState', () => {
+		const res = useReactiveState({
+			firstName: 'foo',
+			lastName: 'bar'
+		})
+		expect(res.firstName).toBe('foo')
+
+		const fullName = useGetterState(() => res.firstName + res.lastName)
+		expect(fullName.value).toBe('foobar')
+
+		res.firstName = 'jack'
+		expect(setState).toHaveBeenCalled()
+		expect(setState).toHaveBeenCalledTimes(1)
+		expect(fullName.value).toBe('jackbar')
+	})
 })
