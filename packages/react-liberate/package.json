@@ -47,16 +47,14 @@
 	"license": "GPL-3.0",
 	"dependencies": {
 		"@maoism/runtime-core": "^3.4.13",
-		"react": "^16.8.0",
+		"react": "^18.2.0",
 		"savage-types": "workspace:^",
 		"savage-utils": "workspace:^1.0.63"
-	},
-	"peerDependencies": {
-		"react": "^16.8.0"
 	},
 	"devDependencies": {
 		"@types/react": "^16.8.0",
 		"@types/react-dom": "^16.8.0",
+		"react-dom": "^18.2.0",
 		"vitest": "^0.34.3"
 	}
 }
