@@ -39,6 +39,9 @@
             ],
             "vite-plugin-us": [
                 "packages/vite-plugin-us/src"
+            ],
+            "vitest-mock-console": [
+                "packages/vitest-mock-console/src"
             ]
         }
     }
