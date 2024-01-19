@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { useCallback, useState } from 'react'
+
 import {
 	reactive,
-	ReactiveEffect,
-	activeEffect,
 	toRefs,
 	markRaw,
 	computed,
@@ -23,20 +21,10 @@ import type {
 	_StoreWithState
 } from './types'
 
-import { noop, mergeReactiveObjects } from './utils'
+import { noop, mergeReactiveObjects, setActiveEffect } from './utils'
 import { safeHookRun } from './apiEnv'
 import { liberate } from './liberate'
 import { addSubscriptions, triggerSubscription } from './subscription'
-
-function useRender() {
-	const [, setState] = useState({})
-	const render = useCallback(() => setState({}), [])
-
-	return render
-}
-
-type Func = () => void
-const depRecord = new WeakMap<Func, ReactiveEffect>()
 
 export function defineStore<
 	Id extends string,
@@ -134,17 +122,7 @@ export function defineStore<
 		}
 
 		safeHookRun(() => {
-			const render = useRender()
-			let effect = depRecord.get(render)
-			if (!effect) {
-				effect = new ReactiveEffect(noop, noop, () => {
-					render()
-					if (effect?.dirty) effect.run()
-				})
-				effect.run()
-				depRecord.set(render, effect)
-			}
-			activeEffect.value = effect
+			setActiveEffect()
 		})
 
 		isSyncListening = true

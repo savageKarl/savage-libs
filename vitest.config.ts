@@ -1,14 +1,18 @@
 import { defineConfig, UserConfig } from 'vitest/config'
+import tsconfigPaths from 'vite-tsconfig-paths'
+
 import { compilerOptions } from './tsconfig.path.json'
 
 export default defineConfig({
+	// @ts-ignore
+	plugins: [tsconfigPaths()],
 	resolve: {
 		alias: getAlias(compilerOptions.paths)
 	},
 	test: {
 		globals: true,
 		// environment: 'jsdom',
-		threads: true,
+		// environmentMatchGlobs: [['react-liberate/**', 'jsdom']],
 		setupFiles: 'scripts/setupVitest.ts',
 		coverage: {
 			provider: 'istanbul',

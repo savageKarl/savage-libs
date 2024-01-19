@@ -1,4 +1,10 @@
-import { isRef, isReactive } from '@maoism/runtime-core'
+import { useCallback, useState } from 'react'
+import {
+	isRef,
+	isReactive,
+	ReactiveEffect,
+	activeEffect
+} from '@maoism/runtime-core'
 import { isObject, isArray, isUndefined } from 'savage-types'
 import { copyDeep } from 'savage-utils'
 
@@ -87,4 +93,29 @@ export function mergeReactiveObjects<
 	}
 
 	return target
+}
+
+export function useRender() {
+	const [, setState] = useState({})
+	const render = useCallback(() => setState({}), [])
+
+	return render
+}
+
+type Func = () => void
+const effectMap = new WeakMap<Func, ReactiveEffect>()
+
+export function setActiveEffect() {
+	const render = useRender()
+
+	let effect = effectMap.get(render)
+	if (!effect) {
+		effect = new ReactiveEffect(noop, noop, () => {
+			render()
+			if (effect?.dirty) effect.run()
+		})
+		effect.run()
+		effectMap.set(render, effect)
+	}
+	activeEffect.value = effect
 }

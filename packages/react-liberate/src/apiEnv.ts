@@ -37,9 +37,9 @@ export function safeRun(callback: Fun) {
 }
 
 safeRun(() => {
-	const originErrorConsole = window.console.error
+	const originErrorConsole = globalThis.console.error
 
-	window.console.error = function (...args: unknown[]) {
+	globalThis.console.error = function (...args: unknown[]) {
 		if (apiExecuteEnv === 'pending') return undefined
 
 		originErrorConsole(...args)
