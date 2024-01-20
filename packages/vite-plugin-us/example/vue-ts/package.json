@@ -7,6 +7,10 @@
 		"build": "vite build",
 		"preview": "vite preview"
 	},
+	"devDependencies": {
+		"unplugin-auto-import": "^0.16.6",
+		"unplugin-vue-components": "^0.25.2"
+	},
 	"dependencies": {
 		"vue": "^3.3.4",
 		"element-plus": "2.3.14"
