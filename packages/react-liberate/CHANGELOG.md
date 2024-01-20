@@ -1,5 +1,12 @@
 # react-liberate
 
+## 2.1.2
+
+### Patch Changes
+
+- a0aa92b: fix plugin patch causing react render error
+- 7990016: fix actions trigger bug
+
 ## 2.1.1
 
 ### Patch Changes
