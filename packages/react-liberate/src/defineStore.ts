@@ -87,7 +87,15 @@ export function defineStore<
 				Object.assign(
 					baseStore,
 					toRefs($state),
-					actions,
+					Object.keys(actions ? actions : []).reduce(
+						(x, y) =>
+							Object.assign(x, {
+								[y]: function () {
+									return actions![y].call(store, ...arguments)
+								}
+							}),
+						{} as A
+					),
 					Object.keys(getters || {}).reduce(
 						(computedGetters, name) => {
 							computedGetters[name] = markRaw(
@@ -101,11 +109,6 @@ export function defineStore<
 					)
 				)
 			) as unknown as Store<Id, S, G, A>
-
-			for (const k in actions) {
-				// @ts-ignore
-				store[k] = store[k].bind(store)
-			}
 
 			liberate._plugins.forEach(p => {
 				Object.assign(
