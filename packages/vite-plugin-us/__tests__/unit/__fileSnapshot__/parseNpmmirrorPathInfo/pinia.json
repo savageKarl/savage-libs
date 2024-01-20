@@ -1,0 +1,14 @@
+[
+    "/index.cjs",
+    "/index.js",
+    "/LICENSE",
+    "/package.json",
+    "/README.md",
+    "/dist/pinia.cjs",
+    "/dist/pinia.d.ts",
+    "/dist/pinia.esm-browser.js",
+    "/dist/pinia.iife.js",
+    "/dist/pinia.iife.prod.js",
+    "/dist/pinia.mjs",
+    "/dist/pinia.prod.cjs"
+]

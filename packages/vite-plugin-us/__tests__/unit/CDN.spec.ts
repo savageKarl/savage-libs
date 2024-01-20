@@ -1,102 +1,89 @@
+import { parseNpmmirrorPathInfo } from '../../src/cdn/cdn'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { generateFiles } from 'savage-node'
-import { getNameByCode } from '../../src/cdn/getNameByCode'
 import { serviceCDN } from '../../src/cdn/service'
 import { existFile } from '../../src/utils/utils'
 import { pluginName } from '../../src/utils/constants'
 import { packagesRoot } from '../../../../scripts/utils'
-
-function join(path: string) {
-	return resolve(
-		packagesRoot,
-		pluginName,
-		'__tests__',
-		'unit',
-		'getNameByCodeWithTestData',
-		path
-	)
-}
+import { isString } from 'savage-types'
 
 interface Item {
-	url: string
 	pkgName: string
-	name: string
+	url: string
 }
 
-// pay attention to dependencies order
-const list: Item[] = [
+const list = [
 	{
-		url: 'https://registry.npmmirror.com/jquery/3.7.1/files/dist/jquery.min.js',
 		pkgName: 'jquery',
-		name: '$'
+		url: 'https://registry.npmmirror.com/jquery/3.7.1/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/vue/3.4.15/files/dist/vue.global.prod.js',
 		pkgName: 'vue',
-		name: 'Vue'
+		url: 'https://registry.npmmirror.com/vue/3.4.15/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/vue-demi/0.14.6/files/lib/index.iife.js',
 		pkgName: 'vue-demi',
-		name: 'VueDemi'
+		url: 'https://registry.npmmirror.com/vue-demi/0.14.6/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/pinia/2.1.7/files/dist/pinia.iife.prod.js',
 		pkgName: 'pinia',
-		name: 'Pinia'
+		url: 'https://registry.npmmirror.com/pinia/2.1.7/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/react/18.2.0/files/umd/react.production.min.js',
 		pkgName: 'react',
-		name: 'React'
+		url: 'https://registry.npmmirror.com/react/18.2.0/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/react-dom/18.2.0/files/umd/react-dom.production.min.js',
 		pkgName: 'react-dom',
-		name: 'ReactDOM'
+		url: 'https://registry.npmmirror.com/react-dom/18.2.0/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/dayjs/1.11.10/files/dayjs.min.js',
 		pkgName: 'dayjs',
-		name: 'dayjs'
+		url: 'https://registry.npmmirror.com/dayjs/1.11.10/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/antd/5.13.2/files/dist/antd.min.js',
 		pkgName: 'antd',
-		name: 'antd'
+		url: 'https://registry.npmmirror.com/antd/5.13.2/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/blueimp-md5/2.19.0/files/js/md5.min.js',
 		pkgName: 'blueimp-md5',
-		name: 'md5'
+		url: 'https://registry.npmmirror.com/blueimp-md5/2.19.0/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/echarts/5.4.3/files/dist/echarts.min.js',
 		pkgName: 'echarts',
-		name: 'echarts'
+		url: 'https://registry.npmmirror.com/echarts/5.4.3/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/element-plus/2.5.2/files/dist/index.full.min.js',
 		pkgName: 'element-plus',
-		name: 'ElementPlus'
+		url: 'https://registry.npmmirror.com/element-plus/2.5.2/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/vuex/4.1.0/files/dist/vuex.global.prod.js',
 		pkgName: 'vuex',
-		name: 'Vuex'
+		url: 'https://registry.npmmirror.com/vuex/4.1.0/files?meta'
 	},
 	{
-		url: 'https://registry.npmmirror.com/xgplayer/3.0.11/files/dist/index.min.js',
 		pkgName: 'xgplayer',
-		name: 'Player'
+		url: 'https://registry.npmmirror.com/xgplayer/3.0.11/files?meta'
 	}
 ]
 
-describe('getNameByCode', () => {
-	it('should find the global name', async () => {
+function join(path: string, snap = false) {
+	const split = [packagesRoot, pluginName, '__tests__', 'unit']
+	if (snap) {
+		split.push(...['__fileSnapshot__', 'parseNpmmirrorPathInfo'])
+	} else {
+		split.push('parseNpmmirrorPathInfoTestData')
+	}
+	split.push(path)
+
+	return resolve(...split)
+}
+
+describe('CDN', () => {
+	it('should correctly parse directory information', async () => {
 		for (const v of list) {
-			const path = join(`${v.pkgName}.js`)
+			const path = join(`${v.pkgName}.json`)
 			let content: string
 			if (existFile(path)) {
 				content = await readFile(path, { encoding: 'utf-8' })
@@ -124,9 +111,15 @@ describe('getNameByCode', () => {
 					}
 				})
 				content = res.data
-				await generateFiles({ [path]: content })
+				await generateFiles({
+					[path]: JSON.stringify(content, null, 4)
+				})
 			}
-			expect(getNameByCode(v.pkgName, content)).toBe(v.name)
+			content = isString(content) ? JSON.parse(content) : content
+
+			expect(
+				JSON.stringify(parseNpmmirrorPathInfo(content as any), null, 4)
+			).toMatchFileSnapshot(join(`${v.pkgName}.json`, true))
 		}
 	})
 })

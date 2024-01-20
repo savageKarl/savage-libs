@@ -1,0 +1,22 @@
+[
+    "/index.js",
+    "/jsx-dev-runtime.js",
+    "/jsx-runtime.js",
+    "/LICENSE",
+    "/package.json",
+    "/react.shared-subset.js",
+    "/README.md",
+    "/cjs/react-jsx-dev-runtime.development.js",
+    "/cjs/react-jsx-dev-runtime.production.min.js",
+    "/cjs/react-jsx-dev-runtime.profiling.min.js",
+    "/cjs/react-jsx-runtime.development.js",
+    "/cjs/react-jsx-runtime.production.min.js",
+    "/cjs/react-jsx-runtime.profiling.min.js",
+    "/cjs/react.development.js",
+    "/cjs/react.production.min.js",
+    "/cjs/react.shared-subset.development.js",
+    "/cjs/react.shared-subset.production.min.js",
+    "/umd/react.development.js",
+    "/umd/react.production.min.js",
+    "/umd/react.profiling.min.js"
+]

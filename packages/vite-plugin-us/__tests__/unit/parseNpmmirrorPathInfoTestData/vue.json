@@ -1,0 +1,326 @@
+{
+    "path": "/",
+    "type": "directory",
+    "files": [
+        {
+            "path": "/index.js",
+            "type": "file",
+            "contentType": "application/javascript",
+            "integrity": "sha512-NmEmnx5SQu8z7BbdmGQXfMfT6ILUFlIdpLrs9ehX+3rJFhUz98XuaTZfybVxCP++vahK+VQp8AI/nkw4jHitlA==",
+            "lastModified": "2024-01-18T13:35:03.405Z",
+            "size": 171
+        },
+        {
+            "path": "/index.mjs",
+            "type": "file",
+            "contentType": "application/javascript",
+            "integrity": "sha512-6gLenR41wx57gpVBvyhPWSyJsE5IGeOqZu9kO4/+CQmalcLiZuBxZ036P9gxAba34EhqpEntxeKgytKAfbd5ow==",
+            "lastModified": "2024-01-18T13:35:03.405Z",
+            "size": 27
+        },
+        {
+            "path": "/jsx.d.ts",
+            "type": "file",
+            "contentType": "text/plain",
+            "integrity": "sha512-zLay5B8MOk6P2/NhacAaW1Az5I1kkeZe+tYCj3uC3zjJz5+mKK/zx1jRrK2JuU6lveLXnlQyqTYFup/ntto9QQ==",
+            "lastModified": "2024-01-18T13:35:03.405Z",
+            "size": 749
+        },
+        {
+            "path": "/LICENSE",
+            "type": "file",
+            "contentType": "text/plain",
+            "integrity": "sha512-5uIok4m0hJ3DRtHFusR+fj1EQ4wTpHp8JpR+iob1Dx51Yr2o/pjKAqaBhFNr9W+EcZXAHKyZxbwuWntkZGGZEw==",
+            "lastModified": "2024-01-18T13:35:03.405Z",
+            "size": 1091
+        },
+        {
+            "path": "/package.json",
+            "type": "file",
+            "contentType": "application/json",
+            "integrity": "sha512-xO8CsD3u3oQrOfU9ualgi4H2WdbVW9IuJ4kA2uXAxYBur3MKkZcWJFshRS3sYckjcXrSjY8iFqhaJ0RKVRtQXg==",
+            "lastModified": "2024-01-18T13:35:03.405Z",
+            "size": 2810
+        },
+        {
+            "path": "/README.md",
+            "type": "file",
+            "contentType": "text/markdown",
+            "integrity": "sha512-omUTIhFe2qzg2SxMNB1i4Yn39Meuoj/9t2DQMgFRooRuo+vrNRXAkD+GzYoYyafqTifScUn/33AeQF3EsQg+tQ==",
+            "lastModified": "2024-01-18T13:35:03.405Z",
+            "size": 3762
+        },
+        {
+            "path": "/compiler-sfc",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/compiler-sfc/index.browser.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-E81EuyA1JYvhSkezgXVlwH5wyuT4CTp7JTKHnDcDLN8vfJMJmzhTumYb8zPFLn2QNRM1/nKForUdSTRgQPBvog==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 46
+                },
+                {
+                    "path": "/compiler-sfc/index.browser.mjs",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-6eklI7NFlLG8N3SCzdCLjZb4XIDrjxbXFGsS62h8psJhBuUcjHq1eIAWFCIF1gexhiexjzZLXLJ6se4+fSa+AA==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 34
+                },
+                {
+                    "path": "/compiler-sfc/index.d.mts",
+                    "type": "file",
+                    "contentType": "model/vnd.mts",
+                    "integrity": "sha512-6eklI7NFlLG8N3SCzdCLjZb4XIDrjxbXFGsS62h8psJhBuUcjHq1eIAWFCIF1gexhiexjzZLXLJ6se4+fSa+AA==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 34
+                },
+                {
+                    "path": "/compiler-sfc/index.d.ts",
+                    "type": "file",
+                    "contentType": "text/plain",
+                    "integrity": "sha512-6eklI7NFlLG8N3SCzdCLjZb4XIDrjxbXFGsS62h8psJhBuUcjHq1eIAWFCIF1gexhiexjzZLXLJ6se4+fSa+AA==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 34
+                },
+                {
+                    "path": "/compiler-sfc/index.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-D5Mlb9x0McItUc+iyo7RPXJWcKlLD4/oicCg/GrFtnMj15uj4JTLaH+oik4ylgP8aa60Ok0vCkN95rx0OiKIVg==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 75
+                },
+                {
+                    "path": "/compiler-sfc/index.mjs",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-fJbz6kpnrlBkQcTY0mHcj0adY3SvL80HYtIZHPndloVAFpA7UM1kEcpGsOR/SKSmsdsy9tsQ/PloI9Gy+7i97g==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 61
+                },
+                {
+                    "path": "/compiler-sfc/package.json",
+                    "type": "file",
+                    "contentType": "application/json",
+                    "integrity": "sha512-DbqN5CVvEMJ5w1Xi5ErLXJlw75dUFM0A4AKhJR3wqY1jePphXOzgnOpyb8gzjFcoMbwYQ5gbHdB54qk+ResbPQ==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 50
+                },
+                {
+                    "path": "/compiler-sfc/register-ts.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-zs9zOy/jW9vzq3S5qGpyljDWcihiX3aoaKCzh7skV3fe3ozIYBDUcEJPcZSrt6KOxBuYjEZocFY3bjfdBSTrUw==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 111
+                }
+            ]
+        },
+        {
+            "path": "/dist",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/dist/vue.cjs.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-v43CHylp2byK4H0o5WYD3XvfXhDD2infaA/ObwTLKru+zYNNCzye3Z1lv3dWZo0MGrTiXU+nhqPg/BH6HCwGuA==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 2531
+                },
+                {
+                    "path": "/dist/vue.cjs.prod.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-0OM3BAnyvf/Q5lINkx/nZhSUKcO2pUTKCSP12+DbyLak/TrhiVFi+WNA6OxWzpGyKEXsLb8HunB1iVtC01B/GA==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 2009
+                },
+                {
+                    "path": "/dist/vue.d.mts",
+                    "type": "file",
+                    "contentType": "model/vnd.mts",
+                    "integrity": "sha512-WI9SmVex1J2xS9+9FLALC6vFVM6hi5rKgECzQlg+fTA3tdaUZ3aK2eCiOKyWshRMg70C2PagF3+/Czx86u3Jew==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 299
+                },
+                {
+                    "path": "/dist/vue.d.ts",
+                    "type": "file",
+                    "contentType": "text/plain",
+                    "integrity": "sha512-WI9SmVex1J2xS9+9FLALC6vFVM6hi5rKgECzQlg+fTA3tdaUZ3aK2eCiOKyWshRMg70C2PagF3+/Czx86u3Jew==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 299
+                },
+                {
+                    "path": "/dist/vue.esm-browser.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-azASnShrqpl/E71TjrjD+71jC+NJ1zLOaMvwU/RFiUvzYg+nXoE0amo6lzb024pBzfvRU+YWwXX+AZIjJubQaw==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 486295
+                },
+                {
+                    "path": "/dist/vue.esm-browser.prod.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-cjhpyyBH3sO2BhlpzJ4SBEYOrW0/e37rC4mY8lox0tRJCW61vvTezzQ85JarHOe2gdlwwlsIinwnMMy9hcVPHA==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 150354
+                },
+                {
+                    "path": "/dist/vue.esm-bundler.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-SVLtmvF4sx9OMTDDouYBHKoh2OhfaIL+BP6qmjJJpSdXK5Do7mzin0OEjB5aUUQgtPeHrNCjWqUATmNx+DLq1w==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 2414
+                },
+                {
+                    "path": "/dist/vue.global.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-2nwRb1zy5HZ8EC6YDOvxUl11k7lJRURjtp9V9PnzsO7IYWoFYxpwY/MXfZhrwVYK2krsftv/Y7hUrysXbO+haw==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 517474
+                },
+                {
+                    "path": "/dist/vue.global.prod.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-nyWLEN/KeIoEEWURH4J5gb5QcRb10uUSUNxwrANWnXYy1fE+Onu2X7ONHxcHfbcW+gT4jD3YTfOt5MroSg5bGQ==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 147177
+                },
+                {
+                    "path": "/dist/vue.runtime.esm-browser.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-S2411d3hQjhP5DvBEEf8FbBI1sRxMgaHeesGv94rsDZW656x7oFbOcVbUiqsb9TZ+t3h0ptyImNKywQJ3Y7b/g==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 327240
+                },
+                {
+                    "path": "/dist/vue.runtime.esm-browser.prod.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-efGsTZ2tFrne/f9pimvkVXqUUz3bFVvif2kYl51jNTnCIl3RWIaQhWeEezFDkl/jJGOY9bIMzp9x4h/kcOhugg==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 90758
+                },
+                {
+                    "path": "/dist/vue.runtime.esm-bundler.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-SJna4S5O9GCCPHYR5rLmNJeD643mage1rhP6NTMEsSWw4pH6vtnZUD9E365kea1n4UjbLOmnQ8RkI2FI5KYKNw==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 580
+                },
+                {
+                    "path": "/dist/vue.runtime.global.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-D5MNooeDWwSVmAGPxW0Qvl0GBr50WvSbwGGAbNo7OU3h1/aXzuC6Nm37fNQplV7iElaWVbl2ijBssVFfV6Lj6g==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 352595
+                },
+                {
+                    "path": "/dist/vue.runtime.global.prod.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-PIzlB6n8JihLz3BDv974cs2blAALAd7hFS4zH4sKNgVm0NWuRw3YU83zoCe22RaeNZiuNPAJfz3FjEyf7qnXow==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 90167
+                }
+            ]
+        },
+        {
+            "path": "/jsx-runtime",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/jsx-runtime/index.d.ts",
+                    "type": "file",
+                    "contentType": "text/plain",
+                    "integrity": "sha512-7evUbbR2w6p+VrwPA8cm5p7TXAnAEKw1LpFyUeAtvChBYw82s7/rWDhYxvWfDLT/dapbpJaC/3NaRBjnJQJ7Gw==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 845
+                },
+                {
+                    "path": "/jsx-runtime/index.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-qmqNRH6OSAxcB8jHEB3TeGQkoK4tYdJUmyDH+Aqp+Z8esi90cFF49mx3sbRzQixsUzDpiLHQRvnbTzasTZgsIg==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 303
+                },
+                {
+                    "path": "/jsx-runtime/index.mjs",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-/GtqEaKSWjXU2MDLhni2H9nige4nvDfDNR0VaVTlmd9WkTZ41zBGoMYau5kWzCFptV+YirJ7+MDqdmtdV7lBaw==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 265
+                },
+                {
+                    "path": "/jsx-runtime/package.json",
+                    "type": "file",
+                    "contentType": "application/json",
+                    "integrity": "sha512-xq3H1d9mCfV0zPcn8qgxj1kdZda7j8EIz5VdsyP5wB+Keif8Ne7z0vEGazTky138msjhIviWLrKRQDq/LT4A8A==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 75
+                }
+            ]
+        },
+        {
+            "path": "/server-renderer",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/server-renderer/index.d.mts",
+                    "type": "file",
+                    "contentType": "model/vnd.mts",
+                    "integrity": "sha512-ywxyUQUtQcoppERrwK7CR9Gu8cI89aqwGn3CNe9lF/O0JTwpGe48QR2QSDaUHTTJYdF2Wro9y81D5bK8Pb4XvQ==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 37
+                },
+                {
+                    "path": "/server-renderer/index.d.ts",
+                    "type": "file",
+                    "contentType": "text/plain",
+                    "integrity": "sha512-ywxyUQUtQcoppERrwK7CR9Gu8cI89aqwGn3CNe9lF/O0JTwpGe48QR2QSDaUHTTJYdF2Wro9y81D5bK8Pb4XvQ==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 37
+                },
+                {
+                    "path": "/server-renderer/index.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-43MiTPeOJzwExR6oALvKwcDqdRiQ1z3jQqvxpP7FCMUvhrn7Qcn9qU4q3h5RPVh9Anrr3swogt2VC/+iNKI3Hw==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 49
+                },
+                {
+                    "path": "/server-renderer/index.mjs",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-ywxyUQUtQcoppERrwK7CR9Gu8cI89aqwGn3CNe9lF/O0JTwpGe48QR2QSDaUHTTJYdF2Wro9y81D5bK8Pb4XvQ==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 37
+                },
+                {
+                    "path": "/server-renderer/package.json",
+                    "type": "file",
+                    "contentType": "application/json",
+                    "integrity": "sha512-DbqN5CVvEMJ5w1Xi5ErLXJlw75dUFM0A4AKhJR3wqY1jePphXOzgnOpyb8gzjFcoMbwYQ5gbHdB54qk+ResbPQ==",
+                    "lastModified": "2024-01-18T13:35:03.405Z",
+                    "size": 50
+                }
+            ]
+        }
+    ]
+}

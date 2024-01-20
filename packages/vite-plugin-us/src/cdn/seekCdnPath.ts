@@ -48,7 +48,7 @@ class SeekCdnPath {
 	}
 }
 
-function removeBeginDot(v: string) {
+export function removeBeginDot(v: string) {
 	const res = v.replace(/^\./, '')
 	return !/^\//.test(res) ? `/${res}` : res
 }

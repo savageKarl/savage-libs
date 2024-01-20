@@ -1,0 +1,23 @@
+[
+    "/LICENSE",
+    "/package.json",
+    "/README.md",
+    "/bin/vue-demi-fix.js",
+    "/bin/vue-demi-switch.js",
+    "/lib/index.cjs",
+    "/lib/index.d.ts",
+    "/lib/index.iife.js",
+    "/lib/index.mjs",
+    "/lib/v2/index.cjs",
+    "/lib/v2/index.d.ts",
+    "/lib/v2/index.mjs",
+    "/lib/v2.7/index.cjs",
+    "/lib/v2.7/index.d.ts",
+    "/lib/v2.7/index.mjs",
+    "/lib/v3/index.cjs",
+    "/lib/v3/index.d.ts",
+    "/lib/v3/index.mjs",
+    "/scripts/postinstall.js",
+    "/scripts/switch-cli.js",
+    "/scripts/utils.js"
+]

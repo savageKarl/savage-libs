@@ -1,0 +1,108 @@
+{
+    "path": "/",
+    "type": "directory",
+    "files": [
+        {
+            "path": "/index.cjs",
+            "type": "file",
+            "contentType": "application/node",
+            "integrity": "sha512-BtV+70OhzqMZh24tTc5vtLuwbXBj40uUCYV0ZZcQADki+pwzqMIhJQaEtE8VgtjCdQ71Gftk+gpMfzMwVTNtnw==",
+            "lastModified": "2023-10-13T09:39:24.978Z",
+            "size": 169
+        },
+        {
+            "path": "/index.js",
+            "type": "file",
+            "contentType": "application/javascript",
+            "integrity": "sha512-BtV+70OhzqMZh24tTc5vtLuwbXBj40uUCYV0ZZcQADki+pwzqMIhJQaEtE8VgtjCdQ71Gftk+gpMfzMwVTNtnw==",
+            "lastModified": "2023-10-13T09:39:24.978Z",
+            "size": 169
+        },
+        {
+            "path": "/LICENSE",
+            "type": "file",
+            "contentType": "text/plain",
+            "integrity": "sha512-Inp1VuBCl8xOK0nk/z10W0CU6TFtZnPOG/gFPHz7paqYzvF6iCVYiVfaohpFtVBjXDXqoI9BOE76fkKdf39MTQ==",
+            "lastModified": "2023-10-13T09:39:24.978Z",
+            "size": 1100
+        },
+        {
+            "path": "/package.json",
+            "type": "file",
+            "contentType": "application/json",
+            "integrity": "sha512-4aYqysMYuK+OBN/otQNta97qrJA88yZuTK/mCgyFeActlf0YatbFIl0S5MoiSyX2Hdr3vohWNxNHyQEuO6bGBQ==",
+            "lastModified": "2023-10-13T09:39:24.978Z",
+            "size": 2490
+        },
+        {
+            "path": "/README.md",
+            "type": "file",
+            "contentType": "text/markdown",
+            "integrity": "sha512-UWY8KJ7lnBrMmeF1n9s5yX7YvAQBqiw2xeoJ9aWAEBumtCyHOg6ltEKEU+QTCddCXG847DXcA06vXoegDKM6tQ==",
+            "lastModified": "2023-10-13T09:39:24.978Z",
+            "size": 671
+        },
+        {
+            "path": "/dist",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/dist/pinia.cjs",
+                    "type": "file",
+                    "contentType": "application/node",
+                    "integrity": "sha512-Kx7eWPIEmSuS47/mRH6/VI9+fW/1s5FlktKuCw0tvesM6DMt/YfGtZ64mhxz/otTJRjdbrSQtBSMviU9l2tUNw==",
+                    "lastModified": "2023-10-13T09:39:24.978Z",
+                    "size": 75194
+                },
+                {
+                    "path": "/dist/pinia.d.ts",
+                    "type": "file",
+                    "contentType": "text/plain",
+                    "integrity": "sha512-9Ss6sWcTRhVCQbYL8PxakweT/LCA1EKaebJH+/DBEmLTKs8fISLbV2U/LW0beuNxhZpRRjdt01H35/0gKZ+2BQ==",
+                    "lastModified": "2023-10-13T09:39:24.978Z",
+                    "size": 35532
+                },
+                {
+                    "path": "/dist/pinia.esm-browser.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-hEX59H5JBcX0E0eKwNvn/9n4gzzd1byE75t7KIPFger/zpSlQQ28oFmif8peQIu9XpxR0kOMtEGGqlAF2Jr0Aw==",
+                    "lastModified": "2023-10-13T09:39:24.978Z",
+                    "size": 72779
+                },
+                {
+                    "path": "/dist/pinia.iife.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-ShQmhS9RbUbRuatnx/TWtHbMt3rIr8opHjghUYW2lGysb2ZpAQfOp6aOWnfwOIzyTyWHC+nGbztkXwjdbl3GJQ==",
+                    "lastModified": "2023-10-13T09:39:24.978Z",
+                    "size": 83172
+                },
+                {
+                    "path": "/dist/pinia.iife.prod.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-8r+kNXfEGdI+jgtaTz12ih/LxIIyRhhRTlukSxBrI5UnUXYuR6NULjaVsEceJnDac46yP9OWY4IJEwM4mXFN4A==",
+                    "lastModified": "2023-10-13T09:39:24.978Z",
+                    "size": 5819
+                },
+                {
+                    "path": "/dist/pinia.mjs",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-GP8BfeBB/SWHl6WjWL7DRT19pOHyND6y/eBoe/RaNV1ZLFiaj8y1e2FVBvBZmxOoZWsEGAQxnFBvAegV5ifWsw==",
+                    "lastModified": "2023-10-13T09:39:24.978Z",
+                    "size": 74425
+                },
+                {
+                    "path": "/dist/pinia.prod.cjs",
+                    "type": "file",
+                    "contentType": "application/node",
+                    "integrity": "sha512-lgM4fqfrrJRD7aBJWLIUJ4TYVzQFBVfEpLirGnXN0KCgPzEjNZVuTHqDlIGerzfSWSzbWCVzBMvs4WMYRvvUYA==",
+                    "lastModified": "2023-10-13T09:39:24.978Z",
+                    "size": 27929
+                }
+            ]
+        }
+    ]
+}

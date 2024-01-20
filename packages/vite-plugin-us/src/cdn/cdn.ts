@@ -289,7 +289,7 @@ function parseJsDelivrPathInfo(
 	return paths
 }
 
-function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
+export function parseNpmmirrorPathInfo(pathInfo: NpmmirrorPkgPathInfo) {
 	const paths: string[] = []
 
 	if (pathInfo.type === 'file') {

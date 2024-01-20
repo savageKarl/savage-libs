@@ -1,0 +1,17 @@
+[
+    "/CHANGELOG.md",
+    "/LICENSE",
+    "/package.json",
+    "/README.md",
+    "/dist/vuex.cjs.js",
+    "/dist/vuex.esm-browser.js",
+    "/dist/vuex.esm-browser.prod.js",
+    "/dist/vuex.esm-bundler.js",
+    "/dist/vuex.global.js",
+    "/dist/vuex.global.prod.js",
+    "/dist/vuex.mjs",
+    "/types/helpers.d.ts",
+    "/types/index.d.ts",
+    "/types/logger.d.ts",
+    "/types/vue.d.ts"
+]

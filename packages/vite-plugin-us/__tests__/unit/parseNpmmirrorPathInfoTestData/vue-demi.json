@@ -1,0 +1,210 @@
+{
+    "path": "/",
+    "type": "directory",
+    "files": [
+        {
+            "path": "/LICENSE",
+            "type": "file",
+            "contentType": "text/plain",
+            "integrity": "sha512-54OBqlzaNNvTYCqqbXoaYnozo8xcg+5jvM0/BA/3IQQMqeYOfrCJTO7yTxVeo9cfbvtFol0D/SmCUZ6vtINy8w==",
+            "lastModified": "2023-08-28T08:00:43.027Z",
+            "size": 1076
+        },
+        {
+            "path": "/package.json",
+            "type": "file",
+            "contentType": "application/json",
+            "integrity": "sha512-oO4Uy0OByJIie6Eyrg/1/9ocFUOGOfxlPNJM+OW7Pi6fBffKXTUMFmwhWeu+Lez0UxgHAiiJraysj1pihTegxg==",
+            "lastModified": "2023-08-28T08:00:43.027Z",
+            "size": 1108
+        },
+        {
+            "path": "/README.md",
+            "type": "file",
+            "contentType": "text/markdown",
+            "integrity": "sha512-jz7ujsSpaRSqqWNmP91snIDaupgJKISBuXOSfv2XArzSFV6x/pLjswRwaup5vKQBslaWX7HGiWxj0orOq+IfsA==",
+            "lastModified": "2023-08-28T08:00:43.027Z",
+            "size": 7319
+        },
+        {
+            "path": "/bin",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/bin/vue-demi-fix.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-6K8fuQdVXVzBShibeuH87ALQ+XRzaJGCii57dxd3ia8/JMkcVAe6VaJN37Aec6bYt2uP/fJEjaCGgpH+TEYH3g==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 67
+                },
+                {
+                    "path": "/bin/vue-demi-switch.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-5ryDNUV9/7z5N6p5Yxn5vHr+6XAcuuXoYCl8+W8KaPs/n3HoMunLR0ruZD38vERFj3KR7/SGdcc7thuWYtyUmA==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 66
+                }
+            ]
+        },
+        {
+            "path": "/lib",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/lib/index.cjs",
+                    "type": "file",
+                    "contentType": "application/node",
+                    "integrity": "sha512-W7mazJoPdLPEynFT1yX5JLMzGoPEl8UzD/mVIuzYV6+6ppmc3pf00SN0lnO6DECnHRE5v2vVKHUMMaEGwABG3A==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 559
+                },
+                {
+                    "path": "/lib/index.d.ts",
+                    "type": "file",
+                    "contentType": "text/plain",
+                    "integrity": "sha512-q3iNioUFj2Z0k/KM9+6HysVsdgxRLJbMEFwvzIdlvALShNjDJhuVO0gh1kmiSrtsqK1zthv7s/yYc5h7L93yEg==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 572
+                },
+                {
+                    "path": "/lib/index.iife.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-vUFdmIy/Bndz7+9mwzDpUcKNXg8Gz+P7Rgz/vkwosFFmsI6XKhj8bepvt+xUEmzbuUkuV57HiOiprbiL05QGXA==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 3395
+                },
+                {
+                    "path": "/lib/index.mjs",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-kOxZTxx5VsrRri+9ylkf/zi6veQ0pPJf7AorHI+f4EmBIEziIaoTcgcsRx6l9DfN4G+InFPGtm9RMAsVVYkPPQ==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 524
+                },
+                {
+                    "path": "/lib/v2",
+                    "type": "directory",
+                    "files": [
+                        {
+                            "path": "/lib/v2/index.cjs",
+                            "type": "file",
+                            "contentType": "application/node",
+                            "integrity": "sha512-im8UgS20t4YC1M5zEYMLRxT6sGN4kgeXLLv4X+yI6dr+1t//OFULIQPMOMbRE0UqtmX47yWeh4SHj7UqgQXVAA==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 870
+                        },
+                        {
+                            "path": "/lib/v2/index.d.ts",
+                            "type": "file",
+                            "contentType": "text/plain",
+                            "integrity": "sha512-8UGlaVMyHzqbwOuHZCrXlM4zotXRiU6zWwSPCWH8I/Qq0YvP5jtv9+PDPIxMMZs8ejEOgful0zWMIFnDuuiasw==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 997
+                        },
+                        {
+                            "path": "/lib/v2/index.mjs",
+                            "type": "file",
+                            "contentType": "application/javascript",
+                            "integrity": "sha512-NMCKrqyoO9HVSONTXO3+WRNsvz4Lk3QUtWTwOda1RFf0djSISVln2ZUgTAS18T5iZNA0EEoD4EvQKlaVCdtAfw==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 1344
+                        }
+                    ]
+                },
+                {
+                    "path": "/lib/v2.7",
+                    "type": "directory",
+                    "files": [
+                        {
+                            "path": "/lib/v2.7/index.cjs",
+                            "type": "file",
+                            "contentType": "application/node",
+                            "integrity": "sha512-9emRWomSgVaD2xXT4a35qs/MaqARQsKxZn3vuIFm+TUq40N8lPg0SNTiVu3iAz0XEHOIIG1XzdAo7D61HSeRoA==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 1454
+                        },
+                        {
+                            "path": "/lib/v2.7/index.d.ts",
+                            "type": "file",
+                            "contentType": "text/plain",
+                            "integrity": "sha512-vkCp7s6nrOxdjVT0yc3y5TZgUZgkP8KJlB8GEQM6KNh5eNvh/tQLIefOtMiKFWHSUQR+XKXijWb71pVJBbNc/w==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 1459
+                        },
+                        {
+                            "path": "/lib/v2.7/index.mjs",
+                            "type": "file",
+                            "contentType": "application/javascript",
+                            "integrity": "sha512-vZW1V9Zw3EsJC9xsCnjomf03CKGh/lTauZMjI8yDFcXQwngFRSq56EQhH5AGaofaqA4g9BpBIVS461ZVF2CqQw==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 1982
+                        }
+                    ]
+                },
+                {
+                    "path": "/lib/v3",
+                    "type": "directory",
+                    "files": [
+                        {
+                            "path": "/lib/v3/index.cjs",
+                            "type": "file",
+                            "contentType": "application/node",
+                            "integrity": "sha512-W7mazJoPdLPEynFT1yX5JLMzGoPEl8UzD/mVIuzYV6+6ppmc3pf00SN0lnO6DECnHRE5v2vVKHUMMaEGwABG3A==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 559
+                        },
+                        {
+                            "path": "/lib/v3/index.d.ts",
+                            "type": "file",
+                            "contentType": "text/plain",
+                            "integrity": "sha512-q3iNioUFj2Z0k/KM9+6HysVsdgxRLJbMEFwvzIdlvALShNjDJhuVO0gh1kmiSrtsqK1zthv7s/yYc5h7L93yEg==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 572
+                        },
+                        {
+                            "path": "/lib/v3/index.mjs",
+                            "type": "file",
+                            "contentType": "application/javascript",
+                            "integrity": "sha512-kOxZTxx5VsrRri+9ylkf/zi6veQ0pPJf7AorHI+f4EmBIEziIaoTcgcsRx6l9DfN4G+InFPGtm9RMAsVVYkPPQ==",
+                            "lastModified": "2023-08-28T08:00:43.027Z",
+                            "size": 524
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/scripts",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/scripts/postinstall.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-ApZMuqevzh0FAizRLib5GZHCpRNElRXIx8zIYjAgeEmOi/+5ZTp1iAcLXUVG/VHbns/uPoUM9Y4lq5kUMjD4vA==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 501
+                },
+                {
+                    "path": "/scripts/switch-cli.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-HDXYMXQoedt61zxHp/74YSTa5ZUWkMVicjU7goE87h36YaxMgwgCMjNgWYtbQLlcax1Mdfzm8L1Nd+SGsJcG6g==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 624
+                },
+                {
+                    "path": "/scripts/utils.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-GF0T8R42tAdTr75F7q/2h3qu39WZFuCoLLPHI4F16qnNlEsuR+T+S4nt0JAzQTVgKt7VjcL9a0/jXs8SN1zdXQ==",
+                    "lastModified": "2023-08-28T08:00:43.027Z",
+                    "size": 1571
+                }
+            ]
+        }
+    ]
+}

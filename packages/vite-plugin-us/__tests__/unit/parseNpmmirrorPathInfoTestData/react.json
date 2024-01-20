@@ -1,0 +1,178 @@
+{
+    "path": "/",
+    "type": "directory",
+    "files": [
+        {
+            "path": "/index.js",
+            "type": "file",
+            "contentType": "application/javascript",
+            "integrity": "sha512-JUEuiJdLg1gvpH7JB8tNKjC5AnoZIVYJlXmiRCWIK+hLklSMB/hzCb4NCfD1w/GE2FbcMjr29/I2o8Pz274c9A==",
+            "lastModified": "1985-10-26T08:15:00.000Z",
+            "size": 190
+        },
+        {
+            "path": "/jsx-dev-runtime.js",
+            "type": "file",
+            "contentType": "application/javascript",
+            "integrity": "sha512-iqg5QacJldGUsuVYaU99tCFKOkS8x2GwzBo64HI57BVYw0inekH+b6l6bNM4d1JYoSDBWFnClJuhv3RqH9122Q==",
+            "lastModified": "1985-10-26T08:15:00.000Z",
+            "size": 222
+        },
+        {
+            "path": "/jsx-runtime.js",
+            "type": "file",
+            "contentType": "application/javascript",
+            "integrity": "sha512-OfEEg6Sy/s8hd9pVYWBMxe31867RgrkvQgMM5ggcWlzM7arv0+pcRDAnBPkcr6Li/ynWDpS11KXEubQjscWLNw==",
+            "lastModified": "1985-10-26T08:15:00.000Z",
+            "size": 214
+        },
+        {
+            "path": "/LICENSE",
+            "type": "file",
+            "contentType": "text/plain",
+            "integrity": "sha512-VHYnY2M5ol17+BG5gUMDKrLEPgzMX+I2ZWqYuYoAkxKpq/LwWreomGlbvw0J5ydkA4XD1zaNFUXxNiUhVpYBmw==",
+            "lastModified": "1985-10-26T08:15:00.000Z",
+            "size": 1086
+        },
+        {
+            "path": "/package.json",
+            "type": "file",
+            "contentType": "application/json",
+            "integrity": "sha512-m7bGvtPazww8iddg+vWXz0zG5doBZTXDZ4sYiIZ/2CUvkk8gdkP7SwKVk32TTlxiOSAPu4aEQxPRp4O8wi/Tqw==",
+            "lastModified": "1985-10-26T08:15:00.000Z",
+            "size": 999
+        },
+        {
+            "path": "/react.shared-subset.js",
+            "type": "file",
+            "contentType": "application/javascript",
+            "integrity": "sha512-7TcHlSwqweRR+Yl4iFGtOZfg9bQlvf46VQyv8cU0yEfGVRehO9H7O3F2R+J1r9eYGaanzBaMgkq1GEoh+dRUEA==",
+            "lastModified": "1985-10-26T08:15:00.000Z",
+            "size": 218
+        },
+        {
+            "path": "/README.md",
+            "type": "file",
+            "contentType": "text/markdown",
+            "integrity": "sha512-EsA5t1+hDzGAFRLf27FVs47MUixHckatUH1l/jUW0EtOpyEhMtcslmXqz2jrm7q/JMSTimTnQ2XZmYuZD9CkwA==",
+            "lastModified": "1985-10-26T08:15:00.000Z",
+            "size": 1162
+        },
+        {
+            "path": "/cjs",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/cjs/react-jsx-dev-runtime.development.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-QP4RQ4QGVHF8Zal0gNDy81lpb2v0y+Cu01CGLUPrj5BJJ153XqCqqYFNJV5ylvIB9a/fYOzFhdKCvSnSaHEVcw==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 41147
+                },
+                {
+                    "path": "/cjs/react-jsx-dev-runtime.production.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-2dbLjJG+LUX3BS82pzXpQEVXHukNjWFkD6rYjJt675TdOFRbh+mkPqeEKZAtH/Ded+FWLv3z4pmLP6queUWLIQ==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 343
+                },
+                {
+                    "path": "/cjs/react-jsx-dev-runtime.profiling.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-eDDv5BwYeqsMz9zl5n/BQtwBpQ3IdoUgQDvTyRR2k7SJjCJHB6Fbhd62JWHfNRCI3g5cyieq7UDaSmpzBQONWQ==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 342
+                },
+                {
+                    "path": "/cjs/react-jsx-runtime.development.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-PnqhdOULSUe9w1FBnZeZhvp0TZud950FV9mcaA3jJzDPia3+eZF3KnBb9PUtgkG/uZXbNRXaunth/2bGpJKZhA==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 41746
+                },
+                {
+                    "path": "/cjs/react-jsx-runtime.production.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-FsiRds5HFptYMEUCaLc7x0WYqHWhGiLfPOsB0zjhxOq+QDe7vuAq4kQxR5ecdhcEsnCitnH/O3dPTfYH8kfkpg==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 859
+                },
+                {
+                    "path": "/cjs/react-jsx-runtime.profiling.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-FgeIu4/NIGbMBdqMmUblAFzDR/WcBc1k+GfQw+sImTX5Na1srKaMNjMJMemu/tLygqUgCD3ecdGKlqzxyt56DA==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 858
+                },
+                {
+                    "path": "/cjs/react.development.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-C66YcqJGm90eDOdKERbFYWtX6ECgf8LZ0aDCO/pDV9qTVyym6DxUdRQrHRg+yl0/PMXABD/9ZjLBer52Z+yqBQ==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 87574
+                },
+                {
+                    "path": "/cjs/react.production.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-dv/5WzijjzOI9GrOjpi/V8N8u3XcuIN93BZMS1JM5U6XIpX1bo2G88q3rc3801lbSyc+D/HBIkCN6upGiRw8eQ==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 6913
+                },
+                {
+                    "path": "/cjs/react.shared-subset.development.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-Otlx59GSHSD452hw0iWOmHaMjDNZEj+z8E/nOLi1ULjqYSKVb7DizrDxHEZPkEvG1ptq2+guBTXsYTLU3AO3Kg==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 501
+                },
+                {
+                    "path": "/cjs/react.shared-subset.production.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-HnwKmFglwncab8DaqXAyHIJnu6qKuOOQ9qk5R6irWzlXoV42eC/BewJljCa+TrdNGr6/8a+Hbio5l4Y5/52WTg==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 351
+                }
+            ]
+        },
+        {
+            "path": "/umd",
+            "type": "directory",
+            "files": [
+                {
+                    "path": "/umd/react.development.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-m7nhpWHotpucPI37I4lPovL28Bm2BhAMV8poF3F8Z9oOEZ3jlxGzkgvG0EMt1mVL1xydr1erlBbmN90js/ssUw==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 109910
+                },
+                {
+                    "path": "/umd/react.production.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-8Q6Y9XnTbOE+JNvjBQwJ2H8S+UV4uA6hiRykhdtIyDYZ2TprdNmWOUaKdGzOhyr4dCyk287OejbPvwl7lrfqrQ==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 10737
+                },
+                {
+                    "path": "/umd/react.profiling.min.js",
+                    "type": "file",
+                    "contentType": "application/javascript",
+                    "integrity": "sha512-lBcORiVAmcidId0Lej4rxH/k2nM8QFYBx6FpnmEBtfSn3H23mqXqM/tbmzbCuTPVnTZf1Dxgg+VhGXopYYII6Q==",
+                    "lastModified": "1985-10-26T08:15:00.000Z",
+                    "size": 10736
+                }
+            ]
+        }
+    ]
+}
