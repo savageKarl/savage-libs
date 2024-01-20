@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { updateStorage } from '../src/index'
+import { updateStorage } from '../src/plugin'
 
 describe('updateStorage()', () => {
 	let storage: Storage
