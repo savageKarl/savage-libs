@@ -1,5 +1,12 @@
 # react-liberate
 
+## 2.1.1
+
+### Patch Changes
+
+- 13cbaa3: feat: loading plugin through the use method of liberate object
+  test: add api env unit test
+
 ## 2.1.0
 
 ### Minor Changes

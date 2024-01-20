@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.10
+
+### Patch Changes
+
+- 0e978e5: add test for utils
+
 ## 1.0.9
 
 ### Patch Changes

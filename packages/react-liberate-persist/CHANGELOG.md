@@ -1,5 +1,11 @@
 # react-liberate-persist
 
+## 0.0.10
+
+### Patch Changes
+
+- 1d43885: only export reactLiberatePersist
+
 ## 0.0.9
 
 ### Patch Changes
