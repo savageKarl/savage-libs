@@ -1,4 +1,4 @@
-import pc from 'picocolors'
+import pc from 'picox'
 
 import { pluginName } from './constants'
 

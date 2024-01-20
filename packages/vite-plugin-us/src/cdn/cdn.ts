@@ -1,6 +1,6 @@
 import { extname } from 'node:path'
 
-import pc from 'picocolors'
+import pc from 'picox'
 import { copyDeep } from 'savage-utils'
 
 import {

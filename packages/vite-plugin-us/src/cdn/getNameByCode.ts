@@ -61,6 +61,7 @@ class GlobalVariableNameEval {
 	}
 
 	public getNameByCode(code: string) {
+		// debugger
 		try {
 			this.saveKeys()
 			// eslint-disable-next-line no-eval
@@ -183,7 +184,8 @@ export function getNameByCode(pkgName: string, code: string) {
 		return ''
 	})
 
-	nodeEval.setNextNode(nodeRegex).setNextNode(nodeLast)
+	// nodeEval.setNextNode(nodeRegex).setNextNode(nodeLast)
+	nodeEval.setNextNode(nodeRegex)
 
 	const name = nodeEval.passRequest<string>()
 

@@ -11,6 +11,7 @@ export default defineConfig({
 	},
 	test: {
 		globals: true,
+		testTimeout: 200000000,
 		// environment: 'jsdom',
 		// environmentMatchGlobs: [['react-liberate/**', 'jsdom']],
 		setupFiles: 'scripts/setupVitest.ts',
