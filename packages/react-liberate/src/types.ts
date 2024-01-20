@@ -51,7 +51,7 @@ export interface _StoreWithState<Id extends string, S extends StateTree, G, A> {
 	): void
 	$reset(): void
 	$subscribe(
-		callback: (...args: unknown[]) => any,
+		callback: (newValue: S) => any,
 		options?: { detached: boolean }
 	): any
 }

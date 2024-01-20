@@ -9,7 +9,7 @@ import {
 	type ComputedRef
 } from '@maoism/runtime-core'
 import { isFunction } from 'savage-types'
-
+import { useRef } from 'react'
 import type {
 	StateTree,
 	DefineStoreOptions,
@@ -20,7 +20,6 @@ import type {
 	_DeepPartial,
 	_StoreWithState
 } from './types'
-
 import { noop, mergeReactiveObjects, setActiveEffect } from './utils'
 import { safeHookRun } from './apiEnv'
 import { liberate } from './liberate'
@@ -35,81 +34,82 @@ export function defineStore<
 	id: Id,
 	options: DefineStoreOptions<Id, S, G, A>
 ): StoreDefinition<Id, S, G, A> {
-	function useStore() {
-		let isSyncListening = false
+	let isSyncListening = false
 
-		if (!liberate._store.has(id)) {
-			const { state, actions, getters } = options
-			const $state = reactive(state ? state() : {}) as S
+	createStore()
+	function createStore() {
+		const { state, actions, getters } = options
+		const $state = reactive(state ? state() : {}) as S
 
-			const initState = state ? state() : {}
+		const initState = state ? state() : {}
 
-			const baseStore = {
-				$id: id,
-				$state,
-				$patch(val: _DeepPartial<S> | ((arg: S) => unknown)) {
-					isSyncListening = false
-					if (isFunction(val)) {
-						val($state as S)
-					} else {
-						mergeReactiveObjects($state as S, val)
-					}
-
-					isSyncListening = true
-					triggerSubscription($state)
-				},
-				$reset() {
-					this.$patch(v => {
-						Object.assign(v, initState)
-					})
-				},
-				$subscribe(cb: (newValue: S) => unknown, options = { detached: true }) {
-					const remove = addSubscriptions(cb, options.detached, () => unwatch())
-					const unwatch = watch(
-						$state,
-						state => {
-							if (isSyncListening) {
-								cb(state)
-							}
-						},
-						{
-							deep: true,
-							flush: 'sync'
-						}
-					)
-					return remove
+		const baseStore = {
+			$id: id,
+			$state,
+			$patch(val: _DeepPartial<S> | ((arg: S) => unknown)) {
+				isSyncListening = false
+				if (isFunction(val)) {
+					val($state as S)
+				} else {
+					mergeReactiveObjects($state as S, val)
 				}
-			} as _StoreWithState<Id, S, G, A>
 
-			liberate._state.set(id, $state)
-
-			const store = reactive(
-				Object.assign(
-					baseStore,
-					toRefs($state),
-					Object.keys(actions ? actions : []).reduce(
-						(x, y) =>
-							Object.assign(x, {
-								[y]: function () {
-									return actions![y].call(store, ...arguments)
-								}
-							}),
-						{} as A
-					),
-					Object.keys(getters || {}).reduce(
-						(computedGetters, name) => {
-							computedGetters[name] = markRaw(
-								computed(() => {
-									return getters?.[name].call(store, store)
-								})
-							)
-							return computedGetters
-						},
-						{} as Record<string, ComputedRef>
-					)
+				isSyncListening = true
+				triggerSubscription($state)
+			},
+			$reset() {
+				this.$patch(v => {
+					Object.assign(v, initState)
+				})
+			},
+			$subscribe(cb: (newValue: S) => unknown) {
+				const remove = addSubscriptions(cb, () => unwatch())
+				const unwatch = watch(
+					$state,
+					state => {
+						if (isSyncListening) {
+							cb(state)
+						}
+					},
+					{
+						deep: true,
+						flush: 'sync'
+					}
 				)
-			) as unknown as Store<Id, S, G, A>
+				return remove
+			}
+		} as _StoreWithState<Id, S, G, A>
 
+		liberate._state.set(id, $state)
+
+		const store = reactive(
+			Object.assign(
+				baseStore,
+				toRefs($state),
+				Object.keys(actions ? actions : []).reduce(
+					(x, y) =>
+						Object.assign(x, {
+							[y]: function () {
+								return actions![y].call(store, ...arguments)
+							}
+						}),
+					{} as A
+				),
+				Object.keys(getters || {}).reduce(
+					(computedGetters, name) => {
+						computedGetters[name] = markRaw(
+							computed(() => {
+								return getters?.[name].call(store, store)
+							})
+						)
+						return computedGetters
+					},
+					{} as Record<string, ComputedRef>
+				)
+			)
+		) as unknown as Store<Id, S, G, A>
+
+		Promise.resolve().then(() => {
 			liberate._plugins.forEach(p => {
 				Object.assign(
 					store,
@@ -120,9 +120,13 @@ export function defineStore<
 					}) || {}
 				)
 			})
+		})
 
-			liberate._store.set(id, store)
-		}
+		liberate._store.set(id, store)
+	}
+
+	function useStore() {
+		if (!liberate._store.has(id)) createStore()
 
 		safeHookRun(() => {
 			setActiveEffect()
