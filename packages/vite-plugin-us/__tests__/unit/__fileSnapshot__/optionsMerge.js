@@ -25,6 +25,7 @@
       "http://baidu.com",
     ],
     "name": "savage",
+    "require": [],
     "supportURL": "",
     "version": "0.0.0",
   },

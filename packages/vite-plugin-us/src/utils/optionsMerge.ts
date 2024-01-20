@@ -46,7 +46,8 @@ const defaultOpts: Required<UsOptions> = {
 		version: pkg.version || '0.0.1',
 		description: pkg.description || 'welcome use vite-plugin-us',
 		author: takeFieldFromTarget('name', pkg.author as TargetType),
-		supportURL: takeFieldFromTarget('url', pkg.bugs as TargetType)
+		supportURL: takeFieldFromTarget('url', pkg.bugs as TargetType),
+		require: []
 	}
 }
 
