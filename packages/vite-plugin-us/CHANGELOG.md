@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.11
+
+### Patch Changes
+
+- 1802325: add new options item for options merge
+
 ## 1.0.10
 
 ### Patch Changes
