@@ -29,7 +29,6 @@
 		"rootDir": "."
 	},
 	"include": [
-		"**/*.ts",
 		"packages/global.d.ts",
 		"packages/*",
 		"docs",
