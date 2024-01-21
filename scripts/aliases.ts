@@ -1,11 +1,6 @@
 import { resolve } from 'node:path'
-
-import {
-	projectRoot,
-	resolveCliOption,
-	resolveTargetPkgNames,
-	generateFiles
-} from './utils'
+import { generateFiles } from 'savage-node'
+import { projectRoot, resolveCliOption, resolveTargetPkgNames } from './utils'
 
 const { targetPkgNames, all } = resolveCliOption(process)
 
@@ -26,7 +21,6 @@ function generatePathFile(pkgNames: string[]) {
 	template.compilerOptions.paths = paths
 
 	const aliasFilePath = resolve(projectRoot, 'tsconfig.path.json')
-
 	generateFiles({ [aliasFilePath]: JSON.stringify(template, null, 4) })
 }
 

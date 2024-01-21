@@ -1,8 +1,7 @@
 import { resolve } from 'node:path'
-
 import { mdtable } from 'savage-mdtable'
 import { capitalize } from 'savage-utils'
-
+import { generateFiles } from 'savage-node'
 import {
 	projectRoot,
 	packagesRoot,
@@ -11,7 +10,6 @@ import {
 	resolveTargetPkgNames,
 	spliceTemplate,
 	replaceTemplateVariable,
-	generateFiles,
 	pkgNames
 } from './utils'
 
