@@ -1,7 +1,7 @@
-import { existsSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
-
 import { normalizePath } from 'savage-utils'
+import gb, { type Options } from 'fast-glob'
 
 export async function generateFiles(pathRecord: Record<string, string>) {
 	for (let [path, content] of Object.entries(pathRecord)) {
@@ -29,5 +29,37 @@ export async function generateFiles(pathRecord: Record<string, string>) {
 		}
 
 		await writeFile(path, content, { encoding: 'utf-8' })
+	}
+}
+
+export interface CopyOptions {
+	from: string
+	to: string
+}
+
+function handlePath(path: string) {
+	return normalizePath(path).replace(/\/$/, '')
+}
+
+export async function copy(options: CopyOptions) {
+	const globOptions: Options = {
+		absolute: true,
+		dot: true
+	}
+	options.from = handlePath(options.from)
+	options.to = handlePath(options.to)
+
+	try {
+		const originFiles = await gb.async(options.from + '/**/*', globOptions)
+		const targetFiles = originFiles.map(
+			f => options.to + f.replace(options.from, '')
+		)
+		const fileContentRecord = originFiles
+			.map(f => readFileSync(f, { encoding: 'utf-8' }))
+			.reduce((x, y, i) => Object.assign(x, { [targetFiles[i]]: y }), {})
+
+		generateFiles(fileContentRecord)
+	} catch (e) {
+		console.error('copy', e)
 	}
 }
