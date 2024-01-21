@@ -6,9 +6,7 @@ import { compilerOptions } from './tsconfig.path.json'
 export default defineConfig({
 	// @ts-ignore
 	plugins: [tsconfigPaths()],
-	resolve: {
-		alias: getAlias(compilerOptions.paths)
-	},
+
 	test: {
 		globals: true,
 		testTimeout: 200000000,
