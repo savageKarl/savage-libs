@@ -1,0 +1,15 @@
+{
+	"/savage-mdtable/": {
+		"base": "/savage-mdtable/",
+		"items": [
+			{
+				"text": "savage-mdtable",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}

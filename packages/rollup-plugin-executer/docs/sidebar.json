@@ -1,0 +1,15 @@
+{
+	"/rollup-plugin-executer/": {
+		"base": "/rollup-plugin-executer/",
+		"items": [
+			{
+				"text": "rollup-plugin-executer",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}

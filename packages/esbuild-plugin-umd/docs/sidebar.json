@@ -1,0 +1,15 @@
+{
+	"/esbuild-plugin-umd/": {
+		"base": "/esbuild-plugin-umd/",
+		"items": [
+			{
+				"text": "esbuild-plugin-umd",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}

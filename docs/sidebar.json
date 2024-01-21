@@ -4,24 +4,24 @@
         "items": [
             {
                 "text": "elec-ipc",
-                "link": "modules"
+                "link": "index"
             },
             {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "addToChannel",
-                        "link": "functions/addToChannel"
-                    },
-                    {
-                        "text": "receive",
-                        "link": "functions/receive"
-                    },
-                    {
-                        "text": "send",
-                        "link": "functions/send"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
+            }
+        ]
+    },
+    "/esbuild-plugin-clone/": {
+        "base": "/esbuild-plugin-clone/",
+        "items": [
+            {
+                "text": "esbuild-plugin-clone",
+                "link": "index"
+            },
+            {
+                "text": "API",
+                "link": "api"
             }
         ]
     },
@@ -30,453 +30,11 @@
         "items": [
             {
                 "text": "esbuild-plugin-umd",
-                "link": "modules"
+                "link": "index"
             },
             {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "umd",
-                        "link": "functions/umd"
-                    }
-                ]
-            },
-            {
-                "text": "interfaces",
-                "items": [
-                    {
-                        "text": "UmdOptions",
-                        "link": "interfaces/UmdOptions"
-                    }
-                ]
-            }
-        ]
-    },
-    "/rollup-plugin-executer/": {
-        "base": "/rollup-plugin-executer/",
-        "items": [
-            {
-                "text": "rollup-plugin-executer",
-                "link": "modules"
-            },
-            {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "del",
-                        "link": "functions/del"
-                    },
-                    {
-                        "text": "executer",
-                        "link": "functions/executer"
-                    },
-                    {
-                        "text": "run",
-                        "link": "functions/run"
-                    }
-                ]
-            },
-            {
-                "text": "types",
-                "items": [
-                    {
-                        "text": "Args",
-                        "link": "types/Args"
-                    },
-                    {
-                        "text": "Command",
-                        "link": "types/Command"
-                    },
-                    {
-                        "text": "CommandList",
-                        "link": "types/CommandList"
-                    },
-                    {
-                        "text": "ExecuteOptions",
-                        "link": "types/ExecuteOptions"
-                    },
-                    {
-                        "text": "Fun",
-                        "link": "types/Fun"
-                    },
-                    {
-                        "text": "Options",
-                        "link": "types/Options"
-                    },
-                    {
-                        "text": "OptionsList",
-                        "link": "types/OptionsList"
-                    },
-                    {
-                        "text": "PluginHooks",
-                        "link": "types/PluginHooks"
-                    }
-                ]
-            }
-        ]
-    },
-    "/savage-react-store/": {
-        "base": "/savage-react-store/",
-        "items": [
-            {
-                "text": "savage-react-store",
-                "link": "modules"
-            },
-            {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "defineStore",
-                        "link": "functions/defineStore"
-                    }
-                ]
-            }
-        ]
-    },
-    "/savage-types/": {
-        "base": "/savage-types/",
-        "items": [
-            {
-                "text": "savage-types",
-                "link": "modules"
-            },
-            {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "isAggregateError",
-                        "link": "functions/isAggregateError"
-                    },
-                    {
-                        "text": "isArray",
-                        "link": "functions/isArray"
-                    },
-                    {
-                        "text": "isArrayBuffer",
-                        "link": "functions/isArrayBuffer"
-                    },
-                    {
-                        "text": "isAsyncGenerator",
-                        "link": "functions/isAsyncGenerator"
-                    },
-                    {
-                        "text": "isAsyncGeneratorFunction",
-                        "link": "functions/isAsyncGeneratorFunction"
-                    },
-                    {
-                        "text": "isAsyncIterator",
-                        "link": "functions/isAsyncIterator"
-                    },
-                    {
-                        "text": "isAtomics",
-                        "link": "functions/isAtomics"
-                    },
-                    {
-                        "text": "isBigInt",
-                        "link": "functions/isBigInt"
-                    },
-                    {
-                        "text": "isBigInt64Array",
-                        "link": "functions/isBigInt64Array"
-                    },
-                    {
-                        "text": "isBigUint64Array",
-                        "link": "functions/isBigUint64Array"
-                    },
-                    {
-                        "text": "isBoolean",
-                        "link": "functions/isBoolean"
-                    },
-                    {
-                        "text": "isDataView",
-                        "link": "functions/isDataView"
-                    },
-                    {
-                        "text": "isDate",
-                        "link": "functions/isDate"
-                    },
-                    {
-                        "text": "isError",
-                        "link": "functions/isError"
-                    },
-                    {
-                        "text": "isEvalError",
-                        "link": "functions/isEvalError"
-                    },
-                    {
-                        "text": "isFinalizationRegistry",
-                        "link": "functions/isFinalizationRegistry"
-                    },
-                    {
-                        "text": "isFloat32Array",
-                        "link": "functions/isFloat32Array"
-                    },
-                    {
-                        "text": "isFloat64Array",
-                        "link": "functions/isFloat64Array"
-                    },
-                    {
-                        "text": "isFunction",
-                        "link": "functions/isFunction"
-                    },
-                    {
-                        "text": "isGenerator",
-                        "link": "functions/isGenerator"
-                    },
-                    {
-                        "text": "isGeneratorFunction",
-                        "link": "functions/isGeneratorFunction"
-                    },
-                    {
-                        "text": "isInt16Array",
-                        "link": "functions/isInt16Array"
-                    },
-                    {
-                        "text": "isInt32Array",
-                        "link": "functions/isInt32Array"
-                    },
-                    {
-                        "text": "isInt8Array",
-                        "link": "functions/isInt8Array"
-                    },
-                    {
-                        "text": "isIterator",
-                        "link": "functions/isIterator"
-                    },
-                    {
-                        "text": "isJSON",
-                        "link": "functions/isJSON"
-                    },
-                    {
-                        "text": "isMap",
-                        "link": "functions/isMap"
-                    },
-                    {
-                        "text": "isMath",
-                        "link": "functions/isMath"
-                    },
-                    {
-                        "text": "isNull",
-                        "link": "functions/isNull"
-                    },
-                    {
-                        "text": "isNumber",
-                        "link": "functions/isNumber"
-                    },
-                    {
-                        "text": "isObject",
-                        "link": "functions/isObject"
-                    },
-                    {
-                        "text": "isPromise",
-                        "link": "functions/isPromise"
-                    },
-                    {
-                        "text": "isRangeError",
-                        "link": "functions/isRangeError"
-                    },
-                    {
-                        "text": "isReferenceError",
-                        "link": "functions/isReferenceError"
-                    },
-                    {
-                        "text": "isRegExp",
-                        "link": "functions/isRegExp"
-                    },
-                    {
-                        "text": "isSet",
-                        "link": "functions/isSet"
-                    },
-                    {
-                        "text": "isSharedArrayBuffer",
-                        "link": "functions/isSharedArrayBuffer"
-                    },
-                    {
-                        "text": "isString",
-                        "link": "functions/isString"
-                    },
-                    {
-                        "text": "isSymbol",
-                        "link": "functions/isSymbol"
-                    },
-                    {
-                        "text": "isSyntaxError",
-                        "link": "functions/isSyntaxError"
-                    },
-                    {
-                        "text": "isTypedArray",
-                        "link": "functions/isTypedArray"
-                    },
-                    {
-                        "text": "isTypeError",
-                        "link": "functions/isTypeError"
-                    },
-                    {
-                        "text": "isUint16Array",
-                        "link": "functions/isUint16Array"
-                    },
-                    {
-                        "text": "isUint32Array",
-                        "link": "functions/isUint32Array"
-                    },
-                    {
-                        "text": "isUint8Array",
-                        "link": "functions/isUint8Array"
-                    },
-                    {
-                        "text": "isUint8ClampedArray",
-                        "link": "functions/isUint8ClampedArray"
-                    },
-                    {
-                        "text": "isUndefined",
-                        "link": "functions/isUndefined"
-                    },
-                    {
-                        "text": "isURIError",
-                        "link": "functions/isURIError"
-                    },
-                    {
-                        "text": "isWeakMap",
-                        "link": "functions/isWeakMap"
-                    },
-                    {
-                        "text": "isWeakRef",
-                        "link": "functions/isWeakRef"
-                    },
-                    {
-                        "text": "isWeakSet",
-                        "link": "functions/isWeakSet"
-                    },
-                    {
-                        "text": "typeOf",
-                        "link": "functions/typeOf"
-                    }
-                ]
-            },
-            {
-                "text": "variables",
-                "items": [
-                    {
-                        "text": "types",
-                        "link": "variables/types"
-                    }
-                ]
-            }
-        ]
-    },
-    "/savage-utils/": {
-        "base": "/savage-utils/",
-        "items": [
-            {
-                "text": "savage-utils",
-                "link": "modules"
-            },
-            {
-                "text": "classes",
-                "items": [
-                    {
-                        "text": "Chain",
-                        "link": "classes/Chain"
-                    },
-                    {
-                        "text": "Iterator",
-                        "link": "classes/Iterator"
-                    }
-                ]
-            },
-            {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "camelCaseToHyphen",
-                        "link": "functions/camelCaseToHyphen"
-                    },
-                    {
-                        "text": "capitalize",
-                        "link": "functions/capitalize"
-                    },
-                    {
-                        "text": "compareDeep",
-                        "link": "functions/compareDeep"
-                    },
-                    {
-                        "text": "compareShallow",
-                        "link": "functions/compareShallow"
-                    },
-                    {
-                        "text": "copyDeep",
-                        "link": "functions/copyDeep"
-                    },
-                    {
-                        "text": "copyShallow",
-                        "link": "functions/copyShallow"
-                    },
-                    {
-                        "text": "debounce",
-                        "link": "functions/debounce"
-                    },
-                    {
-                        "text": "each",
-                        "link": "functions/each"
-                    },
-                    {
-                        "text": "get",
-                        "link": "functions/get"
-                    },
-                    {
-                        "text": "getSingle",
-                        "link": "functions/getSingle"
-                    },
-                    {
-                        "text": "hyphenToCamelCase",
-                        "link": "functions/hyphenToCamelCase"
-                    },
-                    {
-                        "text": "installEventCenter",
-                        "link": "functions/installEventCenter"
-                    },
-                    {
-                        "text": "mergeDeep",
-                        "link": "functions/mergeDeep"
-                    },
-                    {
-                        "text": "mergeShallow",
-                        "link": "functions/mergeShallow"
-                    },
-                    {
-                        "text": "parseAreaListData",
-                        "link": "functions/parseAreaListData"
-                    },
-                    {
-                        "text": "queueExcution",
-                        "link": "functions/queueExcution"
-                    },
-                    {
-                        "text": "sleep",
-                        "link": "functions/sleep"
-                    },
-                    {
-                        "text": "throttle",
-                        "link": "functions/throttle"
-                    },
-                    {
-                        "text": "unCapitalize",
-                        "link": "functions/unCapitalize"
-                    }
-                ]
-            },
-            {
-                "text": "variables",
-                "items": [
-                    {
-                        "text": "area",
-                        "link": "variables/area"
-                    },
-                    {
-                        "text": "eventCenter",
-                        "link": "variables/eventCenter"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
             }
         ]
     },
@@ -485,88 +43,37 @@
         "items": [
             {
                 "text": "picox",
-                "link": "modules"
+                "link": "index"
             },
             {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "picox",
-                        "link": "functions/picox"
-                    }
-                ]
-            },
-            {
-                "text": "interfaces",
-                "items": [
-                    {
-                        "text": "StylesLogInstance",
-                        "link": "interfaces/StylesLogInstance"
-                    }
-                ]
-            },
-            {
-                "text": "types",
-                "items": [
-                    {
-                        "text": "StylesLog",
-                        "link": "types/StylesLog"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
             }
         ]
     },
-    "/vite-plugin-us/": {
-        "base": "/vite-plugin-us/",
+    "/react-liberate/": {
+        "base": "/react-liberate/",
         "items": [
             {
-                "text": "vite-plugin-us",
-                "link": "modules"
+                "text": "react-liberate",
+                "link": "index"
             },
             {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "us",
-                        "link": "functions/us"
-                    }
-                ]
-            },
-            {
-                "text": "interfaces",
-                "items": [
-                    {
-                        "text": "UsOptions",
-                        "link": "interfaces/UsOptions"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
             }
         ]
     },
-    "/savage-mdtable/": {
-        "base": "/savage-mdtable/",
+    "/rollup-plugin-executer/": {
+        "base": "/rollup-plugin-executer/",
         "items": [
             {
-                "text": "savage-mdtable",
-                "link": "modules"
+                "text": "rollup-plugin-executer",
+                "link": "index"
             },
             {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "mdtable",
-                        "link": "functions/mdtable"
-                    }
-                ]
-            },
-            {
-                "text": "interfaces",
-                "items": [
-                    {
-                        "text": "TableOptions",
-                        "link": "interfaces/TableOptions"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
             }
         ]
     },
@@ -575,34 +82,89 @@
         "items": [
             {
                 "text": "savage-log",
-                "link": "modules"
+                "link": "index"
             },
             {
-                "text": "classes",
-                "items": [
-                    {
-                        "text": "Logger",
-                        "link": "classes/Logger"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
+            }
+        ]
+    },
+    "/savage-mdtable/": {
+        "base": "/savage-mdtable/",
+        "items": [
+            {
+                "text": "savage-mdtable",
+                "link": "index"
             },
             {
-                "text": "functions",
-                "items": [
-                    {
-                        "text": "createLogger",
-                        "link": "functions/createLogger"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
+            }
+        ]
+    },
+    "/savage-node/": {
+        "base": "/savage-node/",
+        "items": [
+            {
+                "text": "savage-node",
+                "link": "index"
             },
             {
-                "text": "interfaces",
-                "items": [
-                    {
-                        "text": "LoggerOptions",
-                        "link": "interfaces/LoggerOptions"
-                    }
-                ]
+                "text": "API",
+                "link": "api"
+            }
+        ]
+    },
+    "/savage-types/": {
+        "base": "/savage-types/",
+        "items": [
+            {
+                "text": "savage-types",
+                "link": "index"
+            },
+            {
+                "text": "API",
+                "link": "api"
+            }
+        ]
+    },
+    "/savage-utils/": {
+        "base": "/savage-utils/",
+        "items": [
+            {
+                "text": "savage-utils",
+                "link": "index"
+            },
+            {
+                "text": "API",
+                "link": "api"
+            }
+        ]
+    },
+    "/vite-plugin-us/": {
+        "base": "/vite-plugin-us/",
+        "items": [
+            {
+                "text": "vite-plugin-us",
+                "link": "index"
+            },
+            {
+                "text": "API",
+                "link": "api"
+            }
+        ]
+    },
+    "/vitest-mock-console/": {
+        "base": "/vitest-mock-console/",
+        "items": [
+            {
+                "text": "vitest-mock-console",
+                "link": "index"
+            },
+            {
+                "text": "API",
+                "link": "api"
             }
         ]
     }

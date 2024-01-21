@@ -1,0 +1,15 @@
+{
+	"/vitest-mock-console/": {
+		"base": "/vitest-mock-console/",
+		"items": [
+			{
+				"text": "vitest-mock-console",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}

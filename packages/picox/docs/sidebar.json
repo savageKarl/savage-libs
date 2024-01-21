@@ -1,0 +1,15 @@
+{
+	"/picox/": {
+		"base": "/picox/",
+		"items": [
+			{
+				"text": "picox",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}

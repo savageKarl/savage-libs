@@ -1,0 +1,15 @@
+{
+	"/elec-ipc/": {
+		"base": "/elec-ipc/",
+		"items": [
+			{
+				"text": "elec-ipc",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}
