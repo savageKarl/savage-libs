@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 import minimist from 'minimist'
 import spawn from 'cross-spawn'
 
-import pico from 'picocolors'
+import pico from 'picox'
 
 import type { IPackageJson } from '@ts-type/package-dts'
 
@@ -65,14 +65,15 @@ export function fuzzyMatchPkgName(partialPkgNames: string[]) {
 	if (matchResult.length) return matchResult
 
 	console.error(
-		`  ${pico.bgRed(pico.white(' ERROR '))} ${pico.red(
-			`Target pkgName ${pico.underline(
-				JSON.stringify(partialPkgNames)
-			)} not found!`
-		)}`
+		[
+			pico.bgRed.white(' ERROR '),
+			'Target pkgName',
+			pico.red(JSON.stringify(partialPkgNames)),
+			'not Found!'
+		].join(' ')
 	)
 
-	process.exit(1)
+	process.exit()
 }
 
 export function getFilesByFolderSync(folerPath: string) {
