@@ -35,7 +35,7 @@ module.exports = {
 		],
 		// most of the codebase are expected to be env agnostic
 		'no-restricted-globals': ['error', ...NodeGlobals],
-		'@typescript-eslint/no-explicit-any': 'none'
+		'@typescript-eslint/no-explicit-any': 0
 	},
 	parserOptions: {
 		project: './tsconfig.json',
