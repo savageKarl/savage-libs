@@ -1,7 +1,7 @@
 {
 	"name": "esbuild-plugin-umd",
 	"version": "0.0.3",
-	"description": "A esbuild plugin for building UMD module",
+	"description": "A esbuild plugin for building UMD module.",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",

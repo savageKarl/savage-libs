@@ -1,7 +1,7 @@
 {
 	"name": "react-liberate-persist",
 	"version": "0.0.10",
-	"description": "a plugin of react-liberate that provide storage ability",
+	"description": "a plugin of react-liberate that provide storage ability.",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",

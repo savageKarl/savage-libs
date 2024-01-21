@@ -1,7 +1,7 @@
 {
 	"name": "react-liberate",
 	"version": "2.1.2",
-	"description": "simple and elegant React Global State Manager",
+	"description": "simple and elegant React Global State Manager.",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",

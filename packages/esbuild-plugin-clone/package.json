@@ -1,7 +1,7 @@
 {
 	"name": "esbuild-plugin-clone",
 	"version": "0.0.0",
-	"description": "copy dirs and files",
+	"description": "copy dirs and files.",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
