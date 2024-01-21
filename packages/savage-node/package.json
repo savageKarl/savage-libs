@@ -29,6 +29,7 @@
 	"author": "savage",
 	"license": "GPL-3.0",
 	"dependencies": {
+		"fast-glob": "^3.3.2",
 		"savage-utils": "workspace:^"
 	}
 }
