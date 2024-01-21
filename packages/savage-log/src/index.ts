@@ -90,7 +90,7 @@ export class Logger {
 	}
 
 	public info(...args: string[]) {
-		return this.log(picox.gray(args.join(' ')), 'info')
+		return this.log(picox.blue(args.join(' ')), 'info')
 	}
 
 	public warn(...args: string[]) {
