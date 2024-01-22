@@ -1,9 +1,8 @@
-import { existsSync, mkdirSync, readFileSync } from 'node:fs'
-import { writeFile } from 'node:fs/promises'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { normalizePath } from 'savage-utils'
 import gb, { type Options } from 'fast-glob'
 
-export async function generateFiles(pathRecord: Record<string, string>) {
+export function generateFiles(pathRecord: Record<string, string>) {
 	for (let [path, content] of Object.entries(pathRecord)) {
 		path = normalizePath(path)
 
@@ -28,7 +27,7 @@ export async function generateFiles(pathRecord: Record<string, string>) {
 			dirs.slice(index).forEach(path => mkdirSync(path))
 		}
 
-		await writeFile(path, content, { encoding: 'utf-8' })
+		writeFileSync(path, content, { encoding: 'utf-8' })
 	}
 }
 
