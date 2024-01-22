@@ -1,26 +1,26 @@
-# Savage-node
+# Esbuild-plugin-umd
 
-> utils for node platform.
+> A esbuild plugin for building UMD module.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i esbuild-plugin-umd
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add esbuild-plugin-umd
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add esbuild-plugin-umd
 ```
 
 :::
 
-
+[content]
 
 # Issues
 

@@ -1,26 +1,26 @@
-# Savage-node
+# Savage-mdtable
 
-> utils for node platform.
+> A library for generate markdown tables.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i savage-mdtable
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add savage-mdtable
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add savage-mdtable
 ```
 
 :::
 
-
+[content]
 
 # Issues
 

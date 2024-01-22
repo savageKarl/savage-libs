@@ -1,26 +1,26 @@
-# Savage-node
+# Savage-log
 
-> utils for node platform.
+> A logger that outputs logs on the terminal.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i savage-log
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add savage-log
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add savage-log
 ```
 
 :::
 
-
+[content]
 
 # Issues
 

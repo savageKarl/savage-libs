@@ -1,26 +1,26 @@
-# Savage-node
+# Rollup-plugin-executer
 
-> utils for node platform.
+> A rollup plugin can execute commands or functions on a specified hook.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i rollup-plugin-executer
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add rollup-plugin-executer
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add rollup-plugin-executer
 ```
 
 :::
 
-
+[content]
 
 # Issues
 

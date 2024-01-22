@@ -1,26 +1,26 @@
-# Savage-node
+# Savage-utils
 
-> utils for node platform.
+> A lib for collecting common utils function.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i savage-utils
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add savage-utils
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add savage-utils
 ```
 
 :::
 
-
+[content]
 
 # Issues
 

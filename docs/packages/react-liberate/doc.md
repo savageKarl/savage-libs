@@ -1,26 +1,26 @@
-# Savage-node
+# React-liberate
 
-> utils for node platform.
+> simple and elegant React Global State Manager.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i react-liberate
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add react-liberate
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add react-liberate
 ```
 
 :::
 
-
+[content]
 
 # Issues
 

@@ -1,26 +1,26 @@
-# Savage-node
+# Picox
 
-> utils for node platform.
+> A lib base on picocolors for terminal color ouput, support chainable API.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i picox
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add picox
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add picox
 ```
 
 :::
 
-
+[content]
 
 # Issues
 

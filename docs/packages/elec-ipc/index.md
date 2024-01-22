@@ -1,25 +1,28 @@
-# Savage-node
+# Elec-ipc
 
-> utils for node platform.
+> A library that makes communication between different processes more convenient for Electron applications.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i elec-ipc
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add elec-ipc
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add elec-ipc
 ```
 
 :::
 
+# Usage
+
+hello,worl
 
 
 # Issues

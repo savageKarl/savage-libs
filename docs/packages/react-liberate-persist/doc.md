@@ -1,26 +1,26 @@
-# Savage-node
+# React-liberate-persist
 
-> utils for node platform.
+> a plugin of react-liberate that provide storage ability.
 
 ## Installtion
 
 ::: code-group
 
 ```[npm]
-npm i savage-node
+npm i react-liberate-persist
 ```
 
 ```[pnpm]
-pnpm add savage-node
+pnpm add react-liberate-persist
 ```
 
 ```[yarn]
-yarn add savage-node
+yarn add react-liberate-persist
 ```
 
 :::
 
-
+[content]
 
 # Issues
 
