@@ -63,6 +63,7 @@
 		"@vitejs/plugin-react": "^4.0.4",
 		"@vitejs/plugin-vue": "4.3.4",
 		"@vitest/coverage-istanbul": "^0.34.3",
+		"chokidar": "^3.5.3",
 		"commitizen": "^4.3.0",
 		"cross-spawn": "7.0.3",
 		"cz-conventional-changelog": "^3.3.0",
