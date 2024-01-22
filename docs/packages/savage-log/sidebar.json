@@ -1,0 +1,15 @@
+{
+	"/savage-log/": {
+		"base": "/savage-log/",
+		"items": [
+			{
+				"text": "savage-log",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}

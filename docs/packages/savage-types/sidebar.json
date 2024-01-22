@@ -1,0 +1,15 @@
+{
+	"/savage-types/": {
+		"base": "/savage-types/",
+		"items": [
+			{
+				"text": "savage-types",
+				"link": "index"
+			},
+			{
+				"text": "API",
+				"link": "api"
+			}
+		]
+	}
+}
