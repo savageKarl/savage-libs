@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { spawn } from 'cross-spawn'
 import matter from 'gray-matter'
-import glob from 'fast-glob'
-import { capitalize, normalizePath } from 'savage-utils'
-import { copy, generateFiles } from 'savage-node'
+import chokidar from 'chokidar'
+import { capitalize, normalizePath, debounce } from 'savage-utils'
+import { generateFiles } from 'savage-node'
 import { createLogger } from 'savage-log'
 import {
 	resolveCliOption,
@@ -19,11 +19,12 @@ import {
 const docsPath = resolve(process.cwd(), 'docs')
 const { targetPkgNames, all, mode } = resolveCliOption(process)
 const resolvedPkgNames = resolveTargetPkgNames(targetPkgNames, all)
+const log = createLogger({ label: 'scripts/doc' })
 
 async function generateSidebarConfig() {
 	const contents = await Promise.all(
 		resolvedPkgNames.map(async pkgName => {
-			const path = normalizePath(`${packagesRoot}/${pkgName}/docs/sidebar.json`)
+			const path = normalizePath(`${docsPath}/packages/${pkgName}/sidebar.json`)
 
 			return readFileSync(path, { encoding: 'utf-8' })
 		})
@@ -71,76 +72,105 @@ async function generateRootIndex() {
 }
 
 async function generateIndex() {
-	const paths = resolvedPkgNames.map(async pkgName => {
-		const path = normalizePath(`${docsPath}/packages/${pkgName}/index.md`)
+	async function handle(path: string, pkgName: string) {
 		const pkgJson = getPkgJson(resolve(packagesRoot, pkgName))
-
 		const template = await spliceTemplate(['commonHeader', 'doc'])
 
 		const content = replaceTemplateVariable(template, {
 			capitalizeName: capitalize(pkgJson.name),
 			description: pkgJson.description,
-			name: pkgJson.name
+			name: pkgJson.name,
+			content: readFileSync(path, { encoding: 'utf-8' })
 		})
+		await generateFiles({ [path.replace('doc.md', 'index.md')]: content })
+	}
 
-		await generateFiles({ [path]: content })
-		return path
+	const paths = await Promise.all(
+		resolvedPkgNames.map(async pkgName => {
+			const path = normalizePath(`${docsPath}/packages/${pkgName}/doc.md`)
+			handle(path, pkgName)
+			return path
+		})
+	)
+
+	if (mode !== 'dev') return
+	chokidar.watch(paths).on('change', async path => {
+		const splitArr = path.split('\\')
+		const pkgName = splitArr[splitArr.length - 2]
+		log.info(`${normalizePath(path)} has changed!`)
+		handle(path, pkgName)
 	})
 
 	return await Promise.all(paths)
 }
 
-async function copyFiles() {
-	resolvedPkgNames.forEach(pkgName => {
-		const from = `${packagesRoot}/${pkgName}/docs`
-		const to = `${docsPath}/packages/${pkgName}`
+async function generateRewrites() {
+	const rewritesFilePath = resolve(docsPath, 'rewrites.json')
 
-		copy({ from, to }).catch(err => {
-			console.error(err)
+	if (mode !== 'dev') return undefined
+	const watcher = chokidar.watch(normalizePath(`${docsPath}/packages`))
+
+	const stack: string[] = []
+
+	const addRewrites = debounce(() => {
+		const paths = stack.slice().map(f => normalizePath(f))
+		stack.length = 0
+
+		const rewrites = paths
+			.map(f => 'packages' + f.split('packages')[1])
+			.reduce(
+				(x, y) =>
+					Object.assign(x, {
+						[y]: y.replace('packages/', '')
+					}),
+				{} as Record<string, string>
+			)
+		const pathRecord = JSON.parse(
+			readFileSync(rewritesFilePath, { encoding: 'utf-8' }) || '{}'
+		) as Record<string, string>
+
+		const content = JSON.stringify(Object.assign(rewrites, pathRecord), null, 4)
+		generateFiles({
+			[rewritesFilePath]: content
+		})
+	}, 500)
+
+	watcher.on('add', async path => {
+		if (!/[\w\d-]+\.md$/.test(path)) return
+
+		stack.push(path)
+		addRewrites()
+	})
+
+	watcher.on('unlink', path => {
+		if (!/[\w\d-]+\.md$/.test(path)) return undefined
+
+		const shortPath = 'packages' + normalizePath(path).split('packages')[1]
+		const pathRecord = JSON.parse(
+			readFileSync(rewritesFilePath, { encoding: 'utf-8' })
+		) as Record<string, string>
+
+		Reflect.deleteProperty(pathRecord, shortPath)
+		generateFiles({
+			[rewritesFilePath]: JSON.stringify(pathRecord, null, 4)
 		})
 	})
 }
 
-async function generateRewrites() {
-	const paths = resolvedPkgNames
-		.map(pkgName => {
-			const files = glob.sync(
-				normalizePath(`${docsPath}/packages/${pkgName}/**/*`)
-			)
-			return files.map(f => 'packages' + f.split('packages')[1])
-		})
-		.flat()
-	const rewrites = paths.reduce(
-		(x, y) =>
-			Object.assign(x, {
-				[y]: y.replace('packages/', '').replace('docs/', '')
-			}),
-		{} as Record<string, string>
-	)
-
-	const rewritesFilePath = resolve(docsPath, 'rewrites.json')
-	generateFiles({ [rewritesFilePath]: JSON.stringify(rewrites, null, 4) })
-}
-
 main()
 async function main() {
-	const log = createLogger()
 	if (!['dev', 'preview', 'build'].includes(mode)) {
 		throw new Error(
 			`mode must be specified as dev, preview or build, receive ${mode}`
 		)
 	}
 
-	log.info('Generating documention...')
-
 	await generateRootIndex()
 	await generateSidebarConfig()
-	await copyFiles()
 	await generateIndex()
 	await generateRewrites()
 
-	log.success('Documention generate sucessful!')
-
-	const res = spawn('pnpm -F docs run docs:dev')
+	const res = spawn(`pnpm -F docs run docs:${mode}`)
 	res.stdout.on('data', res => console.log(String(res)))
+	res.stderr.on('error', err => console.error(err))
 }
