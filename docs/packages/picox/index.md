@@ -20,33 +20,20 @@ yarn add picox
 
 :::
 
-# Picox
+## Feature
 
-> A lib base on picocolors for terminal color ouput, support chainable API.
+- support chainable API
+- support mutiple arguments
 
-## Installtion
+## How to use
 
-::: code-group
+```ts
+import picox from 'picox'
 
-```[npm]
-npm i picox
+console.log(picox.bgBlue('hello'))
+console.log(picox.green('hello', 'world'))
+console.log(picox.bgBlue.yellow('hello'))
 ```
-
-```[pnpm]
-pnpm add picox
-```
-
-```[yarn]
-yarn add picox
-```
-
-:::
-
-[content]
-
-# Issues
-
-Please let me know if there are any issues, click this [link](https://github.com/savage181855/savage-libs/issues).
 
 
 # Issues

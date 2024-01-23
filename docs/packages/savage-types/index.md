@@ -20,33 +20,58 @@ yarn add savage-types
 
 :::
 
-# Savage-types
+## Feature
 
-> A library for determining the type of JavaScript variables. It is simple, convenient, and can be used out of the box. It provides many methods for use.
+- out of box
+- supports multiple APIs
+- support typescript type guard
 
-## Installtion
+## How to use
 
-::: code-group
+```typescript
+import { types } from 'savage-types'
+import {
+	isUndefined,
+	isNull,
+	isString,
+	isArray,
+	isObject,
+	isMap
+} from 'savage-types'
 
-```[npm]
-npm i savage-types
+console.log(types.isUndefined(undefined))
+
+console.log(types.isNull(null))
+
+console.log(types.isString(''))
+
+console.log(types.isNumber('1'))
+
+console.log(types.isString(''))
+
+console.log(types.isArray([]))
+
+console.log(types.isObject({}))
+
+console.log(types.isMap(new Map()))
+
+console.log(isUndefined(undefined))
+
+console.log(isNull(null))
+
+console.log(isString(''))
+
+console.log(isNumber('1'))
+
+console.log(isString(''))
+
+console.log(isArray([]))
+
+console.log(isObject({}))
+
+console.log(isMap(new Map()))
+
 ```
-
-```[pnpm]
-pnpm add savage-types
-```
-
-```[yarn]
-yarn add savage-types
-```
-
-:::
-
-[content]
-
-# Issues
-
-Please let me know if there are any issues, click this [link](https://github.com/savage181855/savage-libs/issues).
 
 
 # Issues
