@@ -1,5 +1,13 @@
 # react-liberate
 
+## 2.1.3
+
+### Patch Changes
+
+- Updated dependencies [724aa71]
+  - savage-types@1.0.20
+  - savage-utils@1.0.65
+
 ## 2.1.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # docs
 
+## 0.0.1
+
+### Patch Changes
+
+- savage-utils@1.0.65
+- savage-node@0.0.3
+
 ## null
 
 ### Patch Changes

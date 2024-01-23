@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.13
+
+### Patch Changes
+
+- savage-utils@1.0.65
+
 ## 1.0.12
 
 ### Patch Changes

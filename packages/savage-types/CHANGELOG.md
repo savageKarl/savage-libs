@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.20
+
+### Patch Changes
+
+- 724aa71: update api list
+
 ## 1.0.19
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # savage-node
 
+## 0.0.3
+
+### Patch Changes
+
+- savage-utils@1.0.65
+
 ## 0.0.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # react-liberate-persist
 
+## 0.0.11
+
+### Patch Changes
+
+- Updated dependencies [724aa71]
+  - savage-types@1.0.20
+  - savage-utils@1.0.65
+
 ## 0.0.10
 
 ### Patch Changes

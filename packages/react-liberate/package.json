@@ -1,6 +1,6 @@
 {
 	"name": "react-liberate",
-	"version": "2.1.2",
+	"version": "2.1.3",
 	"description": "simple and elegant React Global State Manager.",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
@@ -49,7 +49,7 @@
 		"@maoism/runtime-core": "^3.4.13",
 		"react": "^18.2.0",
 		"savage-types": "workspace:^",
-		"savage-utils": "workspace:^1.0.63"
+		"savage-utils": "workspace:^1.0.65"
 	},
 	"devDependencies": {
 		"@types/react": "^16.8.0",

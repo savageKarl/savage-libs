@@ -1,6 +1,6 @@
 {
 	"name": "react-liberate-persist",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"description": "a plugin of react-liberate that provide storage ability.",
 	"miniprogram": "dist",
 	"main": "dist/index.cjs",
@@ -36,7 +36,7 @@
 	"author": "",
 	"dependencies": {
 		"savage-types": "workspace:^",
-		"savage-utils": "workspace:^1.0.63"
+		"savage-utils": "workspace:^1.0.65"
 	},
 	"devDependencies": {
 		"react-liberate": "workspace:^",
