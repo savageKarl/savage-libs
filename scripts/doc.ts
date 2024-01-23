@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import { spawn } from 'cross-spawn'
 import matter from 'gray-matter'
 import chokidar from 'chokidar'
+import glob from 'fast-glob'
 import { capitalize, normalizePath, debounce } from 'savage-utils'
 import { generateFiles } from 'savage-node'
 import { createLogger } from 'savage-log'
@@ -82,7 +83,7 @@ async function generateIndex() {
 			name: pkgJson.name,
 			content: readFileSync(path, { encoding: 'utf-8' })
 		})
-		await generateFiles({ [path.replace('doc.md', 'index.md')]: content })
+		generateFiles({ [path.replace('doc.md', 'index.md')]: content })
 	}
 
 	const paths = await Promise.all(
@@ -106,6 +107,30 @@ async function generateIndex() {
 
 async function generateRewrites() {
 	const rewritesFilePath = resolve(docsPath, 'rewrites.json')
+	generateFiles({ [rewritesFilePath]: '{}' })
+
+	const isDocFile = (p: string) => /doc.*?\.md$/.test(p.split('/').reverse()[0])
+	const getRewrites = (paths: string[]) =>
+		paths
+			.map(f => 'packages' + f.split('packages')[1])
+			.reduce(
+				(x, y) =>
+					Object.assign(x, {
+						[y]: y.replace('packages/', '')
+					}),
+				{} as Record<string, string>
+			)
+
+	if (mode === 'build') {
+		const paths = (
+			await glob.async(
+				normalizePath(resolve(docsPath, 'packages', '**', '*.md'))
+			)
+		).filter(p => !isDocFile(p))
+
+		const rewrites = getRewrites(paths)
+		generateFiles({ [rewritesFilePath]: JSON.stringify(rewrites, null, 4) })
+	}
 
 	if (mode !== 'dev') return undefined
 	const watcher = chokidar.watch(normalizePath(`${docsPath}/packages`))
@@ -116,34 +141,28 @@ async function generateRewrites() {
 		const paths = stack.slice().map(f => normalizePath(f))
 		stack.length = 0
 
-		const rewrites = paths
-			.map(f => 'packages' + f.split('packages')[1])
-			.reduce(
-				(x, y) =>
-					Object.assign(x, {
-						[y]: y.replace('packages/', '')
-					}),
-				{} as Record<string, string>
-			)
+		const rewrites = getRewrites(paths)
+
 		const pathRecord = JSON.parse(
 			readFileSync(rewritesFilePath, { encoding: 'utf-8' }) || '{}'
 		) as Record<string, string>
 
 		const content = JSON.stringify(Object.assign(rewrites, pathRecord), null, 4)
-		generateFiles({
-			[rewritesFilePath]: content
-		})
+		generateFiles({ [rewritesFilePath]: content })
 	}, 500)
 
 	watcher.on('add', async path => {
-		if (!/[\w\d-]+\.md$/.test(path)) return
+		path = normalizePath(path)
+		const isNotMarkdownFile = !/[\w\d-]+\.md$/.test(path)
 
+		if (isNotMarkdownFile || isDocFile(path)) return
 		stack.push(path)
 		addRewrites()
 	})
 
 	watcher.on('unlink', path => {
-		if (!/[\w\d-]+\.md$/.test(path)) return undefined
+		const isNotMarkdownFile = !/[\w\d-]+\.md$/.test(path)
+		if (isNotMarkdownFile) return undefined
 
 		const shortPath = 'packages' + normalizePath(path).split('packages')[1]
 		const pathRecord = JSON.parse(
