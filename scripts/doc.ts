@@ -189,7 +189,7 @@ async function main() {
 	await generateIndex()
 	await generateRewrites()
 
-	const res = spawn(`pnpm -F docs run docs:${mode}`)
+	const res = spawn('pnpm', ['-F', 'docs', `docs:${mode}`])
 	res.stdout.on('data', res => console.log(String(res)))
 	res.stderr.on('error', err => console.error(err))
 }
