@@ -1,7 +1,7 @@
 # Esbuild-plugin-umd
 
-> A esbuild plugin for building UMD module
+> A esbuild plugin for building UMD module.
 
 # Documentation
 
-See [here](https://savage181855.github.io/savage-libs/esbuild-plugin-umd/modules)
+See [here](https://savage181855.github.io/savage-libs/esbuild-plugin-umd/)
