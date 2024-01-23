@@ -96,7 +96,8 @@ async function generateIndex() {
 
 	if (mode !== 'dev') return
 	chokidar.watch(paths).on('change', async path => {
-		const splitArr = path.split('\\')
+		path = normalizePath(path)
+		const splitArr = path.split('/')
 		const pkgName = splitArr[splitArr.length - 2]
 		log.info(`${normalizePath(path)} has changed!`)
 		handle(path, pkgName)
@@ -109,6 +110,7 @@ async function generateRewrites() {
 	const rewritesFilePath = resolve(docsPath, 'rewrites.json')
 	generateFiles({ [rewritesFilePath]: '{}' })
 
+	const isNotMarkdownFile = (p: string) => !/[\w\d-]+\.md$/.test(p)
 	const isDocFile = (p: string) => /doc.*?\.md$/.test(p.split('/').reverse()[0])
 	const getRewrites = (paths: string[]) =>
 		paths
@@ -153,16 +155,14 @@ async function generateRewrites() {
 
 	watcher.on('add', async path => {
 		path = normalizePath(path)
-		const isNotMarkdownFile = !/[\w\d-]+\.md$/.test(path)
 
-		if (isNotMarkdownFile || isDocFile(path)) return
+		if (isNotMarkdownFile(path) || isDocFile(path)) return
 		stack.push(path)
 		addRewrites()
 	})
 
 	watcher.on('unlink', path => {
-		const isNotMarkdownFile = !/[\w\d-]+\.md$/.test(path)
-		if (isNotMarkdownFile) return undefined
+		if (isNotMarkdownFile(path)) return undefined
 
 		const shortPath = 'packages' + normalizePath(path).split('packages')[1]
 		const pathRecord = JSON.parse(
@@ -179,9 +179,11 @@ async function generateRewrites() {
 main()
 async function main() {
 	if (!['dev', 'preview', 'build'].includes(mode)) {
-		throw new Error(
-			`mode must be specified as dev, preview or build, receive ${mode}`
+		log.error(
+			'mode must be specified as dev, preview or build, receive',
+			`"${mode}"`
 		)
+		process.exit()
 	}
 
 	await generateRootIndex()
@@ -191,5 +193,12 @@ async function main() {
 
 	const res = spawn('pnpm', ['-F', 'docs', `docs:${mode}`])
 	res.stdout.on('data', res => console.log(String(res)))
-	res.stderr.on('error', err => console.error(err))
+
+	res.stderr.on('error', err => {
+		log.error('command execute error', JSON.stringify(err, null, 4))
+	})
+
+	res.on('error', err => {
+		log.error('command not found error', JSON.stringify(err, null, 4))
+	})
 }
