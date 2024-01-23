@@ -91,5 +91,8 @@ export const specialType: TypeInfo = {
 		isGenerics: true,
 		genericsLen: 1,
 		weakGenerics: true
+	},
+	TypedArray: {
+		isExclude: true
 	}
 }
