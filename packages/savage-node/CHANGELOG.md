@@ -1,5 +1,13 @@
 # savage-node
 
+## 0.0.2
+
+### Patch Changes
+
+- 412cf95: provide new apis
+- 2f9de4d: add new api copy
+- 2f8aa73: use writeSync instead of write
+
 ## 0.0.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.12
+
+### Patch Changes
+
+- 2839acc: add new unit test for CDN
+
 ## 1.0.11
 
 ### Patch Changes
