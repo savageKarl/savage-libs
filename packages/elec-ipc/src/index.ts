@@ -1,1 +1,1 @@
-export * from './ipc'
+export { send, receive } from './ipc'
