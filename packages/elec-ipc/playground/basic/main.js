@@ -1,6 +1,6 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('node:path')
-const { send, addToChannel } = require('elec-ipc')
+const { send, receive } = require('elec-ipc')
 
 function createWindow() {
 	const mainWindow = new BrowserWindow({
@@ -13,18 +13,15 @@ function createWindow() {
 
 	mainWindow.webContents.openDevTools()
 
-	// Add windows that need to communicate, this step is very important
-	addToChannel(mainWindow)
+	send('mainMsg', 'mainMsg:hello', data => {
+		console.log('rendererAnswer', data)
+	})
 
-	setTimeout(() => {
-		send('msg', 'hello')
-			.then(res => {
-				console.log(res)
-			})
-			.catch(err => {
-				console.log(err)
-			})
-	}, 5000)
+	receive('rendererMsg', data => {
+		console.log('mainReceive', data)
+
+		return 'nice for you'
+	})
 
 	mainWindow.loadFile('index.html')
 }
@@ -33,8 +30,6 @@ app.whenReady().then(() => {
 	createWindow()
 
 	app.on('activate', function () {
-		// On macOS it's common to re-create a window in the app when the
-		// dock icon is clicked and there are no other windows open.
 		if (BrowserWindow.getAllWindows().length === 0) createWindow()
 	})
 })
