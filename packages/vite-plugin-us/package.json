@@ -46,6 +46,7 @@
 		"open": "9.1.0",
 		"picox": "workspace:^",
 		"rollup": "^3.2.3",
+		"savage-node": "workspace:^",
 		"savage-utils": "workspace:^",
 		"vite": "^4.4.11"
 	}
