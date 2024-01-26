@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.0
+
+### Major Changes
+
+- 818a81f: only provide callback api
+
 ## 0.0.16
 
 ### Patch Changes

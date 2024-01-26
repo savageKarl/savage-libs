@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.14
+
+### Patch Changes
+
+- 499f0c8: fix: update deps
+
 ## 1.0.13
 
 ### Patch Changes
