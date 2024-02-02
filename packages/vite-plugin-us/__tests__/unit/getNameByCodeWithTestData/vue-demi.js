@@ -3,7 +3,9 @@ var VueDemi = (function (VueDemi, Vue, VueCompositionAPI) {
     return VueDemi
   }
   if (!Vue) {
-    console.error('[vue-demi] no Vue instance found, please be sure to import `vue` before `vue-demi`.')
+    console.error(
+      '[vue-demi] no Vue instance found, please be sure to import `vue` before `vue-demi`.'
+    )
     return VueDemi
   }
 
@@ -42,7 +44,11 @@ var VueDemi = (function (VueDemi, Vue, VueCompositionAPI) {
         },
         mount: function (el, hydrating) {
           if (!vm) {
-            vm = new Vue(Object.assign({ propsData: rootProps }, rootComponent, { provide: Object.assign(provide, rootComponent.provide) }))
+            vm = new Vue(
+              Object.assign({ propsData: rootProps }, rootComponent, {
+                provide: Object.assign(provide, rootComponent.provide)
+              })
+            )
             vm.$mount(el, hydrating)
             return vm
           } else {
@@ -54,7 +60,7 @@ var VueDemi = (function (VueDemi, Vue, VueCompositionAPI) {
             vm.$destroy()
             vm = undefined
           }
-        },
+        }
       }
       return app
     }
@@ -74,7 +80,9 @@ var VueDemi = (function (VueDemi, Vue, VueCompositionAPI) {
       VueDemi.version = Vue.version
       VueDemi.hasInjectionContext = () => !!VueDemi.getCurrentInstance()
     } else {
-      console.error('[vue-demi] no VueCompositionAPI instance found, please be sure to import `@vue/composition-api` before `vue-demi`.')
+      console.error(
+        '[vue-demi] no VueCompositionAPI instance found, please be sure to import `@vue/composition-api` before `vue-demi`.'
+      )
     }
   }
   // Vue 3
@@ -109,7 +117,9 @@ var VueDemi = (function (VueDemi, Vue, VueCompositionAPI) {
   }
   return VueDemi
 })(
-  (this.VueDemi = this.VueDemi || (typeof VueDemi !== 'undefined' ? VueDemi : {})),
+  (this.VueDemi =
+    this.VueDemi || (typeof VueDemi !== 'undefined' ? VueDemi : {})),
   this.Vue || (typeof Vue !== 'undefined' ? Vue : undefined),
-  this.VueCompositionAPI || (typeof VueCompositionAPI !== 'undefined' ? VueCompositionAPI : undefined)
-);
+  this.VueCompositionAPI ||
+    (typeof VueCompositionAPI !== 'undefined' ? VueCompositionAPI : undefined)
+)

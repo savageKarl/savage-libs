@@ -9,11 +9,11 @@ import pkg from 'element-plus/package.json'
 // console.log(pkg)
 
 createApp(App)
-	// .use(ElementPlus)
-	.mount(
-		(() => {
-			const app = document.createElement('div')
-			document.body.append(app)
-			return app
-		})()
-	)
+  // .use(ElementPlus)
+  .mount(
+    (() => {
+      const app = document.createElement('div')
+      document.body.append(app)
+      return app
+    })()
+  )

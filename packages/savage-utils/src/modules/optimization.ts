@@ -7,17 +7,17 @@ import { Fun, Arg } from '../types'
  * @param immediate - 是否立即调用
  */
 export function debounce(fn: Fun, delay = 1500, immediate = false) {
-	let timer: NodeJS.Timeout | null = null
+  let timer: NodeJS.Timeout | null = null
 
-	return function (this: unknown, ...args: Arg[]) {
-		if (timer) clearTimeout(timer)
-		if (immediate) {
-			if (!timer) fn.apply(this, args)
-			timer = setTimeout(() => (timer = null), delay)
-		} else {
-			timer = setTimeout(() => fn.apply(this, args), delay)
-		}
-	}
+  return function (this: unknown, ...args: Arg[]) {
+    if (timer) clearTimeout(timer)
+    if (immediate) {
+      if (!timer) fn.apply(this, args)
+      timer = setTimeout(() => (timer = null), delay)
+    } else {
+      timer = setTimeout(() => fn.apply(this, args), delay)
+    }
+  }
 }
 
 type ThrottleType = 'timer' | 'timestamp'
@@ -29,29 +29,29 @@ type ThrottleType = 'timer' | 'timestamp'
  * @param immediate - 是否立即调用
  */
 export function throttle(
-	fn: Fun,
-	delay = 1500,
-	type: ThrottleType = 'timestamp'
+  fn: Fun,
+  delay = 1500,
+  type: ThrottleType = 'timestamp'
 ) {
-	if (type === 'timestamp') {
-		let prevTime = 0
-		return function (this: unknown, ...args: Arg[]) {
-			const currentTime = Date.now()
-			if (currentTime - prevTime > delay) {
-				fn.apply(this, args)
-				prevTime = currentTime
-			}
-		}
-	} else {
-		let timer: NodeJS.Timeout | null = null
+  if (type === 'timestamp') {
+    let prevTime = 0
+    return function (this: unknown, ...args: Arg[]) {
+      const currentTime = Date.now()
+      if (currentTime - prevTime > delay) {
+        fn.apply(this, args)
+        prevTime = currentTime
+      }
+    }
+  } else {
+    let timer: NodeJS.Timeout | null = null
 
-		return function (this: unknown, ...args: Arg[]) {
-			if (!timer) {
-				timer = setTimeout(() => {
-					fn.apply(this, args)
-					timer = null
-				}, delay)
-			}
-		}
-	}
+    return function (this: unknown, ...args: Arg[]) {
+      if (!timer) {
+        timer = setTimeout(() => {
+          fn.apply(this, args)
+          timer = null
+        }, delay)
+      }
+    }
+  }
 }

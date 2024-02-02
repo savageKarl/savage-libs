@@ -38,16 +38,16 @@ import { ItemCDN } from '../utils/types'
 // }
 
 const npmmirror: ItemCDN = {
-	homePage: 'https://npmmirror.com',
-	name: 'npmmirror',
-	url: 'https://registry.npmmirror.com',
-	addFilesFolder: true,
-	provideMinify: false,
-	leading: true,
-	removeDistPath: false,
-	useAt: false,
-	range: 'domestic',
-	supportSvgAndJson: true
+  homePage: 'https://npmmirror.com',
+  name: 'npmmirror',
+  url: 'https://registry.npmmirror.com',
+  addFilesFolder: true,
+  provideMinify: false,
+  leading: true,
+  removeDistPath: false,
+  useAt: false,
+  range: 'domestic',
+  supportSvgAndJson: true
 }
 
 // const bytedance: ItemCDN = {
@@ -99,12 +99,12 @@ const npmmirror: ItemCDN = {
 // }
 
 export const usedCdnList = [
-	// jsdelivr,
-	// unpkg,
-	// cloudflare,
-	npmmirror
-	// bytedance,
-	// bootcdn,
-	// baomitu,
-	// staticfile
+  // jsdelivr,
+  // unpkg,
+  // cloudflare,
+  npmmirror
+  // bytedance,
+  // bootcdn,
+  // baomitu,
+  // staticfile
 ]

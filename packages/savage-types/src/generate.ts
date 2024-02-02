@@ -8,84 +8,84 @@ import { docsUrl, fnsFilePath, specialType } from './constants'
 import type { TypeInfoItem } from './types'
 
 function genericsStr(len: number, weakGenerics = false) {
-	const arr: ('unknown' | 'object')[] = []
-	arr.length = len
-	arr.fill('unknown')
+  const arr: ('unknown' | 'object')[] = []
+  arr.length = len
+  arr.fill('unknown')
 
-	if (weakGenerics) arr[0] = 'object'
+  if (weakGenerics) arr[0] = 'object'
 
-	return `<${arr.join(',')}>`
+  return `<${arr.join(',')}>`
 }
 
 function generateTempale(name: string, typeInfoItem: TypeInfoItem) {
-	const {
-		isExclude,
-		isGenerics,
-		isLowerCase,
-		genericsLen,
-		weakGenerics,
-		tsIgnore
-	} = typeInfoItem
+  const {
+    isExclude,
+    isGenerics,
+    isLowerCase,
+    genericsLen,
+    weakGenerics,
+    tsIgnore
+  } = typeInfoItem
 
-	if (isExclude) return ''
+  if (isExclude) return ''
 
-	const strs: string[] = []
+  const strs: string[] = []
 
-	if (tsIgnore) strs.push('// @ts-ignore')
+  if (tsIgnore) strs.push('// @ts-ignore')
 
-	strs.push(
-		`export function is${name}(value: unknown): value is ${
-			isLowerCase ? name.toLowerCase() : name
-		}${isGenerics ? genericsStr(genericsLen as number, weakGenerics) : ''} {`
-	)
+  strs.push(
+    `export function is${name}(value: unknown): value is ${
+      isLowerCase ? name.toLowerCase() : name
+    }${isGenerics ? genericsStr(genericsLen as number, weakGenerics) : ''} {`
+  )
 
-	strs.push(
-		`  return Object.prototype.toString.call(value).slice(8, -1) === '${name}'`
-	)
+  strs.push(
+    `  return Object.prototype.toString.call(value).slice(8, -1) === '${name}'`
+  )
 
-	strs.push('}')
+  strs.push('}')
 
-	return strs.join('\n')
+  return strs.join('\n')
 }
 
 async function getBuiltInObjects() {
-	const data = (await axios.get(docsUrl)).data
-	const $ = load(data)
-	const lis = $('.sidebar-body > ol').children().eq(7).find('li')
+  const data = (await axios.get(docsUrl)).data
+  const $ = load(data)
+  const lis = $('.sidebar-body > ol').children().eq(7).find('li')
 
-	const completeTypeInfos = lis
-		.map(function () {
-			return $(this).text()
-		})
-		.toArray()
-		.filter(name => {
-			const isNotOverview = name !== 'Overview'
-			const isNotFunction = !/\(\)/.test(name)
+  const completeTypeInfos = lis
+    .map(function () {
+      return $(this).text()
+    })
+    .toArray()
+    .filter((name) => {
+      const isNotOverview = name !== 'Overview'
+      const isNotFunction = !/\(\)/.test(name)
 
-			return isNotOverview && isNotFunction
-		})
-		.map(name => {
-			name = /\w+/.exec(name)?.[0] as string
+      return isNotOverview && isNotFunction
+    })
+    .map((name) => {
+      name = /\w+/.exec(name)?.[0] as string
 
-			const splitArr = name.split('')
-			splitArr[0] = splitArr[0].toUpperCase()
+      const splitArr = name.split('')
+      splitArr[0] = splitArr[0].toUpperCase()
 
-			return splitArr.join('')
-		})
-		.reduce((preV, curV) => Object.assign(preV, { [curV]: {} }), {})
+      return splitArr.join('')
+    })
+    .reduce((preV, curV) => Object.assign(preV, { [curV]: {} }), {})
 
-	return Object.assign(completeTypeInfos, specialType)
+  return Object.assign(completeTypeInfos, specialType)
 }
 
 main()
 async function main() {
-	const completeObjects = await getBuiltInObjects()
+  const completeObjects = await getBuiltInObjects()
 
-	const fnStr = Object.keys(completeObjects).map(k =>
-		generateTempale(k, completeObjects[k])
-	)
+  const fnStr = Object.keys(completeObjects).map((k) =>
+    generateTempale(k, completeObjects[k])
+  )
 
-	fnStr.unshift('/* eslint-disable */')
+  fnStr.unshift('/* eslint-disable */')
 
-	writeFile(fnsFilePath, fnStr.join('\n'), { encoding: 'utf-8' })
+  writeFile(fnsFilePath, fnStr.join('\n'), { encoding: 'utf-8' })
 }

@@ -1,3 +1,3 @@
 ;(function fn(text) {
-      return "hello" + text;
-    })("dog");
+  return 'hello' + text
+})('dog')

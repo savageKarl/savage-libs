@@ -9,37 +9,37 @@ import { build as rollupBuild } from './rollup'
 export type { UmdOptions } from './types'
 
 export function umd(options: UmdOptions) {
-	return {
-		name: pluginName,
-		setup(build) {
-			const { initialOptions } = build
-			// @ts-ignore
-			if (initialOptions.format !== 'umd') return false
+  return {
+    name: pluginName,
+    setup(build) {
+      const { initialOptions } = build
+      // @ts-ignore
+      if (initialOptions.format !== 'umd') return false
 
-			// @ts-ignore
-			const status = validate(options, initialOptions.entryPoints[0])
-			if (!status) return false
+      // @ts-ignore
+      const status = validate(options, initialOptions.entryPoints[0])
+      if (!status) return false
 
-			initialOptions.write = false
-			initialOptions.format = 'cjs'
+      initialOptions.write = false
+      initialOptions.format = 'cjs'
 
-			build.onEnd(async result => {
-				const { outputFiles } = result
-				const jsFile = outputFiles?.filter(v => /js$/.test(v.path))
+      build.onEnd(async (result) => {
+        const { outputFiles } = result
+        const jsFile = outputFiles?.filter((v) => /js$/.test(v.path))
 
-				for (const file of jsFile || []) {
-					const code = await rollupBuild(
-						// @ts-ignore
-						initialOptions.entryPoints[0],
-						initialOptions.minify || false,
-						options
-					)
-					const uint8array = new TextEncoder().encode(code)
-					file.contents = uint8array
-				}
-			})
-		}
-	} as Plugin
+        for (const file of jsFile || []) {
+          const code = await rollupBuild(
+            // @ts-ignore
+            initialOptions.entryPoints[0],
+            initialOptions.minify || false,
+            options
+          )
+          const uint8array = new TextEncoder().encode(code)
+          file.contents = uint8array
+        }
+      })
+    }
+  } as Plugin
 }
 
 export default umd

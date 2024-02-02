@@ -2,7 +2,7 @@ const { receive, send } = require('elec-ipc')
 
 console.log('here is renderer 2')
 
-receive('renderer:msg', data => {
+receive('renderer:msg', (data) => {
   console.log('renderer2 receive', data)
 
   console.log('renderer2 answer', 'hi,there')
@@ -10,6 +10,6 @@ receive('renderer:msg', data => {
 })
 
 console.log('renderer2 send', 'foo')
-send('renderer2:msg', 'foo', data => {
+send('renderer2:msg', 'foo', (data) => {
   console.log('renderer2 get answer', data)
 })
