@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-restricted-globals */
-
 const { app, BrowserWindow } = require('electron')
 const path = require('node:path')
 const { send, receive } = require('elec-ipc')
@@ -13,25 +10,36 @@ function createWindow () {
       nodeIntegration: true
     }
   })
-
   mainWindow.webContents.openDevTools()
-
-  console.log('main send', 'mainMsg:hello')
-  send('mainMsg', 'mainMsg:hello', data => {
-    console.log('rendererAnswer', data)
-  })
-
-  receive('rendererMsg', data => {
-    console.log('mainReceive', data)
-
-    return 'nice for you'
-  })
-
   mainWindow.loadFile('index.html')
 }
 
 app.whenReady().then(() => {
   createWindow()
+
+  console.log('main send', 'first msg')
+  send('mainMsg', 'first msg', data => {
+    console.log('rendererAnswer', data)
+  })
+
+  setTimeout(() => {
+    console.log('main send', 'second msg')
+    send('mainMsg', 'second msg', data => {
+      console.log('rendererAnswer', data)
+    })
+  }, 1000)
+
+  setTimeout(() => {
+    console.log('main send', 'third msg')
+    send('mainMsg', 'third msg', data => {
+      console.log('rendererAnswer', data)
+    })
+  }, 3000)
+
+  receive('rendererMsg', data => {
+    console.log('mainReceive', data)
+    return 'nice for you'
+  })
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

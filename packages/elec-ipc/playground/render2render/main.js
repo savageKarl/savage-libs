@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-restricted-globals */
 const { app, BrowserWindow } = require('electron')
 const path = require('node:path')
-const { send, addToChannel } = require('elec-ipc')
 
 function createWindow (preload) {
   const mainWindow = new BrowserWindow({
@@ -14,7 +11,6 @@ function createWindow (preload) {
   })
 
   mainWindow.webContents.openDevTools()
-
   mainWindow.loadFile('index.html')
 }
 

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-restricted-globals */
 const { receive, send } = require('elec-ipc')
 
 console.log('here is renderer 2')
