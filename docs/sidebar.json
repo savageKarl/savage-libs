@@ -5,10 +5,6 @@
             {
                 "text": "elec-ipc",
                 "link": "index"
-            },
-            {
-                "text": "API",
-                "link": "api"
             }
         ]
     },
@@ -52,15 +48,11 @@
         ]
     },
     "/react-liberate/": {
-        "base": "/react-liberate/",
+        "base": "/react-liberate-persist/",
         "items": [
             {
-                "text": "react-liberate",
+                "text": "react-liberate-persist",
                 "link": "index"
-            },
-            {
-                "text": "API",
-                "link": "api"
             }
         ]
     },

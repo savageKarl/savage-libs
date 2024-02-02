@@ -1,15 +1,15 @@
 {
-	"/esbuild-plugin-clone/": {
-		"base": "/esbuild-plugin-clone/",
-		"items": [
-			{
-				"text": "esbuild-plugin-clone",
-				"link": "index"
-			},
-			{
-				"text": "API",
-				"link": "api"
-			}
-		]
-	}
+  "/esbuild-plugin-clone/": {
+    "base": "/esbuild-plugin-clone/",
+    "items": [
+      {
+        "text": "esbuild-plugin-clone",
+        "link": "index"
+      },
+      {
+        "text": "API",
+        "link": "api"
+      }
+    ]
+  }
 }

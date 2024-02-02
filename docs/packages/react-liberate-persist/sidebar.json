@@ -1,15 +1,11 @@
 {
-	"/react-liberate/": {
-		"base": "/react-liberate/",
-		"items": [
-			{
-				"text": "react-liberate",
-				"link": "index"
-			},
-			{
-				"text": "API",
-				"link": "api"
-			}
-		]
-	}
+  "/react-liberate/": {
+    "base": "/react-liberate-persist/",
+    "items": [
+      {
+        "text": "react-liberate-persist",
+        "link": "index"
+      }
+    ]
+  }
 }
