@@ -4,16 +4,10 @@ module.exports = {
   extends: [
     'eslint-config-standard',
     'plugin:@typescript-eslint/recommended',
-    'prettier'
+    'plugin:prettier/recommended'
   ],
   parser: '@typescript-eslint/parser',
-  plugins: [
-    '@typescript-eslint/eslint-plugin',
-    'promise',
-    'tsdoc',
-    'jest',
-    'prettier'
-  ],
+  plugins: ['@typescript-eslint/eslint-plugin', 'promise', 'tsdoc', 'jest'],
   root: true,
   env: {
     node: true,
@@ -60,7 +54,6 @@ module.exports = {
       }
     },
     {
-      // playgorund
       files: ['packages/*/playground/**/*.js', '.eslintrc.cjs'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
