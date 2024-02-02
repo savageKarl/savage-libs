@@ -82,7 +82,7 @@ export const processType = {
  * @param data - The data you want to pass to another process
  * @param callback - You can get answer data  here
  */
-export function send<T = unknown> (
+export function send<T = unknown>(
   channel: string,
   data: unknown,
   callback: Callback<T>
@@ -101,7 +101,7 @@ export function send<T = unknown> (
  * @param channel - The name of the event.
  * @param listener - The callback function
  */
-export function receive<T = unknown[]> (channel: string, callback: Callback<T>) {
+export function receive<T = unknown[]>(channel: string, callback: Callback<T>) {
   if (processType.isMainProcess) return mainFromRender(channel, callback)
   if (processType.isRenderProcess) return renderFromMain(channel, callback)
   return (() => null) as () => never
