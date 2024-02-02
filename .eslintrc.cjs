@@ -59,6 +59,13 @@ module.exports = {
         'no-restricted-globals': 'off',
         'no-restricted-syntax': 'off'
       }
+    }, {
+      // playgorund
+      files: ['packages/*/playground/**/*.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+        'no-restricted-globals': 'off'
+      }
     }
   ]
 }
