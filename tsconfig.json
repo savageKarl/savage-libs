@@ -37,6 +37,7 @@
 		"setupVitest.ts",
 		"vitest.config.ts",
 		"**/vite.config.ts",
-		".eslintrc.cjs"
+		".eslintrc.cjs",
+		"packages/*/playground/**/*.js"
 	]
 }
