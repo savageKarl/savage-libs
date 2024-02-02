@@ -11,7 +11,7 @@
 	"license": "GPL-3.0",
 	"homepage": "https://github.com/savage181855",
 	"scripts": {
-		"dev": "tsx --no-warnings scripts/build.ts -w",
+		"dev": "tsx scripts/build -w",
 		"build": "tsx scripts/build.ts",
 		"docs:dev": "tsx scripts/doc -a --mode dev",
 		"docs:build": "tsx scripts/doc -a --mode build",
@@ -95,7 +95,7 @@
 		"savage-tsup": "^0.0.1",
 		"supertest": "^6.3.4",
 		"tslib": "^2.6.2",
-		"tsx": "3.13.0",
+		"tsx": "4.7.0",
 		"typedoc": "0.23.15",
 		"typedoc-plugin-markdown": "^3.14.0",
 		"typescript": "^5.2.2",
