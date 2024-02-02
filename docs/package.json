@@ -16,6 +16,6 @@
 		"savage-log": "workspace:^",
 		"savage-node": "workspace:^",
 		"savage-utils": "workspace:^",
-		"vitepress": "1.0.0-rc.39"
+		"vitepress": "1.0.0-rc.41"
 	}
 }
