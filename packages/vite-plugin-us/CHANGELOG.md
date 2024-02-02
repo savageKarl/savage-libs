@@ -1,5 +1,12 @@
 # vite-plugin-us
 
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [de71178]
+  - savage-node@0.0.4
+
 ## 1.0.14
 
 ### Patch Changes

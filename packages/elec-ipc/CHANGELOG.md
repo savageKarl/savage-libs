@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.1
+
+### Patch Changes
+
+- f1f95d0: fix: remove debugger statement
+
 ## 1.0.0
 
 ### Major Changes

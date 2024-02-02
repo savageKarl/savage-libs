@@ -1,6 +1,6 @@
 {
 	"name": "render-to-render",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"private": true,
 	"description": "A minimal Electron application",
 	"main": "main.js",

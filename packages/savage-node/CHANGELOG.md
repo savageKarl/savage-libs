@@ -1,5 +1,11 @@
 # savage-node
 
+## 0.0.4
+
+### Patch Changes
+
+- de71178: provide new api such as readJsonFile.
+
 ## 0.0.3
 
 ### Patch Changes
