@@ -195,14 +195,14 @@ async function main() {
   await generateIndex()
   await generateRewrites()
 
-  // const res = spawn('pnpm', ['-F', 'docs', `docs:${mode}`])
-  // res.stdout.on('data', (res) => console.log(String(res)))
+  const res = spawn('pnpm', ['-F', 'docs', `docs:${mode}`])
+  res.stdout.on('data', (res) => console.log(String(res)))
 
-  // res.stderr.on('error', (err) => {
-  //   log.error('command execute error', JSON.stringify(err, null, 4))
-  // })
+  res.stderr.on('error', (err) => {
+    log.error('command execute error', JSON.stringify(err, null, 4))
+  })
 
-  // res.on('error', (err) => {
-  //   log.error('command not found error', JSON.stringify(err, null, 4))
-  // })
+  res.on('error', (err) => {
+    log.error('command not found error', JSON.stringify(err, null, 4))
+  })
 }
