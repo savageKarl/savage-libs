@@ -39,7 +39,7 @@ async function genereateReadme(pkgPath: string, type: 'root' | 'subPkg') {
           return [
             `[${pkgName}](./packages/${pkgName}#readme)`,
             version,
-            `[Documention](https://savage181855.github.io/savage-libs/${pkgName}/modules.html)`,
+            `[Documention](https://savage181855.github.io/savage-libs/${pkgName}/)`,
             `[Changelog](./packages/${pkgName}/CHANGELOG.md)`,
             `[NPM](https://www.npmjs.com/package/${pkgName})`
           ]
