@@ -1,11 +1,10 @@
 const NodeGlobals = ['module', 'require']
 
-// eslint-disable-next-line no-restricted-globals
 module.exports = {
   extends: [
     'eslint-config-standard',
-    'plugin:@typescript-eslint/recommended'
-    // 'plugin:prettier/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'prettier'
   ],
   parser: '@typescript-eslint/parser',
   plugins: [
@@ -59,9 +58,10 @@ module.exports = {
         'no-restricted-globals': 'off',
         'no-restricted-syntax': 'off'
       }
-    }, {
+    },
+    {
       // playgorund
-      files: ['packages/*/playground/**/*.js'],
+      files: ['packages/*/playground/**/*.js', '.eslintrc.cjs'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
         'no-restricted-globals': 'off'
