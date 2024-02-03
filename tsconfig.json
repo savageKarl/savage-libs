@@ -29,15 +29,12 @@
     "rootDir": "."
   },
   "include": [
-    "packages/global.d.ts",
-    "packages/**/*.ts",
+    "packages/**/*",
     "docs",
     "scripts",
-    "packages/*/__tests__",
-    "setupVitest.ts",
     "vitest.config.ts",
     "**/vite.config.ts",
     ".eslintrc.cjs",
-    "packages/*/playground/**/*.js"
-  ]
+  ],
+  "exclude": ["node_modules"]
 }

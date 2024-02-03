@@ -45,14 +45,6 @@ module.exports = {
         'jest/no-focused-tests': 'error'
       }
     },
-    // Node scripts
-    {
-      files: ['scripts/**', 'index.js', 'packages/**/index.js'],
-      rules: {
-        'no-restricted-globals': 'off',
-        'no-restricted-syntax': 'off'
-      }
-    },
     {
       files: ['packages/*/playground/**/*.js', '.eslintrc.cjs'],
       rules: {
