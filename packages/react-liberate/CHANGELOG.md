@@ -1,5 +1,11 @@
 # react-liberate
 
+## 2.1.4
+
+### Patch Changes
+
+- a52663f: fix rendering error caused by effect collection
+
 ## 2.1.3
 
 ### Patch Changes
