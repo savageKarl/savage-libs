@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/ban-types */
-
 import {
   reactive,
   toRefs,
   markRaw,
   computed,
   watch,
+  activeEffect,
   type ComputedRef
 } from '@maoism/runtime-core'
 import { isFunction } from 'savage-types'
-import { useRef } from 'react'
+
 import type {
   StateTree,
   DefineStoreOptions,
@@ -20,7 +20,7 @@ import type {
   _DeepPartial,
   _StoreWithState
 } from './types'
-import { noop, mergeReactiveObjects, setActiveEffect } from './utils'
+import { mergeReactiveObjects, setActiveEffect } from './utils'
 import { safeHookRun } from './apiEnv'
 import { liberate } from './liberate'
 import { addSubscriptions, triggerSubscription } from './subscription'
@@ -36,7 +36,6 @@ export function defineStore<
 ): StoreDefinition<Id, S, G, A> {
   let isSyncListening = false
 
-  createStore()
   function createStore() {
     const { state, actions, getters } = options
     const $state = reactive(state ? state() : {}) as S
@@ -86,11 +85,11 @@ export function defineStore<
       Object.assign(
         baseStore,
         toRefs($state),
-        Object.keys(actions ? actions : []).reduce(
+        Object.keys(actions ?? []).reduce(
           (x, y) =>
             Object.assign(x, {
-              [y]: function () {
-                return actions![y].call(store, ...arguments)
+              [y]: function (...args: any) {
+                return actions![y].call(store, ...args)
               }
             }),
           {} as A
@@ -109,34 +108,29 @@ export function defineStore<
       )
     ) as unknown as Store<Id, S, G, A>
 
-    Promise.resolve().then(() => {
-      liberate._plugins.forEach((p) => {
-        Object.assign(
+    liberate._plugins.forEach((p) => {
+      Object.assign(
+        store,
+        p({
           store,
-          p({
-            store,
-            // @ts-ignore
-            options
-          }) || {}
-        )
-      })
+          // @ts-ignore
+          options
+        }) || {}
+      )
     })
-
     liberate._store.set(id, store)
   }
 
   function useStore() {
+    safeHookRun(() => (activeEffect.value = undefined))
     if (!liberate._store.has(id)) createStore()
 
-    safeHookRun(() => {
-      setActiveEffect()
-    })
-
+    safeHookRun(() => setActiveEffect())
     isSyncListening = true
     const store = liberate._store.get(id) as Store<Id, S, G, A>
     return store
   }
-  useStore.$id = id
 
+  useStore.$id = id
   return useStore
 }

@@ -56,11 +56,9 @@ describe('store plugins', () => {
 
     const store = useStore()
 
-    microTask(() => {
-      expect(store.$state.pluginN).toBe(20)
-      expect(store.pluginN).toBe(20)
-      expect(store.uid).toBeDefined()
-    })
+    expect(store.$state.pluginN).toBe(20)
+    expect(store.pluginN).toBe(20)
+    expect(store.uid).toBeDefined()
   })
 
   it('overrides $reset', () => {
@@ -89,12 +87,10 @@ describe('store plugins', () => {
 
     const store = useStore()
 
-    microTask(() => {
-      store.pluginN = 200
-      store.$reset()
-      expect(store.$state.pluginN).toBe(20)
-      expect(store.pluginN).toBe(20)
-    })
+    store.pluginN = 200
+    store.$reset()
+    expect(store.$state.pluginN).toBe(20)
+    expect(store.pluginN).toBe(20)
   })
 
   it('can be used in actions', () => {
@@ -107,7 +103,7 @@ describe('store plugins', () => {
 
     const store = useStore()
 
-    microTask(() => expect(store.incrementN()).toBe(20))
+    expect(store.incrementN()).toBe(20)
   })
 
   it('can be used in getters', () => {
@@ -118,7 +114,7 @@ describe('store plugins', () => {
     })
 
     const store = useStore()
-    microTask(() => expect(store.doubleN).toBe(40))
+    expect(store.doubleN).toBe(40)
   })
 
   it('shares the same ref among stores', () => {
@@ -136,24 +132,23 @@ describe('store plugins', () => {
 
     const store = useStore()
     const store2 = useStore()
-    microTask(() => {
-      expect(store.$state.shared).toBe(20)
-      expect(store.shared).toBe(20)
-      expect(store2.$state.shared).toBe(20)
-      expect(store2.shared).toBe(20)
 
-      store.$state.shared = 10
-      expect(store.$state.shared).toBe(10)
-      expect(store.shared).toBe(10)
-      expect(store2.$state.shared).toBe(10)
-      expect(store2.shared).toBe(10)
+    expect(store.$state.shared).toBe(20)
+    expect(store.shared).toBe(20)
+    expect(store2.$state.shared).toBe(20)
+    expect(store2.shared).toBe(20)
 
-      store.shared = 1
-      expect(store.$state.shared).toBe(1)
-      expect(store.shared).toBe(1)
-      expect(store2.$state.shared).toBe(1)
-      expect(store2.shared).toBe(1)
-    })
+    store.$state.shared = 10
+    expect(store.$state.shared).toBe(10)
+    expect(store.shared).toBe(10)
+    expect(store2.$state.shared).toBe(10)
+    expect(store2.shared).toBe(10)
+
+    store.shared = 1
+    expect(store.$state.shared).toBe(1)
+    expect(store.shared).toBe(1)
+    expect(store2.$state.shared).toBe(1)
+    expect(store2.shared).toBe(1)
   })
 
   it('passes the options of the options store', async () => {
@@ -196,15 +191,13 @@ describe('store plugins', () => {
 
     const store = useStore()
 
-    microTask(() => {
-      const spy = vi.fn()
-      watch(() => store.double, spy, { flush: 'sync' })
+    const spy = vi.fn()
+    watch(() => store.double, spy, { flush: 'sync' })
 
-      expect(spy).toHaveBeenCalledTimes(0)
+    expect(spy).toHaveBeenCalledTimes(0)
 
-      store.n++
-      expect(spy).toHaveBeenCalledTimes(1)
-    })
+    store.n++
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('only executes plugins once after multiple installs', async () => {
@@ -220,6 +213,6 @@ describe('store plugins', () => {
 
     useStore()
 
-    microTask(() => expect(spy).toHaveBeenCalledTimes(1))
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })

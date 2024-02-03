@@ -117,5 +117,6 @@ export function setActiveEffect() {
     effect.run()
     effectMap.set(render, effect)
   }
+
   activeEffect.value = effect
 }
