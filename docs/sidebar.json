@@ -48,11 +48,45 @@
         ]
     },
     "/react-liberate/": {
+        "base": "/react-liberate/",
+        "items": [
+            {
+                "text": "react-liberate",
+                "link": "index"
+            }
+        ]
+    },
+    "/react-liberate-persist/": {
         "base": "/react-liberate-persist/",
         "items": [
             {
-                "text": "react-liberate-persist",
+                "text": "What is React Liberate Persist",
                 "link": "index"
+            },
+            {
+                "text": "Basic Usage",
+                "link": "basic-usage"
+            },
+            {
+                "text": "Advanced",
+                "items": [
+                    {
+                        "text": "Strategies",
+                        "link": "advanced/strategies"
+                    },
+                    {
+                        "text": "Custom storage key",
+                        "link": "advanced/custom-key"
+                    },
+                    {
+                        "text": "Persist partial state",
+                        "link": "advanced/partial-state"
+                    },
+                    {
+                        "text": "Custom Storage",
+                        "link": "advanced/custom-storage"
+                    }
+                ]
             }
         ]
     },
