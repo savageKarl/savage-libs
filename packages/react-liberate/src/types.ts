@@ -46,7 +46,7 @@ export interface _StoreWithState<Id extends string, S extends StateTree, G, A> {
   $id: Id
   $state: S & LiberateCustomStateProperties<S>
   $patch(partialState: _DeepPartial<S>): void
-  $patch<F extends (state: _DeepPartial<S>) => any>(
+  $patch<F extends (state: S) => any>(
     stateMutator: ReturnType<F> extends Promise<any> ? never : F
   ): void
   $reset(): void

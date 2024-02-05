@@ -24,8 +24,8 @@
     "removeComments": false,
     "jsx": "react-jsx",
     "lib": ["esnext", "dom"],
-    // "types": ["vitest/globals", "@testing-library/jest-dom"],
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    // "types": ["vitest/globals"],
     "rootDir": "."
   },
   "include": [

@@ -25,6 +25,9 @@ import { safeHookRun } from './apiEnv'
 import { liberate } from './liberate'
 import { addSubscriptions, triggerSubscription } from './subscription'
 
+// don't collect effect when loading plugin
+let isLoadingPlugin = false
+
 export function defineStore<
   Id extends string,
   S extends StateTree,
@@ -108,6 +111,8 @@ export function defineStore<
       )
     ) as unknown as Store<Id, S, G, A>
 
+    const lastLoadingPlugin = isLoadingPlugin
+    isLoadingPlugin = true
     liberate._plugins.forEach((p) => {
       Object.assign(
         store,
@@ -118,14 +123,16 @@ export function defineStore<
         }) || {}
       )
     })
+    isLoadingPlugin = lastLoadingPlugin
+
     liberate._store.set(id, store)
   }
 
   function useStore() {
-    safeHookRun(() => (activeEffect.value = undefined))
+    if (!isLoadingPlugin) safeHookRun(() => (activeEffect.value = undefined))
     if (!liberate._store.has(id)) createStore()
+    if (!isLoadingPlugin) safeHookRun(() => setActiveEffect())
 
-    safeHookRun(() => setActiveEffect())
     isSyncListening = true
     const store = liberate._store.get(id) as Store<Id, S, G, A>
     return store
