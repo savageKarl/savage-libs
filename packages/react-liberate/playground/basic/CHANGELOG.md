@@ -1,5 +1,13 @@
 # basic
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [ee8edae]
+  - react-liberate@2.1.5
+  - react-liberate-persist@0.0.11
+
 ## 0.0.1
 
 ### Patch Changes

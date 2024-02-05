@@ -1,5 +1,12 @@
 # react-liberate
 
+## 2.1.5
+
+### Patch Changes
+
+- ee8edae: fix: don't collect effect when loading plugin
+  test: add new unit test
+
 ## 2.1.4
 
 ### Patch Changes
