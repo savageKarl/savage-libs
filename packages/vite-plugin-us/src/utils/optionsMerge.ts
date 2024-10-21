@@ -32,9 +32,8 @@ const defaultOpts: Required<UsOptions> = {
     minify: true,
     cssMinify: true,
     external: {
-      autoCDN: true,
-      exclusions: [],
-      resources: []
+      globals: []
+      // resources: []
     }
   },
   generate: {

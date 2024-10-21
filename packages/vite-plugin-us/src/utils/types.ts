@@ -1,6 +1,6 @@
 import type { MetaData } from './userscript'
 
-export interface DepRecord {
+export interface externalGlobal {
   /**
    * the global variable name of dependencies, if it is a CSS resource, it is not required
    *
@@ -20,7 +20,7 @@ export interface DepRecord {
    */
   url: string
 
-  /** dependencies name
+  /** package name
    * @example
    * ```
    * pkgName: 'vue'
@@ -30,7 +30,10 @@ export interface DepRecord {
   pkgName: string
 }
 
-type ManualCdnResource = DepRecord
+type GlobalResource = {
+  importName: string
+  url: string
+}
 
 export type Mode = 'development' | 'production' | 'preview'
 
@@ -44,7 +47,7 @@ export interface Open {
    *
    * value can be one of 'chrome' | 'firefox' | 'edge', or app.exe path
    */
-  nameOrPath: ('chrome' | 'firefox' | 'edge') | string
+  nameOrPath?: ('chrome' | 'firefox' | 'edge') | string
 }
 
 export interface UsOptions {
@@ -101,23 +104,30 @@ export interface UsOptions {
      */
     cssMinify?: boolean
     /** extract external dependencies */
+
+    // TODO 这里自动cdn的功能全部砍掉，不稳定。
+
     external?: {
       /**
-       * automatically load package dependencies using CDN
+       * Define third-party libraries that need to be detached in the module
+       * @example
        *
-       * if value is `false`, `exclusions` and `resources` will not work
        *
-       * @defaultValue `true`
        */
-      autoCDN?: boolean
+      globals?: externalGlobal[]
       /**
-       * exclude dependencies that do not require automatic CDN
+       * define external resources that need to be extracted in the module, such as CSS and JSON
+       * @example
+       *
+       * resources: [
+       *   {
+       *     importName: 'element-plus/dist/index.css',
+       *     url: 'https://cdn.staticfile.org/element-plus/2.3.14/index.min.css'
+       *   }
+       * ]
        */
-      exclusions?: string[]
-      /**
-       * include dependencies that require manual CDN
-       */
-      resources?: ManualCdnResource[]
+      // TODO
+      // resources?: GlobalResource[]
     }
   }
   /**
@@ -152,7 +162,7 @@ export type PkgDepsRecord = Record<
 export interface ResourceRecord {
   globalVariableNameRecord: Record<string, string>
   externals: string[]
-  categoryRecord: Record<string, DepRecord[]>
+  categoryRecord: Record<string, externalGlobal[]>
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types

@@ -1,6 +1,6 @@
 import { extname } from 'node:path'
 
-import type { ResourceRecord, PkgDepsRecord, DepRecord } from './types'
+import type { ResourceRecord, PkgDepsRecord, externalGlobal } from './types'
 
 import { pkg } from './constants'
 import { cdn } from '../cdn/cdn'
@@ -9,14 +9,14 @@ import { conditionLog, removeCommentFromCode, getPkgNameByPath } from './utils'
 export class DepCollection {
   private regExclusion: RegExp
   private manuallyDeps: string[]
-  private manuallyResources: DepRecord[]
+  private manuallyResources: externalGlobal[]
 
   private collectDeps: string[] = []
 
   private readonly pkgDeps = Object.keys(pkg.dependencies ?? {})
   private readonly regPkgDep = new RegExp(this.pkgDeps.join('|'))
 
-  constructor(exclusions: string[], manuallyResources: DepRecord[]) {
+  constructor(exclusions: string[], manuallyResources: externalGlobal[]) {
     this.regExclusion = new RegExp(
       exclusions.map((v) => `^${v}($|/)`).join('|') || ' '
     )
@@ -73,7 +73,7 @@ export class DepCollection {
     })
   }
 
-  private getExternals(depsRecords: DepRecord[]) {
+  private getExternals(depsRecords: externalGlobal[]) {
     const external = depsRecords
       .filter((v) => extname(v.url) === '.js')
       .map((v) => v.pkgName)
@@ -97,7 +97,7 @@ export class DepCollection {
     return { pkgDepsRecord }
   }
 
-  private async getVariableNameRecord(depsRecords: DepRecord[]) {
+  private async getVariableNameRecord(depsRecords: externalGlobal[]) {
     const names = depsRecords
       .filter((v) => extname(v.url) === '.js')
       .map((v) => ({ [v.pkgName]: v.globalVariableName }))
@@ -117,8 +117,8 @@ export class DepCollection {
     return ext
   }
 
-  private classifyUrl(depRecords: DepRecord[]) {
-    const categoryRecord: Record<string, DepRecord[]> = {}
+  private classifyUrl(depRecords: externalGlobal[]) {
+    const categoryRecord: Record<string, externalGlobal[]> = {}
     depRecords.forEach((v) => {
       const ext = this.getExtByUrl(v.url)
       categoryRecord[ext]

@@ -10,7 +10,7 @@ import {
   PkgPathInfo,
   PkgCDN,
   ItemCDN,
-  DepRecord,
+  externalGlobal,
   LeadingCdnRecord
 } from '../utils/types'
 
@@ -166,8 +166,8 @@ class CDN {
     return urlsRecord
   }
 
-  private async addDataUrl(depsRecords: DepRecord[]) {
-    const handledDepsRecords: DepRecord[] = []
+  private async addDataUrl(depsRecords: externalGlobal[]) {
+    const handledDepsRecords: externalGlobal[] = []
 
     for (const v of depsRecords) {
       handledDepsRecords.push(v)
@@ -207,7 +207,7 @@ class CDN {
   public async getDepsRecords(pkgDepsRecord: PkgDepsRecord) {
     const pkgNames = Object.keys(pkgDepsRecord)
 
-    if (!isObjectHasValue(pkgDepsRecord)) return [] as DepRecord[]
+    if (!isObjectHasValue(pkgDepsRecord)) return [] as externalGlobal[]
 
     const urlsRecord = (
       (await Promise.all(
@@ -254,7 +254,7 @@ class CDN {
         globalVariableName: isJsFile
           ? getNameByCode(v.pkgName, codeRecord[v.url])
           : undefined
-      } as DepRecord
+      } as externalGlobal
     })
 
     conditionLog(depsRecords, 'Adding the data URL...')
