@@ -1,5 +1,11 @@
 # vite-plugin-us
 
+## 1.0.16
+
+### Patch Changes
+
+- remove auto cdn feature
+
 ## 1.0.15
 
 ### Patch Changes
