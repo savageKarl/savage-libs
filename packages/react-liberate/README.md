@@ -211,7 +211,7 @@ function myPlugin({ store, options }) {
 
 ### 状态持久化
 
-对于状态持久化，可以使用官方提供的插件 [react-liberate-persist](https://www.npmjs.com/package/react-liberate-persist)，该插件专为React-Liberate设计，提供了完善的本地存储能力。
+对于状态持久化，可以使用官方提供的插件 [react-liberate-persist](https://savagekarl.github.io/savage-libs/react-liberate-persist/)，该插件专为React-Liberate设计，提供了完善的本地存储能力。
 
 ```bash
 # 安装持久化插件
