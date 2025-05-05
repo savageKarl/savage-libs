@@ -1,5 +1,11 @@
 # react-liberate
 
+## 2.1.6
+
+### Patch Changes
+
+- change docs
+
 ## 2.1.5
 
 ### Patch Changes

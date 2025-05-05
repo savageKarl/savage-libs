@@ -1,3 +1,3 @@
 # Documentation
 
-See [here](https://savage181855.github.io/savage-libs/[name]/)
+See [here](https://savagekarl.github.io/savage-libs/[name]/)
