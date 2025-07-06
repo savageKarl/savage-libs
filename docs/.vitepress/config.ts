@@ -21,7 +21,7 @@ export default defineConfig({
     },
     sidebar,
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/savage181855/savage-libs' }
+      { icon: 'github', link: 'https://github.com/savageKarl/savage-libs' }
     ],
     footer: {
       message: 'Released under the MIT License.',

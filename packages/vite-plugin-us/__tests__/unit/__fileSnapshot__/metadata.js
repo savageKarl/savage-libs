@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name                           testing
-// @namespace                      https://github.com/savage181855
+// @namespace                      https://github.com/savageKarl
 // @description                    this is just a test
 // @icon                           https: // test.com
 // @grant                          GM.addElement

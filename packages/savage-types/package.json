@@ -41,15 +41,15 @@
 	"author": {
 		"name": "savage",
 		"email": "2443005004@qq.com",
-		"url": "https://github.com/savage181855/"
+		"url": "https://github.com/savageKarl/"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/savage181855/data-types"
+		"url": "https://github.com/savageKarl/data-types"
 	},
-	"homepage": "https://github.com/savage181855/data-types",
+	"homepage": "https://github.com/savageKarl/data-types",
 	"bugs": {
-		"url": "https://github.com/savage181855/data-types",
+		"url": "https://github.com/savageKarl/data-types",
 		"email": "2443005004@qq.com"
 	},
 	"license": "GPL-3.0",

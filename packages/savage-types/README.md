@@ -56,4 +56,4 @@ console.log(isMap(new Map()))
 ```
 
 
-See [here](https://savage181855.github.io/savage-libs/savage-types/)
+See [here](https://savageKarl.github.io/savage-libs/savage-types/)

@@ -2,6 +2,42 @@
 
 > A esbuild plugin for building UMD module.
 
-# Documentation
+## Installtion
 
-See [here](https://savage181855.github.io/savage-libs/esbuild-plugin-umd/)
+
+```[pnpm]
+pnpm add esbuild-plugin-umd
+```
+
+
+## Feature
+
+- support format umd for building UMD module
+
+## How to use
+
+```ts
+import esbuild from 'esbuild'
+import umd from 'esbuild-plugin-umd'
+
+esbuild
+  .build({
+    entryPoints: ["input.js"],
+    outdir: "dist",
+    format: "umd",
+    bundle: true,
+    plugins: [
+      umd({
+        libraryName: 'myName',
+        external: ['vue'],
+        globalVariableName: {
+          vue: 'Vue'
+      }
+    })],
+  })
+```
+
+
+# Issues
+
+Please let me know if there are any issues, click this [link](https://github.com/savageKarl/savage-libs/issues).

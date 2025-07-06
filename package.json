@@ -9,7 +9,7 @@
 		"registry": "https://registry.npmjs.org/"
 	},
 	"license": "GPL-3.0",
-	"homepage": "https://github.com/savage181855",
+	"homepage": "https://github.com/savageKarl",
 	"scripts": {
 		"dev": "tsx scripts/build -w",
 		"build": "tsx scripts/build.ts",

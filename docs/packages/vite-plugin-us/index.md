@@ -90,4 +90,4 @@ now just use browser extension [Disable-CSP](https://github.com/lisonge/Disable-
 
 # Issues
 
-Please let me know if there are any issues, click this [link](https://github.com/savage181855/savage-libs/issues).
+Please let me know if there are any issues, click this [link](https://github.com/savageKarl/savage-libs/issues).

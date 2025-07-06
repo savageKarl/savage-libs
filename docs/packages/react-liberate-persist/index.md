@@ -55,4 +55,4 @@ Add the`react-liberate-persist`types definition file to your tsconfig file.
 
 # Issues
 
-Please let me know if there are any issues, click this [link](https://github.com/savage181855/savage-libs/issues).
+Please let me know if there are any issues, click this [link](https://github.com/savageKarl/savage-libs/issues).
