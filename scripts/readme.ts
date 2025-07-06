@@ -32,14 +32,13 @@ async function genereateReadme(pkgPath: string, type: 'root' | 'subPkg') {
       })
 
       const table = mdtable({
-        header: ['Package', 'Version', 'Documention', 'Changelog', 'platform'],
-        alignment: ['C', 'C', 'C', 'C', 'C'],
+        header: ['Package', 'Version', 'Changelog', 'platform'],
+        alignment: ['C', 'C', 'C', 'C'],
         rows: pkgNames.map((pkgName) => {
           const { version } = getPkgJson(resolve(packagesRoot, pkgName))
           return [
             `[${pkgName}](./packages/${pkgName}#readme)`,
             version,
-            `[Documention](https://savageKarl.github.io/savage-libs/${pkgName}/)`,
             `[Changelog](./packages/${pkgName}/CHANGELOG.md)`,
             `[NPM](https://www.npmjs.com/package/${pkgName})`
           ]
